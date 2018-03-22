@@ -2,8 +2,6 @@ export CURRENT_FLOODS_BRANCH_NAME=$(git branch | sed -n -e 's/^\* \(.*\)/\1/p')
 
 export S3_BUCKET=$(echo "ctxfloods-frontend-$CURRENT_FLOODS_BRANCH_NAME" | tr '[:upper:]' '[:lower:]')
 
-export FRONTEND_URL=$(echo $S3_BUCKET.s3-website-us-east-1.amazonaws.com)
-
 export npm_config_PGCON=""
 export npm_config_PGRUNCON=""
 
@@ -21,7 +19,11 @@ read -s AWS_SECRET_ACCESS_KEY
 export AWS_SECRET_ACCESS_KEY
 travis encrypt AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY --add
 
-echo "Generating JWT secret"
+echo "Frontend URL for reset email links"
+read -s FRONTEND_URL
+export FRONTEND_URL
+
+cho "Generating JWT secret"
 export JWT_SECRET=$(openssl rand -base64 32)
 travis encrypt JWT_SECRET=$JWT_SECRET --add
 
