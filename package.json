@@ -1,7 +1,7 @@
 {
-  "name": "serverless-postgraphql-floods",
+  "name": "ctxfloods-backend",
   "version": "0.0.1",
-  "description": "postgraphql test on serverless",
+  "description": "CTXFloods serverless backend",
   "main": "handler.js",
   "config": {
     "PGLOCALCON": "postgresql://postgres@localhost:5432/floods",
