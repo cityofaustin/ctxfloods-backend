@@ -53,4 +53,5 @@ echo "  - POSTGRAPHQL_ENDPOINT=$POSTGRAPHQL_ENDPOINT" >> .travis.yml
 
 rm out.tmp
 
+echo "  - CURRENT_FLOODS_BRANCH_NAME=$CURRENT_FLOODS_BRANCH_NAME" >> .travis.yml
 echo "  - FRONTEND_URL=$FRONTEND_URL" >> .travis.yml
