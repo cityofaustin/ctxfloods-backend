@@ -39,4 +39,10 @@ app.post('/email/reset', (req, res) => {
   });
 });
 
-app.listen(5000);
+const server = app.listen(5000);
+
+process.on('SIGTERM', () => {
+  server.close(() => {
+    process.exit();
+  });
+});
