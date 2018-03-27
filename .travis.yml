@@ -8,19 +8,12 @@ addons:
     - postgresql-9.5-postgis-2.3
 services:
 - postgresql
-jobs:
-  include:
-  - stage: Test Locally
-    before_script: yarn; yarn init-local-db; yarn local-drop-rebuild;
-    script: yarn start-express-server & yarn test
-  - stage: Deploy to AWS
-    before_script:
-    - if [ -z "$AWS_ACCESS_KEY_ID" ]; then echo "AWS Credentials not set. Skipping
-      deployment."; travis_terminate 0; else npm install -g serverless@1.25.0; fi
-    script: yarn; yarn rebuild-and-deploy
-  - stage: Test against AWS endpoint
-    before_script:
-    - if [ -z "$AWS_ACCESS_KEY_ID" ]; then echo "AWS Credentials not set. Skipping
-      tests."; travis_terminate 0; else npm install -g serverless@1.25.0; fi
-    script: yarn; yarn test-on-aws
-    after_script: yarn; yarn rebuild-and-deploy-with-tons-of-crossings
+before_script: yarn; yarn init-local-db; yarn local-drop-rebuild;
+script: yarn start-express-server & yarn test;
+deploy:
+  provider: script
+  before_script: npm install -g serverless@1.25.0;
+  script: yarn; yarn rebuild-and-deploy-with-tons-of-crossings;
+  on:
+    all_branches: true
+    condition: "$AWS_ACCESS_KEY_ID"
