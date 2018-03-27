@@ -12,7 +12,7 @@ before_script: yarn; yarn init-local-db; yarn local-drop-rebuild;
 script: yarn start-express-server & yarn test;
 deploy:
   provider: script
-  before_script: npm install -g serverless@1.25.0;
+  before_script: yarn add global serverless@1.25.0;
   script: yarn; yarn rebuild-and-deploy-with-tons-of-crossings;
   on:
     all_branches: true
