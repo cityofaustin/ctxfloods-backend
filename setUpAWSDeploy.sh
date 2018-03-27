@@ -20,6 +20,15 @@ echo "Frontend URL for reset email links"
 read FRONTEND_URL
 export FRONTEND_URL
 
+echo "Gmail Address to send reset emails from"
+read GMAIL_ADDRESS
+export GMAIL_ADDRESS
+
+echo "Gmail password"
+read GMAIL_PASSWORD
+export GMAIL_PASSWORD
+travis encrypt GMAIL_PASSWORD=$GMAIL_PASSWORD --add
+
 echo "Generating JWT secret"
 export JWT_SECRET=$(openssl rand -base64 32)
 travis encrypt JWT_SECRET=$JWT_SECRET --add
@@ -55,3 +64,4 @@ rm out.tmp
 
 echo "  - CURRENT_FLOODS_BRANCH_NAME=$CURRENT_FLOODS_BRANCH_NAME" >> .travis.yml
 echo "  - FRONTEND_URL=$FRONTEND_URL" >> .travis.yml
+echo "  - GMAIL_ADDRESS=$GMAIL_ADDRESS" >> .travis.yml
