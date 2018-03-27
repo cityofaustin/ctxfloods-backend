@@ -13,8 +13,7 @@ before_script: yarn init-local-db; yarn local-drop-rebuild;
 script: yarn start-express-server & yarn test;
 deploy:
   provider: script
-  before_script: yarn add global serverless@1.25.0;
-  script: yarn; yarn rebuild-and-deploy-with-tons-of-crossings;
+  script: yarn add global serverless@1.25.0; yarn; yarn rebuild-and-deploy-with-tons-of-crossings;
   on:
     all_branches: true
     condition: "$AWS_ACCESS_KEY_ID"
