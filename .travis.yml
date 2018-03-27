@@ -8,7 +8,8 @@ addons:
     - postgresql-9.5-postgis-2.3
 services:
 - postgresql
-before_script: yarn; yarn init-local-db; yarn local-drop-rebuild;
+install: yarn;
+before_script: yarn init-local-db; yarn local-drop-rebuild;
 script: yarn start-express-server & yarn test;
 deploy:
   provider: script
