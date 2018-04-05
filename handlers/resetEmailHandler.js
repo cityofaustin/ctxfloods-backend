@@ -1,5 +1,4 @@
 const nodemailer = require('nodemailer');
-const aws = require('aws-sdk');
 const Client = require('pg').Client;
 const jwt = require('jsonwebtoken');
 
@@ -58,18 +57,21 @@ module.exports.handle = (event, context, cb) => {
       const lastname = pgres.rows[0].last_name;
       const token = jwt.sign({ user_id: pgres.rows[0].id, role: 'floods_password_resetter' }, process.env.JWT_SECRET, {expiresIn: '30m', audience: 'postgraphql'});
 
-      // If we have AWS credentials, use the AWS sdk to send the email
-      if (aws.config.credentials) {
-        aws.config.update({region: 'us-east-1'});
+      // If we have gmail credentials, use gmail to send the email
+      if (process.env.GMAIL_ADDRESS) {
         let transporter = nodemailer.createTransport({
-            SES: new aws.SES()
+          service: 'gmail',
+          auth: {
+            user: process.env.GMAIL_ADDRESS,
+            pass: process.env.GMAIL_PASSWORD
+          }
         });
 
         sendResetEmail(transporter, firstname, lastname, email, token, cb);
         return;
       }
 
-      // If we don't have AWS credentials, send an ethereal test email
+      // If we don't have gmail credentials, send an ethereal test email
       // Generate SMTP service account from ethereal.email
       nodemailer.createTestAccount((err, account) => {
           if (err) {
