@@ -302,7 +302,7 @@ begin
         raise exception 'Community administrators can only reactivate editors in communities they administrate';
       end if;
       -- and we're trying to add someone other than a community editor
-      if role != 'floods_community_editor' then
+      if deactivated_user.role != 'floods_community_editor' then
         raise exception 'Community administrators can only reactivate editors in communities they administrate';
       end if;
     -- all other roles shouldn't be here
