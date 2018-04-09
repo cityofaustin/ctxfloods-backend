@@ -169,10 +169,7 @@ describe('When deactivating, and reactivating a user as a community editor', () 
           `
           mutation($userId:Int!, $email:String!) {
             reactivateUser(input: {
-              userId: $userId,
-              email: $email
-              password: "texasfloods"
-              role: "floods_community_editor"
+              userId: $userId
             }) {
               user {
                 firstName
@@ -183,8 +180,7 @@ describe('When deactivating, and reactivating a user as a community editor', () 
           }
         `,
           {
-            userId: newUserId,
-            email: newUserEmail,
+            userId: newUserId
           },
         );
       } catch (e) {
