@@ -326,12 +326,9 @@ describe('When registering, deactivating, and reactivating a user as a community
     it('should reactivate the user', async () => {
       const response = await lokka.send(
         `
-        mutation($userId:Int!, $email:String!) {
+        mutation($userId:Int!) {
           reactivateUser(input: {
-            userId: $userId,
-            email: $email
-            password: "texasfloods"
-            role: "floods_community_editor"
+            userId: $userId
           }) {
             user {
               firstName
@@ -343,7 +340,6 @@ describe('When registering, deactivating, and reactivating a user as a community
       `,
         {
           userId: newUserId,
-          email: newUserEmail,
         },
       );
 
