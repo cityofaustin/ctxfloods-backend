@@ -167,7 +167,7 @@ describe('When deactivating, and reactivating a user as a community editor', () 
       try {
         const response = await lokka.send(
           `
-          mutation($userId:Int!, $email:String!) {
+          mutation($userId:Int!) {
             reactivateUser(input: {
               userId: $userId
             }) {
