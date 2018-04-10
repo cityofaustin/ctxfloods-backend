@@ -240,7 +240,7 @@ create function floods.edit_user(
   last_name text,
   job_title text,
   phone_number text
-) returns floods.crossing as $$
+) returns floods.user as $$
 declare
   floods_user floods.user;
   updated_floods_user floods.user;
