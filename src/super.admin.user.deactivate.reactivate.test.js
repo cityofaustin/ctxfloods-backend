@@ -214,6 +214,42 @@ describe('When registering, deactivating, and reactivating a user as a super adm
     });
   });
 
+  describe('As a password resetter', async () => {
+    var lokka;
+
+    beforeAll(async done => {
+      const token = jwt.sign({ user_id: newUserId, role: 'floods_password_resetter' }, process.env.JWT_SECRET, {expiresIn: '30m', audience: 'postgraphql'});
+      const headers = {
+        Authorization: 'Bearer ' + token,
+      };
+      lokka = new Lokka({
+        transport: new HttpTransport(endpoint, { headers }),
+      });
+      done();
+    })
+    
+
+    it('should reset the password', async () => {
+      const response = await lokka.send(
+        `
+        mutation ($password:String!){
+          resetPassword(input: {
+            newPassword: $password
+          }) {
+            jwtToken
+          }
+        }
+      `,
+        {
+          password: newUserPassword,
+        },
+      );
+
+      console.log(response);
+      expect(response.jwtToken).not.toBeNull();
+    });
+  });
+
   describe('As the reactivated user', async () => {
     var lokka;
 
