@@ -205,8 +205,9 @@ function shouldFail(email, password, newUserEmail, newUserRole, extra_descriptio
 }
 
 describe('When editing a user', () => { 
-
-  shouldWork('superadmin@flo.ods', 'texasfloods', `${uuidv4()}@flo.ods`, 'floods_super_admin', 'editing a super admin');
-  shouldFail('editor@community.floods', 'texasfloods', `${uuidv4()}@flo.ods`, 'floods_super_admin', 'editing a super admin');
-
+  shouldWork('superadmin@flo.ods', 'texasfloods', `${uuidv4()}@flo.ods`, 'floods_super_admin');
+  shouldWork('admin@community.floods', 'texasfloods', `${uuidv4()}@flo.ods`, 'floods_community_editor');
+  shouldFail('admin@community.floods', 'texasfloods', `${uuidv4()}@flo.ods`, 'floods_super_admin');
+  shouldFail('admin@othercommunity.floods', 'texasfloods', `${uuidv4()}@flo.ods`, 'floods_community_editor');
+  shouldFail('editor@community.floods', 'texasfloods', `${uuidv4()}@flo.ods`, 'floods_super_admin');
 });
