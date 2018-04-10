@@ -352,7 +352,6 @@ describe('When registering, deactivating, and reactivating a user as a community
     var lokka;
 
     beforeAll(async done => {
-      console.log(newUserId);
       const token = jwt.sign({ user_id: newUserId, role: 'floods_password_resetter' }, process.env.JWT_SECRET, {expiresIn: '30m', audience: 'postgraphql'});
       const headers = {
         Authorization: 'Bearer ' + token,
