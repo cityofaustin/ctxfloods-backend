@@ -264,7 +264,7 @@ begin
     -- and we are a community editor
     if current_setting('jwt.claims.role') = 'floods_community_editor' then
       -- and we're trying to edit a user other than ourselves
-      if current_setting('jwt.claims.user_id') != floods_user.id then
+      if current_setting('jwt.claims.user_id')::integer != floods_user.id then
         raise exception 'Community editors can only edit themselves';  
       end if;
     end if;

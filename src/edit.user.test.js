@@ -124,7 +124,55 @@ function shouldWork(email, password, newUserEmail, newUserRole, extra_descriptio
   });
 }
 
-function shouldFail(email, password, userId, lastName, firstName, jobTitle, phoneNumber, extra_description) {
+function shouldFail(email, password, newUserEmail, newUserRole, extra_description) {
+  var newUserId;
+
+  describe('as a super admin', () => {
+    var lokka;
+
+    beforeAll(async done => {
+      getToken('superadmin@flo.ods', 'texasfloods').then(token => {
+        const headers = {
+          Authorization: 'Bearer ' + token,
+        };
+        lokka = new Lokka({
+          transport: new HttpTransport(endpoint, { headers }),
+        });
+        done();
+      });
+    });
+
+    it('should add a new user', async () => {
+      const response = await lokka.send(
+        `
+        mutation($role:String!, $email:String!) {
+          registerUser(input: {
+            firstName: "New",
+            lastName: "New",
+            jobTitle: "New",
+            communityId: 1,
+            phoneNumber: "New",
+            email: $email,
+            password:"texasfloods",
+            role:$role
+          }) {
+            user {
+              id
+            }
+          }
+        }
+      `,
+      {
+        role: newUserRole,
+        email: newUserEmail,
+      },
+      );
+
+      newUserId = response.registerUser.user.id;
+      expect(response).not.toBeNull();
+    });
+  })
+
   describe('as ' + email + ' ' + (extra_description || ''), () => {
     var lokka;
 
@@ -140,12 +188,25 @@ function shouldFail(email, password, userId, lastName, firstName, jobTitle, phon
       });
     });
 
-    // TESTS THAT SHOULD FAIL GO HERE
+    it('should fail to edit the user', async () => {
+      try {
+        const response = await lokka.send(editUserMutation, {
+          userId: newUserId,
+          lastName: "Edited",
+          firstName: "Edited",
+          jobTitle: "Edited",
+          phoneNumber: "Edited"
+        });
+      } catch (e) {
+        expect(e).toMatchSnapshot();
+      }
+    });
   });
 }
 
 describe('When editing a user', () => { 
 
-  shouldWork('superadmin@flo.ods', 'texasfloods', `${uuidv4()}@flo.ods`, 'floods_super_admin', "editing a super admin");
+  shouldWork('superadmin@flo.ods', 'texasfloods', `${uuidv4()}@flo.ods`, 'floods_super_admin', 'editing a super admin');
+  shouldFail('editor@community.floods', 'texasfloods', `${uuidv4()}@flo.ods`, 'floods_super_admin', 'editing a super admin');
 
 });
