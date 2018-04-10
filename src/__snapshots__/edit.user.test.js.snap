@@ -1,0 +1,14 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`When editing a user as superadmin@flo.ods editing a super admin should edit the user 1`] = `
+Object {
+  "editUser": Object {
+    "user": Object {
+      "firstName": "Edited",
+      "jobTitle": "Edited",
+      "lastName": "Edited",
+      "phoneNumber": "Edited",
+    },
+  },
+}
+`;
