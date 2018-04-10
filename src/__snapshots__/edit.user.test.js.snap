@@ -1,5 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`When editing a user as editor@community.floods editing a super admin should fail to edit the user 1`] = `[Error: GraphQL Error: Community editors can only edit themselves]`;
+
 exports[`When editing a user as superadmin@flo.ods editing a super admin should edit the user 1`] = `
 Object {
   "editUser": Object {
