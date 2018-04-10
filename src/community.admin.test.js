@@ -66,6 +66,22 @@ describe('As a community admin', async () => {
     }
   });
 
+  it('should fail to delete a crossing from another community', async () => {
+    try {
+      const response = await lokka.send(`
+      mutation {
+        removeCrossing(input: {crossingId: 8}) {
+          crossing {
+            id
+          }
+        }
+      }      
+      `);
+    } catch (e) {
+      expect(e).toMatchSnapshot();
+    }
+  });
+
   it('should fail to update the status of a crossing from another community', async () => {
     try {
       const response = await lokka.send(`
