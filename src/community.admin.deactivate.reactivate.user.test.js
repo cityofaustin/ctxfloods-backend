@@ -350,14 +350,19 @@ describe('When registering, deactivating, and reactivating a user as a community
 
   describe('As a password resetter', async () => {
     var lokka;
-    console.log(newUserId);
-    const token = jwt.sign({ user_id: newUserId, role: 'floods_password_resetter' }, process.env.JWT_SECRET, {expiresIn: '30m', audience: 'postgraphql'});
-    const headers = {
-      Authorization: 'Bearer ' + token,
-    };
-    lokka = new Lokka({
-      transport: new HttpTransport(endpoint, { headers }),
-    });
+
+    beforeAll(async done => {
+      console.log(newUserId);
+      const token = jwt.sign({ user_id: newUserId, role: 'floods_password_resetter' }, process.env.JWT_SECRET, {expiresIn: '30m', audience: 'postgraphql'});
+      const headers = {
+        Authorization: 'Bearer ' + token,
+      };
+      lokka = new Lokka({
+        transport: new HttpTransport(endpoint, { headers }),
+      });
+      done();
+    })
+    
 
     it('should reset the password', async () => {
       const response = await lokka.send(
