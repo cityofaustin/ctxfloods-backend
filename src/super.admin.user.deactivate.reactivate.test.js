@@ -1,6 +1,7 @@
 import HttpTransport from 'lokka-transport-http';
 import Lokka from 'lokka';
 import uuidv4 from 'uuid';
+import jwt from 'jsonwebtoken';
 import { endpoint } from './endpoints';
 
 const anonLokka = new Lokka({ transport: new HttpTransport(endpoint) });
