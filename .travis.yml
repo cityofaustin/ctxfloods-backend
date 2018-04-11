@@ -10,7 +10,7 @@ services:
 - postgresql
 install: yarn;
 before_script: yarn init-local-db;
-script: yarn start-test-server & yarn test;
+script: yarn test;
 deploy:
   provider: script
   script: yarn add global serverless@1.25.0; yarn; yarn deploy;
