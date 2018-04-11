@@ -42,6 +42,8 @@ sls deploy -v | tee out.tmp
 export PGENDPOINT=$(grep "pgEndpoint" out.tmp | cut -f2- -d: | cut -c2-)
 rm out.tmp
 
+echo "  - PGENDPOINT=$PGENDPOINT" >> .travis.yml
+
 tput bold 
 echo "Setting PGCON and PGRUNCON"
 tput sgr0
