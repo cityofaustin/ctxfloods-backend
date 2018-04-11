@@ -5,6 +5,7 @@
 begin;
 
 drop schema if exists floods, floods_private cascade;
+drop table if exists migrations;
 drop role if exists floods_postgraphql, floods_anonymous, floods_community_editor, floods_community_admin, floods_super_admin, floods_password_resetter;
 
 commit;
