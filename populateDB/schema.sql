@@ -233,6 +233,57 @@ $$ language plpgsql strict security definer;
 
 comment on function floods.register_user(text, text, text, integer, text, text, text, text) is 'Registers a single user and creates an account.';
 
+-- Create function to edit users
+create function floods.edit_user(
+  user_id integer,
+  first_name text,
+  last_name text,
+  job_title text,
+  phone_number text
+) returns floods.user as $$
+declare
+  floods_user floods.user;
+  updated_floods_user floods.user;
+begin
+  select * from floods.user where id = user_id into floods_user;
+
+  -- If we aren't a super admin
+  if current_setting('jwt.claims.role') != 'floods_super_admin' then
+    -- and we are a community admin
+    if current_setting('jwt.claims.role') = 'floods_community_admin' then
+      -- and we're trying to edit a user in a different community
+      if current_setting('jwt.claims.community_id')::integer != floods_user.community_id then
+        raise exception 'Community administrators can only edit users in communities they administrate';
+      end if;
+      -- and we're trying to edit someone other than a community editor
+      if floods_user.role != 'floods_community_editor' then
+        raise exception 'Community administrators cannot edit other administrators';
+      end if;
+    end if;
+
+    -- and we are a community editor
+    if current_setting('jwt.claims.role') = 'floods_community_editor' then
+      -- and we're trying to edit a user other than ourselves
+      if current_setting('jwt.claims.user_id')::integer != floods_user.id then
+        raise exception 'Community editors can only edit themselves';  
+      end if;
+    end if;
+  end if;
+
+  update floods.user
+    set first_name = edit_user.first_name,
+        last_name = edit_user.last_name,
+        job_title = edit_user.job_title,
+        phone_number = edit_user.phone_number
+    where id = user_id
+    returning * into updated_floods_user;
+
+  return updated_floods_user;
+end;
+$$ language plpgsql strict security definer;
+
+comment on function floods.edit_user(integer, text, text, text, text) is 'Edits an existing user.';
+
 -- Create function to delete users
 create function floods.deactivate_user(
   user_id integer
@@ -1054,6 +1105,7 @@ grant execute on function floods.search_crossings(text, boolean, boolean, boolea
 -- Allow community admins and up to register new users
 -- NOTE: Extra logic around permissions in function
 grant execute on function floods.register_user(text, text, text, integer, text, text, text, text) to floods_community_admin;
+grant execute on function floods.edit_user(integer, text, text, text, text) to floods_community_editor;
 
 -- Allow community admins and up to remove users
 -- NOTE: Extra logic around permissions in function
