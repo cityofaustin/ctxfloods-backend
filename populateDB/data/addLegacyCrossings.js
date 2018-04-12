@@ -46,7 +46,28 @@ async function addCrossing(lokka, crossing) {
     },
   );
 
-  return response;
+  return response.newCrossing.crossing;
+}
+
+async function addCrossingToCommunity(lokka, crossingId, communityId) {
+  const response = await lokka.send(
+    `
+    mutation($crossingId:Int!, $communityId:Int!) {
+      addCrossingToCommunity(input: {crossingId:$crossingId, communityId:$communityId}) {
+        crossing {
+          id
+          legacyId
+        }
+      }
+    }
+  `,
+    {
+      crossingId: crossingId,
+      communityId: communityId,
+    },
+  );
+
+  return response.addCrossingToCommunity.crossing;
 }
 
 async function processCrossings(crossings) {
@@ -59,14 +80,23 @@ async function processCrossings(crossings) {
     transport: new HttpTransport('http://localhost:5000/graphql', { headers }),
   });
 
+  let legacyToNewMap = {};
   for (crossing of crossings) {
-    const newCrossing =  await addCrossing(lokka, crossing);
-    console.log(newCrossing);
+    const newId = legacyToNewMap[crossing.legacyId];
+
+    if (!newId) {
+      const newCrossing =  await addCrossing(lokka, crossing);
+      legacyToNewMap[newCrossing.legacyId] = newCrossing.id;
+      console.log(`Added legacy crossing ${newCrossing.legacyId} to DB`);
+    } else {
+      const updatedCrossing = await addCrossingToCommunity(lokka, newId, crossing.communityId);
+      console.log(`Added legacy crossing ${updatedCrossing.legacyId} to community ${crossing.communityId}`);
+    }
   }  
 }
 
 fs.readFile(
-  'populateDB/data/crossings.csv', 'utf8',
+  'populateDB/data/legacyCrossings.csv', 'utf8',
   (err, data) => {
     csv.parse(data, {columns: true}, (err, data) => {
       processCrossings(data);
