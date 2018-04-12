@@ -1,0 +1,33 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`When editing a user as admin@community.floods  should edit the user 1`] = `
+Object {
+  "editUser": Object {
+    "user": Object {
+      "firstName": "Edited",
+      "jobTitle": "Edited",
+      "lastName": "Edited",
+      "phoneNumber": "Edited",
+    },
+  },
+}
+`;
+
+exports[`When editing a user as admin@community.floods  should fail to edit the user 1`] = `[Error: GraphQL Error: Community administrators cannot edit other administrators]`;
+
+exports[`When editing a user as admin@othercommunity.floods  should fail to edit the user 1`] = `[Error: GraphQL Error: Community administrators can only edit users in communities they administrate]`;
+
+exports[`When editing a user as editor@community.floods  should fail to edit the user 1`] = `[Error: GraphQL Error: Community editors can only edit themselves]`;
+
+exports[`When editing a user as superadmin@flo.ods  should edit the user 1`] = `
+Object {
+  "editUser": Object {
+    "user": Object {
+      "firstName": "Edited",
+      "jobTitle": "Edited",
+      "lastName": "Edited",
+      "phoneNumber": "Edited",
+    },
+  },
+}
+`;

@@ -66,22 +66,6 @@ describe('As a community admin', async () => {
     }
   });
 
-  it('should fail to delete a user from another community', async () => {
-    try {
-      const response = await lokka.send(`
-      mutation {
-        removeUser(input: {userId: 4}) {
-          user {
-            id
-          }
-        }
-      }      
-      `);
-    } catch (e) {
-      expect(e).toMatchSnapshot();
-    }
-  });
-
   it('should fail to delete a crossing from another community', async () => {
     try {
       const response = await lokka.send(`
