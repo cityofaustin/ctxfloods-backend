@@ -592,7 +592,7 @@ begin
 end;
 $$ language plpgsql security definer;
 
-comment on function floods.new_crossingçis 'Adds a crossing.';
+comment on function floods.new_crossing 'Adds a crossing.';
 
 create function floods.crossing_human_coordinates(crossing floods.crossing) returns text as $$
   select ST_AsLatLonText(crossing.coordinates);
