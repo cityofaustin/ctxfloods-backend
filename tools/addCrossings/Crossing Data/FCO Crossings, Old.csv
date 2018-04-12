@@ -1,0 +1,198 @@
+﻿name,jurisdiction,address,lat,lng,type,comment,id
+Barton Springs Road,ALL,2000 W Barton Springs Road ,30.264969,-97.764992,on,Open,716
+Ramp from NB 183 to MoPac,ALL,Ramp from NB 183 to MoPac,30.378557,-97.738068,on,APD reports ramps have reopened,920
+Old San Antonio @ 1626,ALL,Old San Antonio @ 1626,30.142878,-97.801559,on,Crossing is open.,1097
+River Rd at Loma Vista,ALL,River Rd at Loma Vista,29.993029,-98.100533,off,Closed,1143
+Convict Hill near Latta,ALL,Convict Hill near Latta,30.217197,-97.850754,on,Crossing Open ,1169
+"Schulze Rd, Fayette County",FCO,Schulze Rd near Guettermann Ehler Rd,29.764311,-96.999619,on,,1203
+"Anders Bottom Rd, Fayette County",FCO,Anders Bottom Rd - 1 1/4 mi S of FM 155,29.830805,-96.826996,on,,1204
+"Baumgarten Rd, Fayette County",FCO,Baumgarten Rd near Wolters Rd,29.66787,-96.956383,on,,1205
+"Bilimek Rd, Fayette County",FCO,Bilimek Rd near Oakland Rd,29.676725,-96.878899,on,,1206
+"Bohuslav Rd, Fayette County",FCO,Bohuslav Rd near Anders Bottom Rd,29.813789,-96.836906,off,Extensive flood damage; closed indefinitely,1207
+"Brandt River Bottom Rd, Fayette County",FCO,Brandt River Bottom Rd - 3/4 mi NE of FM 155,29.824234,-96.782684,on,,1208
+"Bruno Rd, Fayette County",FCO,Bruno Rd near FM 956,29.745979,-96.949646,on,,1209
+"Bryant Rd, Fayette County",FCO,Bryant Rd - 3/4 mi N of IH 10,29.703325,-96.969498,on,,1210
+"Clark Ln, Fayette County",FCO,Clark Ln near FM 957,29.664957,-96.919731,on,,1211
+"Gebert Rd, Fayette County",FCO,Gebert Rd between Salem Freyburg Rd & Schulze ,29.7682,-97.011337,on,,1212
+"Guenther Rd, Fayette County",FCO,Guenther Rd at Lane Pool Creek,29.869698,-96.855621,on,,1213
+"Krischke Rd, Fayette County",FCO,Krischke Rd near FM 2238,29.738708,-96.967438,on,,1215
+"Lane Pool Rd, Fayette County",FCO,Lane Pool Rd at Lane Pool Creek,29.870905,-96.836411,on,,1216
+"Lidiak Rd, Fayette County",FCO,Lidiak Rd - 1/2 mi E of Radhost School Rd,29.814957,-96.863083,on,,1217
+"Loehr Rd, Fayette County",FCO,Loehr Rd near Mullins Prairie Loop,29.852669,-96.80835,on,,1218
+"Mensik Rd, Fayette County",FCO,Mensik Rd near Middle Creek Rd,29.74983,-96.864502,on,,1219
+"Munke Rd, Fayette County",FCO,Munke Rd at Williams Creek,29.831059,-96.847633,on,,1220
+"Oakland Rd, Fayette County",FCO,Oakland near Bilimek Rd,29.669636,-96.876198,on,,1221
+"Oakland Rd, Fayette County",FCO,Oakland Rd at East Navidad,29.658689,-96.855209,on,,1222
+"Ohnheiser Kaase Rd, Fayette County",FCO,Ohnheiser Kaase Rd near Niesner Rd,29.795063,-96.952095,on,,1223
+"Petter Rainosek Loop (south), Fayette County",FCO,Petter Rainosek Loop (S) near Kruppa Rd,29.848938,-96.895187,on,,1224
+"Schilhab Bottom Loop, Fayette County",FCO,Schilhab Bottom Loop near FM 2238,29.750624,-96.974731,on,,1225
+"Seidel Rd, Fayette County",FCO,Seidel Rd at West Navidad Creek,29.70579,-96.955742,on,,1226
+"Seydler Rd, Fayette County",FCO,Seydler Rd - 1 1/4 mi SE of Brandt River Bottom Rd,29.808804,-96.777687,on,,1227
+"Piano Bridge Rd, Fayette County",FCO,Piano Bridge Rd at East Navidad,29.72386,-96.850853,on,,1228
+"Bartons Creek Rd, Fayette County",FCO,Bartons Creek Rd - 3/4 mi S of S Kirtley Rd,29.958767,-97.111908,on,,1229
+"Bell Settlement Rd, Fayette County",FCO,Bell Settlement Rd near Wendler Rd,30.115679,-96.807854,on,,1230
+"Camelback Rd, Fayette County",FCO,Camelback Rd at Little Pin Oak,30.025095,-97.033607,on,,1231
+"Davis Rd, Fayette County",FCO,Davis Rd at Jack Young Creek,29.877958,-97.060089,on,,1232
+"Owl Creek Rd, Fayette County",FCO,Owl Creek Rd at Rabbs Creek,30.049114,-96.893555,on,,1233
+"Spring Branch Ln, Fayette County",FCO,Spring Branch Ln at Spring Branch Creek,29.987932,-97.017456,on,,1234
+"West Point Loop, Fayette County",FCO,West Point Loop at Criswell Creek,29.950809,-97.028481,on,,1235
+"Airport Rd, Fayette County",FCO,Airport Rd near FM 609,29.875782,-96.931297,on,,1236
+"Burke Rd, Fayette County",FCO,Burke Rd near FM 2762,29.713629,-97.135796,on,,1237
+"Creamer Creek Rd, Fayette County",FCO,Creamer Creek Rd at Creamer Creek,29.860077,-96.924736,on,,1238
+"Dozier Rd, Fayette County",FCO,Dozier Rd at Little Five Mile Creek,29.723896,-97.195892,on,,1239
+"Ehler Grasshoff Rd, Fayette County",FCO,Ehler Grasshoff Rd at Cold Creek,29.742416,-97.043289,on,,1240
+"Elm Creek Rd, Fayette County",FCO,Elm Creek Rd at Elm Creek,29.775389,-97.278183,on,,1241
+"Farek Loth Rd, Fayette County",FCO,Farek Loth Rd near Olle Ln,29.72043,-97.030907,on,,1242
+"Father Anders Loop, Fayette County",FCO,Father Anders Loop near FM 1115,29.754507,-97.255203,on,,1243
+"Freyburg Engle Rd, Fayette County",FCO,Freyburg Engle Rd at Cold Creek,29.709305,-97.019188,on,,1244
+"Freyburg Engle Rd, Fayette County",FCO,Freyburg Engle Rd at Rocky Creek,29.703732,-97.021317,on,,1245
+"Hurlock Rd, Fayette County",FCO,Hurlock Rd at Buckners Creek,29.865511,-97.150253,on,,1246
+"Jeddo Rd, Fayette County",FCO,Jeddo Rd at Peach Creek,29.818254,-97.254112,on,,1247
+"Jurica Rd, Fayette County",FCO,Jurica Rd at Mulberry Creek,29.651196,-97.021851,on,,1248
+"Ladewig Ln, Fayette County",FCO,Ladewig Ln at Rocky Creek Rd,29.701662,-97.039963,on,,1250
+"Louis Herzik Rd, Fayette County",FCO,Louis Herzik Rd at Brushy Creek,29.680021,-97.026833,on,,1251
+"Maynard Hallmark Rd, Fayette County",FCO,Maynard Hallmark Rd at Father Anders Loop,29.783844,-97.259644,on,,1252
+"Mulberry Creek Rd, Fayette County",FCO,Mulberry Creek Rd at Mulberry Creek,29.673367,-97.083008,on,,1253
+"S Old Smithville Rd, Fayette County",FCO,S Old Smithville Rd near Cherry Rd,29.797997,-97.135643,on,,1254
+"S Old Smithville Rd, Fayette County",FCO,S Old Smithville Rd near Holstein Rd,29.826315,-97.139442,on,,1255
+"N Old Smithville Rd, Fayette County",FCO,N Old Smithville Rd near FM 2237,29.851349,-97.133881,on,,1256
+"Old Waelder Rd, Fayette County",FCO,Old Waelder Rd near Webb Ln,29.694319,-97.185829,on,,1257
+"E Parker Rd, Fayette County",FCO,E Parker Rd at Pin Oak Creek,29.769745,-97.079895,on,,1258
+"Parkerville Rd, Fayette County",FCO,Parkerville Rd at Live Oak Creek,29.808664,-97.115257,on,,1259
+"Pavlica Rd, Fayette County",FCO,Pavlica Rd - 1/2 mi N of FM 2762,29.718809,-97.163322,on,,1260
+"Pine Springs Rd, Fayette County",FCO,Pine Springs Rd at Rocky Creek,29.709864,-97.05262,on,,1261
+"Rauder Rd, Fayette County",FCO,Rauder Rd at Buckners Creek,29.870218,-97.153214,on,,1262
+"Salem Freyburg Rd, Fayette County",FCO,Salem Freyburg Rd at Cold Creek,29.75013,-97.033913,on,,1263
+"Smith Marek Rd, Fayette County",FCO,Smith Marek Rd - 1/2 mi N of County Line Rd,29.637358,-97.001511,on,,1264
+"Sparta Field Rd, Fayette County",FCO,Sparta Field Rd at Pin Oak Creek,29.723412,-97.23291,on,,1265
+"Zimmermann Ln, Fayette County",FCO,Zimmermann Ln - 1/4 mi SE of FM 609,29.841038,-96.94207,on,,1267
+"Round Top Rd, Fayette County",FCO,Round Top Rd - 3/4 mi NW of Schoenst Rd,30.113024,-96.744064,on,,1268
+"Round Top Rd, Fayette County",FCO,Round Top Rd - 1/4 mi SE of Schoenst Rd,30.100958,-96.734428,on,,1269
+"Albers Rd, Fayette County",FCO,Albers Rd NE of Waldeck Cemetery Rd,30.059515,-96.785408,on,,1271
+"Hills Rd, Fayette County",FCO,Hills Rd at Carmine Cemetery Rd,30.125071,-96.715797,on,,1272
+"Wunderlich Rd, Fayette County",FCO,Wunderlich Rd - 1 mi NW of FM 954,29.991854,-96.614159,on,,1273
+"Wunderlich Rd, Fayette County",FCO,Wunderlich Rd - 1/2 mi NW of FM 954,29.983192,-96.612572,on,,1274
+"Willow Springs Rd, Fayette County",FCO,Willow Springs Rd at Cummins Creek,29.954845,-96.63353,on,,1275
+"Minarcik Rd, Fayette County",FCO,Minarcik Rd at Willow Branch,29.958265,-96.589134,on,,1276
+"Kovar Rd, Fayette County",FCO,Kovar Rd at Cummins Creek,29.931026,-96.624779,on,,1277
+"Rek Hill Rd, Fayette County",FCO,Rek Hill Rd near Josie Ln,29.915571,-96.629501,on,,1278
+"Brushy Rd, Fayette County",FCO,Brushy Rd near FM 2503,29.877438,-96.662354,on,,1279
+"Jurekca Rd, Fayette County",FCO,Jurekca Rd at Vasut Rd,29.893847,-96.703804,on,,1280
+"Wolff Rd, Fayette County",FCO,Wolff Rd - 3/4 mi SW of FM 1457,30.061186,-96.655464,on,,1281
+"N Nassau Rd, Fayette County",FCO,N Nassau Rd 3/4/ mi NE of Noak Rd,30.037617,-96.645569,on,,1282
+"Gebhard Rd, Fayette County",FCO,Gebhard Rd - 1/2 mi NW of FM 954,30.001312,-96.666145,on,,1283
+"Gebhard Rd, Fayette County",FCO,Gebhard Rd - 1/2 mi NW of FM 389,30.008059,-96.640785,on,,1284
+"Noak Rd, Fayette County",FCO,Noak Rd near Nassau Rd,30.031691,-96.657608,on,,1285
+"Kneip Rd, Fayette County",FCO,Kneip Rd NW of Hackemack Rd,30.056654,-96.684494,on,,1286
+"Bauer Rd, Fayette County",FCO,Bauer Rd NW of SH 237,29.987169,-96.769791,on,,1287
+"Bauer Rd, Fayette County",FCO,Bauer Rd - 1 mi E of SH 237,29.980183,-96.750259,on,,1288
+"Biegel Rd, Fayette County",FCO,Biegel Rd - 3/4 mi NW of FM 955,29.872675,-96.727882,on,,1289
+"Coufal Rd, Fayette County",FCO,Coufal Rd - 1 mi NW of SH 159,29.951349,-96.648018,on,,1291
+"Florida Chapel Rd, Fayette County",FCO,Florida Chapel Rd - 1/4 mi N of FM 954,30.013075,-96.696213,on,,1292
+"Halamicek Loop, Fayette County",FCO,Halamicek Loop (north) near FM 1291,29.981316,-96.694817,on,,1293
+"Halamicek Loop, Fayette County",FCO,Halamicek Loop (south) near FM 1291,29.986668,-96.709984,on,,1294
+"Halstedt Rd, Fayette County",FCO,Halstedt Rd at Baylor Creek,29.911163,-96.77404,on,,1295
+"Halstedt Rd, Fayette County",FCO,Halstedt Rd near Tietjen Rd,29.913155,-96.776314,on,,1296
+"Hattermann Rd, Fayette County",FCO,Hattermann Rd - 1/4 mi W of Baumbach Rd,29.905788,-96.796333,on,,1297
+"Haw Creek Rd, Fayette County",FCO,Haw Creek Rd near FM 1291,29.962914,-96.679878,on,,1298
+"Janssen Ln, Fayette County",FCO,Janssen Ln - 3/4 mi NW of SH 159,29.930933,-96.859009,on,,1299
+"Joiner Rd, Fayette County",FCO,Joiner Rd - 3/4 mi S of SH 71,29.88973,-96.78801,on,,1300
+"Jurecka Rd, Fayette County",FCO,Jurecka Rd at Ross Creek,29.895878,-96.722237,on,,1301
+"Kramr Rd, Fayette County",FCO,Kramr Rd near Ross Prairie Church Rd,29.880827,-96.673958,on,,1302
+"McCormick Rd, Fayette County",FCO,McCormick Rd at Clear Creek,29.999363,-96.795174,on,,1303
+"Rocky Creek Rd, Fayette County",FCO,Rocky Creek Rd at Ruether Rd,29.934692,-96.805496,on,,1304
+"Rocky Creek Rd, Fayette County",FCO,Rocky Creek Rd - 1/4 mi E of SH 71,29.913063,-96.841522,on,,1305
+"Rocky Creek Rd, Fayette County",FCO,Rocky Creek Rd - 1 1/2 mi E of SH 71,29.913198,-96.821503,on,,1306
+"Rocky Creek Rd, Fayette County",FCO,Rocky Creek Rd at High Hill Creek,29.913774,-96.83107,on,,1307
+"Rohde Rd, Fayette County",FCO,Rohde Rd SE of Weyand Rd,30.051666,-96.739403,on,,1308
+"Roznov Rd, Fayette County",FCO,Roznov Rd - 3/4 mi SW of FM 1291,29.981155,-96.726379,on,,1309
+"Sand Rock Rd, Fayette County",FCO,Sand Rock Rd NW of Wied Rd,29.95727,-96.809959,on,,1310
+"Shumacher Rd, Fayette County",FCO,Shumacher Rd near FM 955,29.861704,-96.715393,on,,1311
+"Shumacher Rd, Fayette County",FCO,Shumacher Rd at Ellinger Branch,29.844414,-96.708549,on,,1312
+"Schuster Rd, Fayette County",FCO,Schuster Rd near FM 2145,30.043056,-96.821907,on,,1313
+"Teitjen Rd, Fayette County",FCO,Teitjen Rd - 1/2 mi N of Halstedt Rd,29.920481,-96.781181,on,,1314
+"Tobias Rd, Fayette County",FCO,Tobias Rd - 1/2 mi SE of FM 2503,29.837164,-96.694,on,,1315
+"Waldeck Cemetery Rd, Fayette County",FCO,Waldeck Cemetery Rd SE of Albers Rd,30.055632,-96.773354,on,,1316
+"Schoenst Rd, Fayette County",FCO,Schoenst Rd - 1/2 mi SW of Round Top Rd,30.099192,-96.741203,on,,1317
+"Haw Creek Rd, Fayette County",FCO,Haw Creek Rd at Cummins Creek,29.977539,-96.661728,on,,1318
+"W Old Lockhart Rd, Fayette County",FCO,W Old Lockhart Rd west of N Old Smithville Rd,29.891462,-97.158577,on,,1319
+"Laird Rd, Fayette County",FCO,Laird Rd NE of Rauch Rd,30.015747,-96.814827,on,,1320
+"Falke Heinrich Rd, Fayette County",FCO,Falke Heinrich Rd N of FM 956,29.771662,-96.929237,on,,1321
+"Demel Rd, Fayette County",FCO,Demel Rd between FM 615 & Holub Rd,29.711819,-96.88047,on,,1322
+"Vivial Rd, Fayette County",FCO,Vivial Rd between Hermis Rd & FM 957,29.644331,-96.947975,on,,1323
+"Camelback Rd, Fayette County",FCO,Camelback Rd near Prairie St,30.016361,-97.019402,on,,1324
+"Davis Rd, Fayette County",FCO,Davis Rd at FM 154,29.850992,-97.043564,on,,1325
+"Fritsch Rd, Fayette County",FCO,Fritsch Rd SE of Ruether Rd,29.93889,-96.786438,on,,1326
+"Bittner Rd, Fayette County",FCO,Boehnke Rd,29.777975,-97.052383,on,,1327
+"Boulton Creek, Fayette County",FCO,Boulton Creek near FM 154,29.833757,-97.043266,on,,1328
+"Branecky Rd, Fayette County",FCO,Branecky Rd - 1/2 mi S of US 90,29.683523,-97.151627,on,,1329
+"Brown Rd, Fayette County",FCO,Brown Rd - 1 1/4 mi W of SH 95,29.76082,-97.195679,on,,1330
+"Cowan Rd, Fayette County",FCO,Cowan Rd near FM 2762,29.735744,-97.174759,on,,1331
+"Farek Loth Rd, Fayette County",FCO,Farek Loth Rd near Ragsdale Rd,29.715862,-97.056183,on,,1332
+"Klekar Gin Rd, Fayette County",FCO,Klekar Gin Rd near S Knezek Rd,29.668795,-97.051956,on,,1333
+"Klekar Gin Rd, Fayette County",FCO,Klekar Gin Rd near Cook Ln,29.667583,-97.041016,on,,1334
+"Mach Rd, Fayette County",FCO,Mach Rd near FM 609,29.813374,-96.988739,on,,1335
+"W Old Lockhart Rd, Fayette County",FCO,W Old Lockhart Rd - 1 mi W of Boehnke Rd,29.88727,-97.103561,on,,1337
+"Country Club Drive, Fayette County",FCO,Country Club,29.897743,-96.891785,on,,1340
+"River Drive, Fayette County",FCO,River Drive at Country Club,29.89612,-96.890381,on,,1341
+"Eilers St, Schulenburg",FCO,Eilers at West,29.68446,-96.910873,on,,1344
+"CH Allen Rd, Fayette County",FCO,CH Allen SW 1291,29.951544,-96.698143,on,,1350
+"Goehring Rd, Fayette County",FCO,Goehring Rd @ Cummins Creek,30.134729,-96.799767,on,,1353
+"Kainer Rd, Fayette County",FCO,Kainer Rd near Baumgarten Rd,29.654898,-96.972443,on,,1354
+Baca Loop Fayette County,FCO,"Baca Loop at Hwy 90, Flatonia",29.680094,-97.066162,on,,1383
+"Huelsebusch Rd, Fayette County",FCO,Huelsebusch Rd SW of Old Plum Hwy,29.922003,-96.932274,on,,1768
+"Goehring Rd, Fayette County",FCO,Goehring Rd N of Wendler Rd,30.113573,-96.82444,on,,1769
+Rek Hill Rd,FCO,Rek Hill @ SH 159,29.934271,-96.639008,on,,1826
+Hwy 159 @ Darden Loop,FCO,159 @ Darden Loop,29.963202,-96.609566,on,,1827
+FM 1291 @ Haw Creek,FCO,1291 @ Haw Creek,29.960443,-96.688789,on,,1829
+FM 1291 @ Halamicek Loop,FCO,FM 1291 @ Halamicek Loop,29.97591,-96.698441,on,,1830
+Mullins Prairie Loop Southbound,FCO,Mullins Prarie Loop Southbound,29.860403,-96.792381,on,,1831
+Mullins Prairie Loop @ Loehr Rd,FCO,Mullins Prairie Loop @ Loehr Rd,29.86422,-96.813881,on,,1832
+Kitchen Lane ,FCO,Kitchen Lane @ Hwy 71,29.862785,-96.741486,on,,1841
+Zapalac Rd ,FCO,Zapalac Rd @ Hwy 71,29.871178,-96.749596,on,,1842
+Copperhead Rd,FCO,Copperhead @ Lee Co Line,30.040434,-97.024216,on,,1866
+Plum Church Rd,FCO,Plum Church @ Plum Wonderful,29.925411,-96.975609,on,,1867
+Adamcik Rd,FCO,Adamcik off 1383,29.749142,-96.834785,on,,1868
+Middle Creek Rd,FCO,Middle Creek Rd N Schulenburg,29.759178,-96.885162,on,,1870
+Hermis Rd,FCO,Hermis over Mulberry Creek,29.652189,-96.938766,on,,1871
+Hertel Road,FCO,Hertel Road @ Foster,29.705248,-96.922974,on,,1896
+Dixieland RV Park ,FCO,Dixieland RV Park at Spur 458,30.14493,-96.683205,on,,1929
+Carmine Cemetery Rd,FCO,Carmine Cemetery Road at Hauptstrass,30.146284,-96.685997,on,,1930
+Tienert Rd,FCO,Tienert Rd @ Rabbs Creek,30.069202,-96.893364,on,,1974
+Race Track Road,FCO,Race Track Rd @ Cedar Creek,30.009747,-96.881798,on,,1975
+Anchor Ranch Loop,FCO,Anchor Ranch Loop North,29.822645,-97.182938,on,,1976
+Anchor Ranch Loop,FCO,Anchor Ranch Loop South,29.765533,-97.169052,on,,1977
+Wallace Road,FCO,Wallace Rd,29.833212,-97.105148,on,,1978
+Boehnke Rd,FCO,Boehnke Rd,29.86062,-97.082748,on,,1979
+Pin Oak Branch Rd,FCO,Pin Oak Branch Rd @ Pin Oak Branch Creek,30.069672,-96.922478,on,,2012
+Clear Creek at Roznov Rd,FCO,Clear Creek at Roznov Rd,29.967999,-96.741402,on,,2103
+"Krischke Rd, Fayette County",FCO,Krischke Rd North of Gansky Rd,29.728769,-96.952065,on,,2111
+"Krischke Rd, Fayette County",FCO,Krischke Rd South of Gansky Rd,29.723021,-96.95134,on,,2112
+"Main St @ Mesquite St, Fayette County",FCO,E North Main St @ S Mesquite St,29.687887,-97.100632,on,,2129
+"Alex Ln, Fayette County",FCO,Alex Ln near Texas 71 Frontage Rd,29.91831,-96.888374,on,,2165
+"FM 1291 @ Ledbetter, Fayette County",FCO,FM 1291 @ Ledbetter,30.14612,-96.792427,on,,2176
+"FM 1291 @ Greens Creek Rd, Fayette County",FCO,FM 1291 @ Greens Creek Rd,30.078794,-96.799583,on,,2177
+"SH 71 @ St James Church Rd, Fayette County",FCO,SH 71 @ St James Church Rd,29.936951,-96.990501,on,,2181
+"W Old Lockhart Rd @ Makinson Rd, Fayette County",FCO,W Old Lockhart Rd @ Makinson Rd,29.901875,-97.054359,on,,2183
+"Piney Creek @ Piney Creek Rd, Fayette County",FCO,Piney Creek @ Piney Creek Rd,30.021112,-96.94619,on,,2218
+"Weyand Rd @ Cummins Creek, Fayette County",FCO,Weyand Rd @ Cummins Creek,30.068624,-96.719383,on,,2219
+"Bordovsky Rd, Fayette County",FCO,Bordovsky Rd,29.902544,-96.937241,on,,2221
+FM 609 @ Buckner,FCO,FM 609 @ Buckner,29.866117,-96.932999,on,,2229
+"Holub Rd @ Company Field Rd, Fayette County",FCO,Holub Rd @ Company Field Rd,29.703508,-96.861534,on,,2230
+"FM 2237 @ Roy Rd, Fayette County",FCO,FM 2237 @ Roy Rd,29.835588,-97.154053,on,,2238
+"Freyburg Hall Rd near Bryant RD, Fayette County",FCO,Freyburg Hall Rd near Bryant RD,29.729185,-96.974266,on,,2240
+"Freyburg Hall Rd near FM 2238, Fayette County",FCO,Freyburg Hall Rd near FM 2238,29.734987,-96.992538,on,,2241
+"3 Mile Rd off Mockingbird Rd, Fayette County",FCO,3 Mile Rd off Mockingbird Rd,29.774277,-97.217308,on,,2242
+"Skillett Rd off Valenta RD, Fayette County",FCO,Skillett Rd off Valenta RD,29.856251,-96.953438,on,,2244
+"FM 957, Fayette County",FCO,FM 957,29.665253,-96.922455,on,,2249
+"Herzik Rd off Hwy 77, Fayette County",FCO,Herzik Rd off Hwy 77,29.741043,-96.90448,on,,2256
+"FM 957 near FM 223, Fayette County",FCO,FM 957 near FM 223,29.633596,-96.931511,on,,2262
+"FM 2237 @ Pin Oak Creek, Fayette County",FCO,FM 2237 @ Pin Oak Creek,29.805616,-97.064743,on,,2267
+"FM 2237 @ Live Oak Creek, Fayette County",FCO,FM 2237 @ Live Oak Creek,29.823456,-97.083458,on,,2272
+"S Knezek Rd @ Mulberry Creek, Fayette County",FCO,S Knezek Rd @ Mulberry Creek,29.668293,-97.061493,on,,2280
+"FM 153 @ Bastrop County Line, Fayette County",FCO,FM 153 @ Bastrop County Line,30.015839,-97.061546,on,,2283
+"FM 153 @ Pilchick Loop, Fayette County",FCO,FM 153 @ Pilchick Loop,30.010414,-97.037811,on,,2284
+"Noak Rd @ Jacks Creek, Fayette County",FCO,"Noak Rd @ Jacks Creek, Fayette County",30.037806,-96.666672,on,,2308
+"Krenek Rd @ Pettys Creek, Fayette County",FCO,Krenek Rd @ Pettys Creek,29.844137,-96.725288,off,Extensive flood damage 8/26/2017; closed indefinitely,2309
+"FM 2503, Fayette County",FCO,FM 2503,29.880667,-96.655914,on,,2311
+"W Travis St (Business 71) @ Colorado River, Fayette County",FCO,W Travis St (Business 71) @ Colorado River,29.901161,-96.886971,on,,2314
