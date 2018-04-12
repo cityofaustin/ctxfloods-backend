@@ -1,6 +1,7 @@
 import HttpTransport from 'lokka-transport-http';
 import Lokka from 'lokka';
 import uuidv4 from 'uuid';
+import jwt from 'jsonwebtoken';
 import { endpoint } from './endpoints';
 
 const anonLokka = new Lokka({ transport: new HttpTransport(endpoint) });
@@ -189,12 +190,9 @@ describe('When registering, deactivating, and reactivating a user as a super adm
     it('should reactivate the user', async () => {
       const response = await lokka.send(
         `
-        mutation($userId:Int!, $email:String!) {
+        mutation($userId:Int!) {
           reactivateUser(input: {
-            userId: $userId,
-            email: $email
-            password: "texasfloods"
-            role: "floods_community_editor"
+            userId: $userId
           }) {
             user {
               firstName
@@ -206,7 +204,6 @@ describe('When registering, deactivating, and reactivating a user as a super adm
       `,
         {
           userId: newUserId,
-          email: newUserEmail,
         },
       );
 
@@ -215,6 +212,42 @@ describe('When registering, deactivating, and reactivating a user as a super adm
 
     it('after reactivating', () => {
       userInDatabase(newUserId);
+    });
+  });
+
+  describe('As a password resetter', async () => {
+    var lokka;
+
+    beforeAll(async done => {
+      const token = jwt.sign({ user_id: newUserId, role: 'floods_password_resetter' }, process.env.JWT_SECRET, {expiresIn: '30m', audience: 'postgraphql'});
+      const headers = {
+        Authorization: 'Bearer ' + token,
+      };
+      lokka = new Lokka({
+        transport: new HttpTransport(endpoint, { headers }),
+      });
+      done();
+    })
+    
+
+    it('should reset the password', async () => {
+      const response = await lokka.send(
+        `
+        mutation ($password:String!){
+          resetPassword(input: {
+            newPassword: $password
+          }) {
+            jwtToken
+          }
+        }
+      `,
+        {
+          password: newUserPassword,
+        },
+      );
+
+      console.log(response);
+      expect(response.jwtToken).not.toBeNull();
     });
   });
 
