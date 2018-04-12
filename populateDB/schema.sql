@@ -279,17 +279,19 @@ comment on function floods.deactivate_user(integer) is 'Deactivates a user and d
 
 -- Create function to reactivate users
 create function floods.reactivate_user(
-  user_id integer,
-  email text,
-  password text,
-  role text
+  user_id integer
 ) returns floods.user as $$
 declare
   deactivated_user floods.user;
+  password text;
   floods_user floods.user;
 begin
   -- Get the deactivated user
   select * from floods.user where id = user_id into deactivated_user;
+
+  -- Generate a random password
+  select array_to_string(array(select chr((48 + round(random() * 59)) :: integer) 
+    from generate_series(1,32)), '') into password;
 
   -- If we aren't a super admin
   if current_setting('jwt.claims.role') != 'floods_super_admin' then
@@ -300,7 +302,7 @@ begin
         raise exception 'Community administrators can only reactivate editors in communities they administrate';
       end if;
       -- and we're trying to add someone other than a community editor
-      if role != 'floods_community_editor' then
+      if deactivated_user.role != 'floods_community_editor' then
         raise exception 'Community administrators can only reactivate editors in communities they administrate';
       end if;
     -- all other roles shouldn't be here
@@ -310,7 +312,7 @@ begin
   end if;
 
   insert into floods_private.user_account (user_id, email, role, community_id, password_hash) values
-    (deactivated_user.id, email, role, deactivated_user.community_id, crypt(password, gen_salt('bf')));
+    (deactivated_user.id, deactivated_user.email_address, deactivated_user.role, deactivated_user.community_id, crypt(password, gen_salt('bf')));
 
   update floods.user
     set active = true
@@ -321,7 +323,7 @@ begin
 end;
 $$ language plpgsql strict security definer;
 
-comment on function floods.reactivate_user(integer, text, text, text) is 'Reactivates a user and creates an account.';
+comment on function floods.reactivate_user(integer) is 'Reactivates a user and creates an account.';
 
 -- Create function to search crossings
 create function floods.search_crossings(
@@ -1059,7 +1061,7 @@ grant execute on function floods.deactivate_user(integer) to floods_community_ed
 
 -- Allow community admins and up to reactivate users
 -- NOTE: Extra logic around permissions in function
-grant execute on function floods.reactivate_user(integer, text, text, text) to floods_community_admin;
+grant execute on function floods.reactivate_user(integer) to floods_community_admin;
 
 -- Allow community editors and up to get the current logged in user
 grant execute on function floods.current_user() to floods_community_editor;
