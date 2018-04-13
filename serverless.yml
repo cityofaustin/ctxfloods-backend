@@ -1,5 +1,12 @@
 service: ctxfloods-${env:CURRENT_FLOODS_BRANCH_NAME}
 
+plugins:
+  - serverless-content-encoding
+
+custom:
+  contentEncoding:
+    minimumCompressionSize: 0
+
 provider:
   name: aws
   runtime: nodejs6.10
