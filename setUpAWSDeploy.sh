@@ -37,14 +37,17 @@ tput bold
 echo "Deploying to AWS to get a cloudformation/endpoint"
 tput sgr0
 
+export PGUSERNAME="example"
+export PGPASSWORD="serverless"
+
 yarn
 sls deploy -v | tee out.tmp
 export PGENDPOINT=$(grep "pgEndpoint" out.tmp | cut -f2- -d: | cut -c2-)
 rm out.tmp
 
-tput bold 
-echo "Setting PGCON and PGRUNCON"
-tput sgr0
+echo "  - PGENDPOINT=$PGENDPOINT" >> .travis.yml
+echo "  - PGUSERNAME=$PGUSERNAME" >> .travis.yml
+echo "  - PGPASSWORD=$PGPASSWORD" >> .travis.yml
 
 export npm_config_PGCON=$(echo postgresql://example:serverless@$PGENDPOINT:5432/floods)
 echo "  - npm_config_PGCON=$npm_config_PGCON" >> .travis.yml
@@ -55,7 +58,7 @@ tput bold
 echo "Deploying to AWS"
 tput sgr0
 
-yarn rebuild-and-deploy | tee out.tmp
+yarn deploy | tee out.tmp
 
 export POSTGRAPHQL_ENDPOINT=$(grep "POST.*graphql" out.tmp | cut -f2- -d- | cut -c2-)
 echo "  - POSTGRAPHQL_ENDPOINT=$POSTGRAPHQL_ENDPOINT" >> .travis.yml
