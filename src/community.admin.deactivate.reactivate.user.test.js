@@ -379,7 +379,6 @@ describe('When registering, deactivating, and reactivating a user as a community
         },
       );
 
-      console.log(response);
       expect(response.jwtToken).not.toBeNull();
     });
   });
