@@ -123,8 +123,8 @@ resources:
       DBInstanceClass: "db.t2.micro"
       Engine: "postgres"
       EngineVersion: "9.5.4"
-      MasterUsername: "example"
-      MasterUserPassword: "serverless"
+      MasterUsername: ${env:PGUSERNAME}
+      MasterUserPassword: ${env:PGPASSWORD}
       VPCSecurityGroups:
       - Fn::GetAtt:
         - pgSecurityGroup

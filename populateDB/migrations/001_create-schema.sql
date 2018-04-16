@@ -540,10 +540,11 @@ comment on function floods.new_status_update(integer, integer, text, integer, in
 create function floods.new_crossing(
   name text,
   human_address text,
-  description text,
   community_id integer,
   longitude decimal,
-  latitude decimal
+  latitude decimal,
+  description text default '',
+  legacy_id integer default null
 ) returns floods.crossing as $$
 declare
   floods_crossing floods.crossing;
@@ -557,8 +558,8 @@ begin
     end if;
   end if;
 
-  insert into floods.crossing (name, human_address, description, coordinates, geojson) values
-    (name, human_address, description, ST_MakePoint(longitude, latitude), ST_AsGeoJSON(ST_MakePoint(longitude, latitude)))
+  insert into floods.crossing (name, human_address, description, coordinates, geojson, legacy_id) values
+    (name, human_address, description, ST_MakePoint(longitude, latitude), ST_AsGeoJSON(ST_MakePoint(longitude, latitude)), legacy_id)
     returning * into floods_crossing;
 
   update floods.crossing
@@ -589,9 +590,9 @@ begin
 
   return floods_crossing;
 end;
-$$ language plpgsql strict security definer;
+$$ language plpgsql security definer;
 
-comment on function floods.new_crossing(text, text, text, integer, decimal, decimal) is 'Adds a crossing.';
+comment on function floods.new_crossing(text, text, integer, decimal, decimal, text, integer) is 'Adds a crossing.';
 
 create function floods.crossing_human_coordinates(crossing floods.crossing) returns text as $$
   select ST_AsLatLonText(crossing.coordinates);
@@ -1124,7 +1125,7 @@ grant execute on function floods.new_status_update(integer, integer, text, integ
 
 -- Allow community editors and up to add/edit crossings
 -- NOTE: Extra logic around permissions in function
-grant execute on function floods.new_crossing(text, text, text, integer, decimal, decimal) to floods_community_editor;
+grant execute on function floods.new_crossing(text, text, integer, decimal, decimal, text, integer) to floods_community_editor;
 grant execute on function floods.edit_crossing(integer, text, text) to floods_community_editor;
 
 -- Allow community admins and up to remove crossings
