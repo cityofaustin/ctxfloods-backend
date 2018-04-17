@@ -10,7 +10,7 @@ const statuses = {
 };
 
 async function getToken(email, password) {
-  const anonLokka = new Lokka({ transport: new HttpTransport('https://5199xk4uxc.execute-api.us-east-1.amazonaws.com/dev/graphql') });
+  const anonLokka = new Lokka({ transport: new HttpTransport('http://localhost:5000/graphql') });
 
   const response = await anonLokka.send(
     `
@@ -46,7 +46,7 @@ async function newStatusUpdate(crossingToUpdate, lokka) {
 }
 
 async function getCrossings() {
-  const anonLokka = new Lokka({ transport: new HttpTransport('https://5199xk4uxc.execute-api.us-east-1.amazonaws.com/dev/graphql') });
+  const anonLokka = new Lokka({ transport: new HttpTransport('http://localhost:5000/graphql') });
 
   const response = await anonLokka.send(
     `
@@ -91,7 +91,7 @@ async function processLegacyCrossings(legacyCrossings) {
     Authorization: 'Bearer ' + token,
   };
   const lokka = new Lokka({
-    transport: new HttpTransport('https://5199xk4uxc.execute-api.us-east-1.amazonaws.com/dev/graphql', { headers }),
+    transport: new HttpTransport('http://localhost:5000/graphql', { headers }),
   });
 
   for(crossing of crossingsToUpdate) {

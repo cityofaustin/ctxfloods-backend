@@ -23,8 +23,7 @@
     "build-schema": "node ./pgCatalog/buildPgCatalog.js $npm_config_PGCON floods",
     "build-local-schema": "node ./pgCatalog/buildPgCatalog.js $npm_package_config_PGLOCALCON floods",
     "deploy": "yarn migrate; yarn build-schema; sls deploy -v",
-    "add-test-data": "psql $npm_package_config_PGLOCALCON -f ./populateDB/testing/addTestData.sql",
-    "sync-legacy": "node --inspect-brk ./populateDB/data/syncLegacyStatuses.js"
+    "add-test-data": "psql $npm_package_config_PGLOCALCON -f ./populateDB/testing/addTestData.sql"
   },
   "author": "Richard",
   "license": "MIT",
