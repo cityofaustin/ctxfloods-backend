@@ -23,11 +23,13 @@
     "build-schema": "node ./pgCatalog/buildPgCatalog.js $npm_config_PGCON floods",
     "build-local-schema": "node ./pgCatalog/buildPgCatalog.js $npm_package_config_PGLOCALCON floods",
     "deploy": "yarn migrate; yarn build-schema; sls deploy -v",
-    "add-test-data": "psql $npm_package_config_PGLOCALCON -f ./populateDB/testing/addTestData.sql"
+    "add-test-data": "psql $npm_package_config_PGLOCALCON -f ./populateDB/testing/addTestData.sql",
+    "sync-legacy": "node --inspect-brk ./populateDB/data/syncLegacyStatuses.js"
   },
   "author": "Richard",
   "license": "MIT",
   "dependencies": {
+    "axios": "^0.18.0",
     "csv": "^3.0.2",
     "graphql": "^0.8.2",
     "jsonwebtoken": "^8.2.0",
