@@ -2,7 +2,6 @@ begin;
 
 -- Add communities for the tons of crossings
 insert into floods.community (id, name, abbreviation, viewportgeojson) values (9001, 'Leander', 'LEA', ST_AsGeoJSON(ST_MakeEnvelope(-97.785240, 30.259219, -97.753574, 30.276096)));
-insert into floods.community (id, name, abbreviation, viewportgeojson) values (9002, 'ALL', 'ALL', ST_AsGeoJSON(ST_MakeEnvelope(-97.785240, 30.259219, -97.753574, 30.276096)));
 insert into floods.community (id, name, abbreviation, viewportgeojson) values (9003, 'Cedar Park', 'CPK', ST_AsGeoJSON(ST_MakeEnvelope(-97.785240, 30.259219, -97.753574, 30.276096)));
 insert into floods.community (id, name, abbreviation, viewportgeojson) values (9004, 'Round Rock', 'RRK', ST_AsGeoJSON(ST_MakeEnvelope(-97.785240, 30.259219, -97.753574, 30.276096)));
 insert into floods.community (id, name, abbreviation, viewportgeojson) values (9005, 'West Lake Hills', 'WLH', ST_AsGeoJSON(ST_MakeEnvelope(-97.785240, 30.259219, -97.753574, 30.276096)));
