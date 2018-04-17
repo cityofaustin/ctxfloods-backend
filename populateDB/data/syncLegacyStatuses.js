@@ -9,6 +9,42 @@ const statuses = {
   "off": 2,
 };
 
+async function getToken(email, password) {
+  const anonLokka = new Lokka({ transport: new HttpTransport('http://localhost:5000/graphql') });
+
+  const response = await anonLokka.send(
+    `
+    mutation($email:String!, $password:String!) {
+      authenticate(input: {email: $email, password: $password}) {
+        jwtToken
+      }
+    }
+  `,
+    {
+      email: email,
+      password: password,
+    },
+  );
+
+  return response.authenticate.jwtToken;
+}
+
+async function newStatusUpdate(crossingToUpdate, lokka) {
+  const response = await lokka.send(
+    `
+    mutation ($crossingId:Int!, $statusId:Int!, $statusReasonId:Int, $notes:String!) {
+      newStatusUpdate(input:{crossingId:$crossingId, statusId:$statusId, statusReasonId:$statusReasonId, notes:$notes}) {
+        statusUpdate {
+          crossingId
+          statusId
+        }
+      }
+    }
+  `, crossingToUpdate);
+
+  return response.newStatusUpdate.statusUpdate;
+}
+
 async function getCrossings() {
   const anonLokka = new Lokka({ transport: new HttpTransport('http://localhost:5000/graphql') });
 
@@ -37,7 +73,7 @@ function getCrossingsToUpdate(dbCrossings, legacyCrossings) {
       crossingsToUpdate.push({
         crossingId: match.id,
         statusId: legacyCrossing.status,
-        statusReasonId: legacyCrossing.status === 2 && 1,
+        statusReasonId: legacyCrossing.status === 2 ? 1 : null,
         notes: 'From ATXFloods.com'
       });
     }
@@ -49,7 +85,19 @@ function getCrossingsToUpdate(dbCrossings, legacyCrossings) {
 async function processLegacyCrossings(legacyCrossings) {
   const dbCrossings = await getCrossings();
   const crossingsToUpdate = getCrossingsToUpdate(dbCrossings, legacyCrossings);
-  console.log(crossingsToUpdate);
+
+  const token = await getToken('superadmin@flo.ods', 'texasfloods');
+  const headers = {
+    Authorization: 'Bearer ' + token,
+  };
+  const lokka = new Lokka({
+    transport: new HttpTransport('http://localhost:5000/graphql', { headers }),
+  });
+
+  for(crossing of crossingsToUpdate) {
+    const updated = await newStatusUpdate(crossing, lokka);
+    console.log(updated);
+  }
 }
 
 async function getLegacy(url) {
