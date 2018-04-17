@@ -1,5 +1,4 @@
 const {createDb, migrate} = require("postgres-migrations")
-debugger;
 
 createDb("floods", {
   defaultDatabase: "floods", // optional, default: "postgres"
@@ -18,6 +17,5 @@ createDb("floods", {
   }, "populateDB/migrations")
 })
 .catch((err) => {
-  debugger;
   console.log(err)
 })
