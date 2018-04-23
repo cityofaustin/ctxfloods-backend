@@ -2,7 +2,7 @@ export CURRENT_FLOODS_BRANCH_NAME=$(git branch | sed -n -e 's/^\* \(.*\)/\1/p')
 export npm_config_PGCON=""
 export npm_config_PGRUNCON=""
 
-tput bold 
+tput bold
 echo "Please enter your AWS Credentials"
 tput sgr0
 
@@ -33,7 +33,7 @@ echo "Generating JWT secret"
 export JWT_SECRET=$(openssl rand -base64 32)
 travis encrypt JWT_SECRET=$JWT_SECRET --add
 
-tput bold 
+tput bold
 echo "Deploying to AWS to get a cloudformation/endpoint"
 tput sgr0
 
@@ -54,7 +54,7 @@ echo "  - npm_config_PGCON=$npm_config_PGCON" >> .travis.yml
 export npm_config_PGRUNCON=$(echo postgresql://floods_postgraphql:xyz@$PGENDPOINT:5432/floods)
 echo "  - npm_config_PGRUNCON=$npm_config_PGRUNCON" >> .travis.yml
 
-tput bold 
+tput bold
 echo "Deploying to AWS"
 tput sgr0
 
@@ -68,3 +68,4 @@ rm out.tmp
 echo "  - CURRENT_FLOODS_BRANCH_NAME=$CURRENT_FLOODS_BRANCH_NAME" >> .travis.yml
 echo "  - FRONTEND_URL=$FRONTEND_URL" >> .travis.yml
 echo "  - GMAIL_ADDRESS=$GMAIL_ADDRESS" >> .travis.yml
+echo "  - SENTRY_DSN=https://9896d78192714c05a9e65bfd2e6e9be3@sentry.io/1194428" >> .travis.yml
