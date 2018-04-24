@@ -7,8 +7,8 @@ plugins:
 custom:
   contentEncoding:
     minimumCompressionSize: 0
-  sentry:
-    dsn: ${env:SENTRY_DSN}
+  # sentry:
+  #   dsn: ${env:SENTRY_DSN}
 
 provider:
   name: aws
