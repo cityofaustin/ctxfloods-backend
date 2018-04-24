@@ -2,13 +2,10 @@ service: ctxfloods-${env:CURRENT_FLOODS_BRANCH_NAME}
 
 plugins:
   - serverless-content-encoding
-  # - serverless-sentry
 
 custom:
   contentEncoding:
     minimumCompressionSize: 0
-  # sentry:
-  #   dsn: ${env:SENTRY_DSN}
 
 provider:
   name: aws
