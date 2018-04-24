@@ -32,3 +32,4 @@ env:
   - CURRENT_FLOODS_BRANCH_NAME=master
   - FRONTEND_URL=ctxfloods-frontend-master.s3-website-us-east-1.amazonaws.com
   - GMAIL_ADDRESS=ctxfloodstestmailer@gmail.com
+  - SENTRY_DSN=https://9896d78192714c05a9e65bfd2e6e9be3@sentry.io/1194428
