@@ -2,7 +2,7 @@ service: ctxfloods-${env:CURRENT_FLOODS_BRANCH_NAME}
 
 plugins:
   - serverless-content-encoding
-  - serverless-sentry
+  # - serverless-sentry
 
 custom:
   contentEncoding:
