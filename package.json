@@ -38,7 +38,10 @@
     "postgraphql": "^2.5.0",
     "postgres-migrations": "^2.0.1",
     "prettier": "^1.10.2",
+    "raven": "^2.5.0",
     "react-scripts": "^1.0.10",
+    "serverless-sentry": "^1.0.0",
+    "serverless-sentry-lib": "^1.0.1",
     "uuid": "^3.1.0",
     "xml2js": "^0.4.19"
   },
@@ -50,6 +53,6 @@
   "devDependencies": {
     "cors": "^2.8.4",
     "express": "^4.16.3",
-    "serverless-content-encoding": "^1.0.20"
+    "serverless-content-encoding": "^1.0.22"
   }
 }
