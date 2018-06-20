@@ -26,7 +26,6 @@ yarn install
 
 ```
 yarn start
-yarn local-server
 ```
 
 🌱 Seeding Data

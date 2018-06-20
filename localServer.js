@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 
 const xmlHandler = require('./handlers/xmlHandler');
+const wazeFeedHandler = require('./handlers/wazeFeedHandler');
 const graphqlHandler = require('./handlers/graphqlHandler');
 const resetEmailHandler = require('./handlers/resetEmailHandler');
 
@@ -13,7 +14,15 @@ app.use(express.urlencoded({ extended: true }));
 app.get('/xml', (req, res) => {
   xmlHandler.handle(null, null, (error, response) => {
     res.statusCode = response.statusCode;
-    res.setHeader('Content-Type', 'text/xml');
+    res.setHeader('Content-Type', response.headers['Content-Type']);
+    res.send(response.body);
+  });
+});
+
+app.get('/waze/feed', (req, res) => {
+  wazeFeedHandler.handle(null, null, (error, response) => {
+    res.statusCode = response.statusCode;
+    res.setHeader('Content-Type', response.headers['Content-Type']);
     res.send(response.body);
   });
 });
@@ -39,7 +48,7 @@ app.post('/email/reset', (req, res) => {
   });
 });
 
-const server = app.listen(5000);
+const server = app.listen(process.env.BACKEND_PORT);
 
 process.on('SIGTERM', () => {
   server.close(() => {
