@@ -7,11 +7,12 @@
     "PGLOCALCON": "postgresql://postgres@localhost:5432/floods",
     "PGLOCALRUNCON": "postgresql://floods_postgraphql@localhost:5432/floods",
     "PGLOCALINITCON": "postgresql://postgres@localhost:5432/",
-    "FRONTEND_URL_LOCAL": "localhost:3000"
+    "FRONTEND_URL_LOCAL": "localhost:3000",
+    "BACKEND_PORT_LOCAL": "5000"
   },
   "scripts": {
     "start": "yarn migrate-local; yarn build-local-schema; yarn start-express-server",
-    "start-express-server": "PGCON=$npm_package_config_PGLOCALRUNCON FRONTEND_URL=$npm_package_config_FRONTEND_URL_LOCAL JWT_SECRET='insecure' node localServer.js",
+    "start-express-server": "PGCON=$npm_package_config_PGLOCALRUNCON FRONTEND_URL=$npm_package_config_FRONTEND_URL_LOCAL BACKEND_PORT=$npm_package_config_BACKEND_PORT_LOCAL JWT_SECRET='insecure' node localServer.js",
     "test": "yarn drop-local-data; yarn migrate-local; yarn build-local-schema; yarn add-test-data; yarn start-express-server & JWT_SECRET='insecure' react-scripts test",
     "migrate": "node populateDB/migrate.js",
     "migrate-local": "PGENDPOINT='localhost' PGUSERNAME='postgres' PGPASSWORD='password' node populateDB/migrate.js",
