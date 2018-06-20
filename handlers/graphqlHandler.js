@@ -60,17 +60,20 @@ module.exports.handle = (event, context, cb) => {
             })
             .then(() => pgClient.query('commit'))
             .catch(err => {
-              pgClient.end();
+              console.error(err);
               cb(null, { errors: [err] });
+              pgClient.end();
             });
         });
       } catch (err) {
-        pgClient.end();
+        console.error(err);
         cb(null, { errors: [err] });
+        pgClient.end();
       }
     })
-    .catch(err => {
-      pgClient.end();
+      .catch(err => {
+      console.error(err);
       cb(null, { errors: [err] });
+      pgClient.end();
     });
 };
