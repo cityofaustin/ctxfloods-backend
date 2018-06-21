@@ -3,6 +3,7 @@ const cors = require('cors');
 
 const xmlHandler = require('./handlers/xmlHandler');
 const wazeFeedHandler = require('./handlers/wazeFeedHandler');
+const incidentReportHandler = require('./handlers/incidentReportHandler');
 const graphqlHandler = require('./handlers/graphqlHandler');
 const resetEmailHandler = require('./handlers/resetEmailHandler');
 
@@ -37,10 +38,19 @@ app.all('/graphql', (req, res) => {
   });
 });
 
+app.post('/incident/report', (req, res) => {
+  // AWS gets body as stringified json
+  req.body = JSON.stringify(req.body);
+  incidentReportHandler.handle(req, null, (error, response) => {
+    res.statusCode = response.statusCode;
+    res.setHeader('Content-Type', response.headers['Content-Type']);
+    res.send(response.body);
+  });
+});
+
 app.post('/email/reset', (req, res) => {
   // AWS gets body as stringified json
-  const body = JSON.stringify(req.body);
-  req.body = body;
+  req.body = JSON.stringify(req.body);
   resetEmailHandler.handle(req, null, (error, response) => {
     res.statusCode = response.statusCode;
     res.setHeader('Access-Control-Allow-Origin', '*');
