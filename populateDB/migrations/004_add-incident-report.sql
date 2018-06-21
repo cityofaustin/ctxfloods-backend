@@ -9,6 +9,8 @@ create table floods.incident_report (
   created_at timestamp default now()
 );
 
+grant select on table floods.incident_report to floods_anonymous;
+
 create or replace function floods.new_incident_report(
   notes text,
   location_description text,
@@ -31,6 +33,5 @@ comment on function floods.new_incident_report(text, text, decimal, decimal, int
 
 grant execute on function floods.new_incident_report(text, text, decimal, decimal, integer[]) to floods_community_editor;
 
-grant select on table floods.incident_report to floods_anonymous;
 
 end;
