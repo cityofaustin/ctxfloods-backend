@@ -1,10 +1,19 @@
 begin;
 
-create or replace function floods.waze_feed()
-  returns table (i json)
-as $$
+create type floods.waze_feed_incidents as (
+  id integer,
+  street text,
+  polyline text,
+  direction text,
+  type text,
+  subtype text,
+  starttime timestamp,
+  description text,
+  reference text
+);
 
-select row_to_json(w) from (
+create or replace function floods.waze_feed()
+returns setof floods.waze_feed_incidents as $$
   select
     latest_status_update_id as id,
     'todo' as street,
@@ -31,7 +40,6 @@ select row_to_json(w) from (
     join floods.status_update su on c.latest_status_update_id = su.id
   where
     c.latest_status_id != 1
-) w
 $$ language SQL stable security definer;
 
 grant execute on function floods.waze_feed() to floods_anonymous;
