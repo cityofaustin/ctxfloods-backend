@@ -33,5 +33,13 @@ comment on function floods.new_incident_report(text, text, decimal, decimal, int
 
 grant execute on function floods.new_incident_report(text, text, decimal, decimal, integer[]) to floods_community_editor;
 
+create or replace function floods.find_users_in_communities(community_ids integer[])
+  returns setof floods.user as $$
+		select * from floods.user
+    where array_position(community_ids, community_id) >= 0
+    and active = true
+$$ language SQL stable security definer;
+
+grant execute on function floods.find_users_in_communities(community_ids integer[]) to floods_anonymous;
 
 end;
