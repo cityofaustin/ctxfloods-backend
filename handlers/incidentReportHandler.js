@@ -23,7 +23,11 @@ async function newIncidentReport(lokka, incidentReport) {
         communityIds: $communityIds,
       }) {
         incidentReport {
-          id
+          id,
+          notes,
+          locationDescription,
+          coordinates,
+          communityIds,
         }
       }
     }
@@ -31,7 +35,7 @@ async function newIncidentReport(lokka, incidentReport) {
     incidentReport,
   );
 
-  return response.incidentReport;
+  return response.newIncidentReport.incidentReport;
 }
 
 async function findUsersInCommunities(lokka, incidentReport) {
@@ -57,7 +61,7 @@ async function findUsersInCommunities(lokka, incidentReport) {
 
 const AdminEmailTextTemplate = handlebars.compile(
   `
-New incident reported:
+Report ID: {{reportId}}
 Notes: {{notes}}
 Location description: {{locationDescription}}
 Coordinates: {{latitude}},{{longitude}}  https://www.google.com/maps/?q={{latitude}},{{longitude}}
@@ -67,7 +71,7 @@ Incidents are created at http://{{FRONTEND_URL}}/report-incident
 
 const AdminEmailHtmlTemplate = handlebars.compile(
   `
-<h3>New incident reported</h3>
+<h3>Report ID: {{reportId}}</h3>
 <p>Notes: {{notes}}</p>
 <p>Location description: {{locationDescription}}</p>
 <p>Coordinates: <a href="https://www.google.com/maps/?q={{latitude}},{{longitude}}" target="_blank">{{latitude}},{{longitude}}</a></p>
@@ -78,19 +82,21 @@ const AdminEmailHtmlTemplate = handlebars.compile(
 async function sendEmailToAdmin({
   user: { firstName, lastName, emailAddress },
   incidentReport,
+  createdReport,
 }) {
+  const reportId = createdReport.id;
   const templateData = {
     ...incidentReport,
+    reportId,
     FRONTEND_URL: process.env.FRONTEND_URL,
   };
   await sendEmail({
     from: 'CTXfloods <ctxfloodstestmailer@gmail.com>',
     to: `${firstName} ${lastName} <${emailAddress}>`,
-    subject: 'Incident reported at {{latitude}},{{longitude}}',
+    subject: `Incident report #${reportId}`,
     text: AdminEmailTextTemplate(templateData),
     html: AdminEmailHtmlTemplate(templateData),
   });
-  console.log('sent email ');
 }
 
 module.exports.handle = async (event, context, cb) => {
@@ -109,14 +115,14 @@ module.exports.handle = async (event, context, cb) => {
       }),
     });
 
-    await newIncidentReport(lokka, incidentReport);
+    const createdReport = await newIncidentReport(lokka, incidentReport);
 
     const users = await findUsersInCommunities(lokka, incidentReport);
 
     // Send email in series
     // Not sure if we need it or not, but I figure it could help avoid being rate limited by gmail
     for (var user of users) {
-      await sendEmailToAdmin({ user, incidentReport });
+      await sendEmailToAdmin({ user, incidentReport, createdReport });
     }
 
     cb(null, {
@@ -127,6 +133,7 @@ module.exports.handle = async (event, context, cb) => {
       },
       body: {
         usersNotifiedCount: users.length,
+        createdReport,
       },
     });
   } catch (err) {
@@ -138,7 +145,7 @@ module.exports.handle = async (event, context, cb) => {
         'Content-Type': 'application/json',
       },
       body: {
-        errors: [err.message],
+        errorMessage: err.message,
       },
     });
   }
