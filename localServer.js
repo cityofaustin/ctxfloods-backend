@@ -34,7 +34,7 @@ app.all('/graphql', (req, res) => {
   graphqlHandler.handle(req.body, null, (error, response) => {
     res.statusCode = response.statusCode;
     res.setHeader('Access-Control-Allow-Origin', '*');
-    res.end(JSON.stringify({data: response.data, errors: response.errors}));
+    res.end(JSON.stringify({ data: response.data, errors: response.errors }));
   });
 });
 
@@ -43,6 +43,7 @@ app.post('/incident/report', (req, res) => {
   req.body = JSON.stringify(req.body);
   incidentReportHandler.handle(req, null, (error, response) => {
     res.statusCode = response.statusCode;
+    res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Content-Type', response.headers['Content-Type']);
     res.send(response.body);
   });
