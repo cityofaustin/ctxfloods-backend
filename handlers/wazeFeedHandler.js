@@ -41,6 +41,7 @@ module.exports.handle = (event, context, cb) => {
     })
     .catch(err => {
       console.error(err);
+      // TODO: Actually send back a response error
       return cb(null, { errors: [err] });
     })
     .then(() => pgClient.end());

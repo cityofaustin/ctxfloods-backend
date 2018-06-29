@@ -1,9 +1,11 @@
 const HttpTransport = require('lokka-transport-http').Transport;
 const Lokka = require('lokka').Lokka;
+const handlebars = require('handlebars');
 
-const {getToken} = require('./graphql');
+const { getToken } = require('./graphql');
+const { sendEmail } = require('./emailer');
 
-async function newIncidentReport(incidentReport, lokka) {
+async function newIncidentReport(lokka, incidentReport) {
   const response = await lokka.send(
     `
     mutation (
@@ -25,22 +27,119 @@ async function newIncidentReport(incidentReport, lokka) {
         }
       }
     }
-  `, incidentReport);
+  `,
+    incidentReport,
+  );
 
   return response.incidentReport;
 }
 
-module.exports.handle = async (event, context, cb) => {
-  const incidentReport = JSON.parse(event.body);
+async function findUsersInCommunities(lokka, incidentReport) {
+  const response = await lokka.send(
+    `
+    query (
+      $communityIds: [Int],
+    ) {
+      findUsersInCommunities(communityIds: $communityIds) {
+        nodes {
+          firstName
+          lastName
+          emailAddress
+        }
+      }
+    }
+  `,
+    incidentReport,
+  );
 
-  // FIXME: Make a new user and put in ENV
-  const token = await getToken('superadmin@flo.ods', 'texasfloods');
-  const headers = {
-    Authorization: 'Bearer ' + token,
+  return response.findUsersInCommunities.nodes;
+}
+
+const AdminEmailTextTemplate = handlebars.compile(
+  `
+New incident reported:
+Notes: {{notes}}
+Location description: {{locationDescription}}
+Coordinates: {{latitude}},{{longitude}}  https://www.google.com/maps/?q={{latitude}},{{longitude}}
+Incidents are created at http://{{FRONTEND_URL}}/report-incident
+`.trim(),
+);
+
+const AdminEmailHtmlTemplate = handlebars.compile(
+  `
+<h3>New incident reported</h3>
+<p>Notes: {{notes}}</p>
+<p>Location description: {{locationDescription}}</p>
+<p>Coordinates: <a href="https://www.google.com/maps/?q={{latitude}},{{longitude}}" target="_blank">{{latitude}},{{longitude}}</a></p>
+<p>Incidents are created at <a href="http://{{FRONTEND_URL}}/report-incident" target="_blank">http://{{FRONTEND_URL}}/report-incident</a></p>
+`.trim(),
+);
+
+async function sendEmailToAdmin({
+  user: { firstName, lastName, emailAddress },
+  incidentReport,
+}) {
+  const templateData = {
+    ...incidentReport,
+    FRONTEND_URL: process.env.FRONTEND_URL,
   };
-  const lokka = new Lokka({
-    transport: new HttpTransport('http://localhost:5000/graphql', { headers }),
+  await sendEmail({
+    from: 'CTXfloods <ctxfloodstestmailer@gmail.com>',
+    to: `${firstName} ${lastName} <${emailAddress}>`,
+    subject: 'Incident reported at {{latitude}},{{longitude}}',
+    text: AdminEmailTextTemplate(templateData),
+    html: AdminEmailHtmlTemplate(templateData),
   });
+  console.log('sent email ');
+}
 
-  await newIncidentReport(incidentReport, lokka);
+module.exports.handle = async (event, context, cb) => {
+  try {
+    const incidentReport = JSON.parse(event.body);
+
+    // TODO: Make a new user and store it in encrypted travis env variable
+    // https://github.com/cityofaustin/ctxfloods/issues/200
+    const token = await getToken('superadmin@flo.ods', 'texasfloods');
+    const headers = {
+      Authorization: 'Bearer ' + token,
+    };
+    const lokka = new Lokka({
+      transport: new HttpTransport('http://localhost:5000/graphql', {
+        headers,
+      }),
+    });
+
+    await newIncidentReport(lokka, incidentReport);
+
+    const users = await findUsersInCommunities(lokka, incidentReport);
+
+    // Send email in series
+    // Not sure if we need it or not, but I figure it could help avoid being rate limited by gmail
+    for (var user of users) {
+      await sendEmailToAdmin({ user, incidentReport });
+    }
+
+    cb(null, {
+      statusCode: 201,
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Content-Type': 'application/json',
+      },
+      body: {
+        usersNotifiedCount: users.length,
+      },
+    });
+  } catch (err) {
+    console.error(err);
+    cb(null, {
+      statusCode: 500,
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Content-Type': 'application/json',
+      },
+      body: {
+        errors: [err.message],
+      },
+    });
+  }
 };
