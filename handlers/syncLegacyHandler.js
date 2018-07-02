@@ -3,31 +3,13 @@ const parseString = require('xml2js').parseString;
 const HttpTransport = require('lokka-transport-http').Transport;
 const Lokka = require('lokka').Lokka;
 
+const {getToken} = require('./graphql');
+
 const url = 'https://www.atxfloods.com/dashboard/phpsqlajax_genxml.php';
 const statuses = {
   "on": 1,
   "off": 2,
 };
-
-async function getToken(email, password) {
-  const anonLokka = new Lokka({ transport: new HttpTransport('http://localhost:5000/graphql') });
-
-  const response = await anonLokka.send(
-    `
-    mutation($email:String!, $password:String!) {
-      authenticate(input: {email: $email, password: $password}) {
-        jwtToken
-      }
-    }
-  `,
-    {
-      email: email,
-      password: password,
-    },
-  );
-
-  return response.authenticate.jwtToken;
-}
 
 async function newStatusUpdate(crossingToUpdate, lokka) {
   const response = await lokka.send(
@@ -86,6 +68,7 @@ async function processLegacyCrossings(legacyCrossings) {
   const dbCrossings = await getCrossings();
   const crossingsToUpdate = getCrossingsToUpdate(dbCrossings, legacyCrossings);
 
+  // FIXME: Make a new user and put in ENV
   const token = await getToken('superadmin@flo.ods', 'texasfloods');
   const headers = {
     Authorization: 'Bearer ' + token,
