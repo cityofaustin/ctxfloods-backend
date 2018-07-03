@@ -3,6 +3,7 @@ const Client = require('pg').Client;
 const jwt = require('jsonwebtoken');
 
 const { sendEmail } = require('./emailer');
+const { logError } = require('./logger');
 
 async function sendResetEmail(firstname, lastname, email, token, cb) {
   try {
@@ -25,7 +26,7 @@ async function sendResetEmail(firstname, lastname, email, token, cb) {
 
     cb(null, response);
   } catch (err) {
-    console.log('Error occurred. ' + err.message);
+    logError(err);
     return process.exit(1);
   }
 }
@@ -66,6 +67,6 @@ module.exports.handle = (event, context, cb) => {
 
       return sendResetEmail(firstname, lastname, email, token, cb);
     })
-    .catch(err => console.log({ errors: [err] }))
+    .catch(err => logError(err))
     .then(() => pgClient.end());
 };
