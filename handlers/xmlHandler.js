@@ -1,4 +1,5 @@
 const Client = require('pg').Client;
+const { logError } = require('./logger');
 
 module.exports.handle = (event, context, cb) => {
   const pgClient = new Client(process.env.PGCON);
@@ -17,6 +18,9 @@ module.exports.handle = (event, context, cb) => {
 
       cb(null, response);
     })
-    .catch(err => cb(null, { errors: [err] }))
+    .catch(err => {
+      logError(err);
+      return cb(null, { errors: [err] });
+    })
     .then(() => pgClient.end());
 };

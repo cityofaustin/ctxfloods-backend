@@ -4,6 +4,7 @@ const handlebars = require('handlebars');
 
 const { getToken } = require('./graphql');
 const { sendEmail } = require('./emailer');
+const { logError } = require('./logger');
 
 async function newIncidentReport(lokka, incidentReport) {
   const response = await lokka.send(
@@ -137,7 +138,7 @@ module.exports.handle = async (event, context, cb) => {
       },
     });
   } catch (err) {
-    console.error(err);
+    logError(err);
     cb(null, {
       statusCode: 500,
       headers: {
