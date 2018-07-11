@@ -4,7 +4,7 @@ create table floods.incident_report (
   id serial primary key,
   notes text,
   location_description text,
-  coordinates geometry not null,
+  coordinates geometry,
   community_ids integer[],
   created_at timestamp default now()
 );
