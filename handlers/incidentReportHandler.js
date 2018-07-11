@@ -5,6 +5,7 @@ const handlebars = require('handlebars');
 const { getToken } = require('./graphql');
 const { sendEmail } = require('./emailer');
 const { logError } = require('./logger');
+const { verifyCaptcha } = require('./captcha');
 
 async function newIncidentReport(lokka, incidentReport) {
   const response = await lokka.send(
@@ -103,6 +104,8 @@ async function sendEmailToAdmin({
 module.exports.handle = async (event, context, cb) => {
   try {
     const incidentReport = JSON.parse(event.body);
+
+    await verifyCaptcha(incidentReport.recaptchaResponse);
 
     // TODO: Make a new user and store it in encrypted travis env variable
     // https://github.com/cityofaustin/ctxfloods/issues/200
