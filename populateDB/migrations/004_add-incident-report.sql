@@ -40,7 +40,7 @@ create or replace function floods.find_users_in_communities(community_ids intege
     and active = true
 $$ language SQL stable security definer;
 
-comment on function floods.find_users_in_communities(community_ids integer[])) is 'Finds users that administrate the specified communities.';
+comment on function floods.find_users_in_communities(community_ids integer[]) is 'Finds users that administrate the specified communities.';
 
 grant execute on function floods.find_users_in_communities(community_ids integer[]) to floods_anonymous;
 

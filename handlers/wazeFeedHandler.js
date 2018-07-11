@@ -1,9 +1,10 @@
 const Client = require('pg').Client;
+const { logError } = require('./logger');
 
 function getPgResAsIncidentJson(rows) {
   return rows;
   return {
-    incidents: rows.map(({waze_feed: row}) => ({
+    incidents: rows.map(({ waze_feed: row }) => ({
       id: row.id,
       location: {
         street: row.street,
@@ -40,7 +41,7 @@ module.exports.handle = (event, context, cb) => {
       cb(null, response);
     })
     .catch(err => {
-      console.error(err);
+      logError(err);
       // TODO: Actually send back a response error
       return cb(null, { errors: [err] });
     })
