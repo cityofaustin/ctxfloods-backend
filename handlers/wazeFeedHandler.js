@@ -2,9 +2,8 @@ const Client = require('pg').Client;
 const { logError } = require('./logger');
 
 function getPgResAsIncidentJson(rows) {
-  return rows;
   return {
-    incidents: rows.map(({ waze_feed: row }) => ({
+    incidents: rows.map((row) => ({
       id: row.id,
       location: {
         street: row.street,
@@ -26,7 +25,7 @@ module.exports.handle = (event, context, cb) => {
   pgClient.connect();
 
   pgClient
-    .query('select floods.waze_feed()')
+    .query('select * from floods.waze_feed()')
     .then(pgres => {
       const incidentJson = getPgResAsIncidentJson(pgres.rows);
 

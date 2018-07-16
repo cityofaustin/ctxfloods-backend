@@ -160,7 +160,7 @@ create or replace function floods.waze_feed()
 returns setof floods.waze_feed_incidents as $$
   select
     latest_status_update_id as id,
-    'todo' as street,
+    waze_street.name as street,
     to_char(st_y (c.coordinates), 'FM999.000000') || ' ' ||
       to_char(st_x (c.coordinates), 'FM999.000000') || ' ' ||
       to_char(st_y (c.coordinates), 'FM999.000000') || ' ' ||
@@ -182,6 +182,7 @@ returns setof floods.waze_feed_incidents as $$
   from
     floods.crossing c
     join floods.status_update su on c.latest_status_update_id = su.id
+    join floods.waze_street waze_street on c.waze_street_id = waze_street.id
   where
     c.latest_status_id != 1
 $$ language SQL stable security definer;
