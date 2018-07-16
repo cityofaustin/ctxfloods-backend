@@ -1,5 +1,20 @@
 begin;
 
+create table floods.waze_street (
+  id serial primary key,
+  longitude decimal not null,
+  latitude decimal not null,
+  distance decimal,
+  name text,
+  names text[],
+  created_at timestamp default now(),
+  updated_at timestamp default now()
+);
+
+alter table floods.crossing
+  add column waze_street_id integer references floods.waze_street(id);
+comment on column floods.crossing.waze_street_id is 'The crossings street name according to the Waze geocoder.';
+
 create type floods.waze_feed_incidents as (
   id integer,
   street text,
