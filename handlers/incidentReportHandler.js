@@ -1,8 +1,6 @@
-const HttpTransport = require('lokka-transport-http').Transport;
-const Lokka = require('lokka').Lokka;
 const handlebars = require('handlebars');
 
-const { getToken } = require('./graphql');
+const { getAuthorizedLokka } = require('./graphql');
 const { sendEmail } = require('./emailer');
 const { logError } = require('./logger');
 const { verifyCaptcha } = require('./captcha');
@@ -109,15 +107,7 @@ module.exports.handle = async (event, context, cb) => {
 
     // TODO: Make a new user and store it in encrypted travis env variable
     // https://github.com/cityofaustin/ctxfloods/issues/200
-    const token = await getToken('superadmin@flo.ods', 'texasfloods');
-    const headers = {
-      Authorization: 'Bearer ' + token,
-    };
-    const lokka = new Lokka({
-      transport: new HttpTransport('http://localhost:5000/graphql', {
-        headers,
-      }),
-    });
+    const lokka = getAuthorizedLokka('superadmin@flo.ods', 'texasfloods');
 
     const createdReport = await newIncidentReport(lokka, incidentReport);
 
