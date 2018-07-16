@@ -31,8 +31,8 @@ async function geocodeCoords(latitude, longitude) {
       longitude: res.data.lon,
       name: result.names[0],
       names: result.names,
-      created_at: new Date(),
-      updated_at: new Date(),
+      createdAt: new Date(),
+      updatedAt: new Date(),
       distance: result.distance,
     }));
 
@@ -100,8 +100,32 @@ async function main() {
   }
 }
 
+async function fixIds() {
+  const legacyCrossingsCsv = await loadCsv(LegacyCrossingsCsvPath);
+  let wazeStreetsCsv = await loadCsv(WazeStreetsCsvPath);
+
+  wazeStreetsCsv.forEach((wazeStreet, i) => {
+    wazeStreet.id = i;
+  });
+
+  for (const crossing of legacyCrossingsCsv) {
+    const closestWazeStreet = sortBy(wazeStreetsCsv.filter(
+      street =>
+        street.latitude === crossing.latitude &&
+        street.longitude === crossing.longitude,
+    ), 'distance');
+    if (closestWazeStreet.length) {
+      crossing.wazeStreetId = closestWazeStreet[0].id;
+    }
+  }
+
+  await writeCsv(LegacyCrossingsCsvPath, legacyCrossingsCsv);
+  await writeCsv(WazeStreetsCsvPath, wazeStreetsCsv);
+}
+
 try {
-  main();
+  // main();
+  fixIds();
 } catch (err) {
   console.error(err);
 }
