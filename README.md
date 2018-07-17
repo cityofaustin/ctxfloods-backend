@@ -33,6 +33,7 @@ yarn start
 ```
 yarn init-local-db
 yarn drop-local-data
+yarn migrate-local
 yarn add-setup-data-local
 yarn add-communities-local
 
