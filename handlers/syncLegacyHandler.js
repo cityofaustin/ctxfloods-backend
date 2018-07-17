@@ -3,7 +3,7 @@ const parseString = require('xml2js').parseString;
 const HttpTransport = require('lokka-transport-http').Transport;
 const Lokka = require('lokka').Lokka;
 
-const { getToken } = require('./graphql');
+const { getAuthorizedLokka } = require('./graphql');
 const { logError } = require('./logger');
 
 const url = 'https://www.atxfloods.com/dashboard/phpsqlajax_genxml.php';
@@ -79,13 +79,7 @@ async function processLegacyCrossings(legacyCrossings) {
   const crossingsToUpdate = getCrossingsToUpdate(dbCrossings, legacyCrossings);
 
   // FIXME: Make a new user and put in ENV
-  const token = await getToken('superadmin@flo.ods', 'texasfloods');
-  const headers = {
-    Authorization: 'Bearer ' + token,
-  };
-  const lokka = new Lokka({
-    transport: new HttpTransport('http://localhost:5000/graphql', { headers }),
-  });
+  const lokka = await getAuthorizedLokka('superadmin@flo.ods', 'texasfloods');
 
   for (crossing of crossingsToUpdate) {
     const updated = await newStatusUpdate(crossing, lokka);
