@@ -38,6 +38,7 @@ yarn add-communities-local
 
 # The next step needs the server running for GraphQL
 yarn start
+yarn add-waze-streets-local
 yarn add-crossings-local
 ```
 
