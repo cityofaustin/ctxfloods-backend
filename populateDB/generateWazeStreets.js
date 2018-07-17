@@ -124,8 +124,8 @@ async function fixIds() {
 }
 
 try {
-  // main();
-  fixIds();
+  main();
+  // fixIds();
 } catch (err) {
   console.error(err);
 }
