@@ -2,6 +2,8 @@ const express = require('express');
 const cors = require('cors');
 
 const xmlHandler = require('./handlers/xmlHandler');
+const wazeFeedHandler = require('./handlers/wazeFeedHandler');
+const incidentReportHandler = require('./handlers/incidentReportHandler');
 const graphqlHandler = require('./handlers/graphqlHandler');
 const resetEmailHandler = require('./handlers/resetEmailHandler');
 
@@ -13,7 +15,15 @@ app.use(express.urlencoded({ extended: true }));
 app.get('/xml', (req, res) => {
   xmlHandler.handle(null, null, (error, response) => {
     res.statusCode = response.statusCode;
-    res.setHeader('Content-Type', 'text/xml');
+    res.setHeader('Content-Type', response.headers['Content-Type']);
+    res.send(response.body);
+  });
+});
+
+app.get('/waze/feed', (req, res) => {
+  wazeFeedHandler.handle(null, null, (error, response) => {
+    res.statusCode = response.statusCode;
+    res.setHeader('Content-Type', response.headers['Content-Type']);
     res.send(response.body);
   });
 });
@@ -24,14 +34,24 @@ app.all('/graphql', (req, res) => {
   graphqlHandler.handle(req.body, null, (error, response) => {
     res.statusCode = response.statusCode;
     res.setHeader('Access-Control-Allow-Origin', '*');
-    res.end(JSON.stringify({data: response.data, errors: response.errors}));
+    res.end(JSON.stringify({ data: response.data, errors: response.errors }));
+  });
+});
+
+app.post('/incident/report', (req, res) => {
+  // AWS gets body as stringified json
+  req.body = JSON.stringify(req.body);
+  incidentReportHandler.handle(req, null, (error, response) => {
+    res.statusCode = response.statusCode;
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Content-Type', response.headers['Content-Type']);
+    res.send(response.body);
   });
 });
 
 app.post('/email/reset', (req, res) => {
   // AWS gets body as stringified json
-  const body = JSON.stringify(req.body);
-  req.body = body;
+  req.body = JSON.stringify(req.body);
   resetEmailHandler.handle(req, null, (error, response) => {
     res.statusCode = response.statusCode;
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -39,7 +59,7 @@ app.post('/email/reset', (req, res) => {
   });
 });
 
-const server = app.listen(5000);
+const server = app.listen(process.env.BACKEND_PORT);
 
 process.on('SIGTERM', () => {
   server.close(() => {

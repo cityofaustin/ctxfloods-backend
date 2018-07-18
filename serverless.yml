@@ -86,6 +86,24 @@ functions:
 
     environment:
       PGCON: ${env:npm_config_PGRUNCON}
+  waze_feed:
+    handler: handlers/wazeFeedHandler.handle
+    events:
+      - http:
+          method: get
+          path: waze/feed
+
+    environment:
+      PGCON: ${env:npm_config_PGRUNCON}
+  incidentreport:
+    handler: handlers/incidentReportHandler.handle
+    events:
+      - http:
+          method: post
+          path: incident/report
+          cors: true
+    environment:
+      JWT_SECRET: ${env:JWT_SECRET}
   emailreset:
     handler: handlers/resetEmailHandler.handle
     events:
