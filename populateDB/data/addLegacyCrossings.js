@@ -51,9 +51,52 @@ async function addCrossingToCommunity(lokka, crossingId, communityId) {
   return response.addCrossingToCommunity.crossing;
 }
 
+async function getExistingCrossings(lokka) {
+  const response = await lokka.send(
+    `
+    {
+      allCrossings {
+        nodes {
+          id
+        }
+      }
+    }
+  `,
+  );
+
+  return response.allCrossings.nodes;
+}
+
+async function removeCrossing(lokka, crossingId) {
+  const response = await lokka.send(
+    `
+    mutation($crossingId:Int!) {
+      removeCrossing(input:{crossingId:$crossingId}) {
+        crossing {
+          id
+        }
+      }
+    }
+  `,
+    {
+      crossingId: crossingId,
+    },
+  );
+
+  return response.removeCrossing.crossing.id;
+}
+
 async function processCrossings(crossings) {
   try {
     const lokka = await getAuthorizedLokka('superadmin@flo.ods', 'texasfloods');
+
+    console.log('Removing Existing Crossings');
+    const existingCrossings = await getExistingCrossings(lokka);
+
+    for (crossing of existingCrossings) {
+      const removedCrossingId = await removeCrossing(lokka, crossing.id);
+      console.log(`Removed existing crossing with id: ${removedCrossingId}`);
+    }
 
     let legacyToNewMap = {};
     for (crossing of crossings) {
