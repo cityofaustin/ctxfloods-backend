@@ -3,31 +3,14 @@ const parseString = require('xml2js').parseString;
 const HttpTransport = require('lokka-transport-http').Transport;
 const Lokka = require('lokka').Lokka;
 
+const { getAuthorizedLokka } = require('./graphql');
+const { logError } = require('./logger');
+
 const url = 'https://www.atxfloods.com/dashboard/phpsqlajax_genxml.php';
 const statuses = {
-  "on": 1,
-  "off": 2,
+  on: 1,
+  off: 2,
 };
-
-async function getToken(email, password) {
-  const anonLokka = new Lokka({ transport: new HttpTransport('https://5199xk4uxc.execute-api.us-east-1.amazonaws.com/dev/graphql') });
-
-  const response = await anonLokka.send(
-    `
-    mutation($email:String!, $password:String!) {
-      authenticate(input: {email: $email, password: $password}) {
-        jwtToken
-      }
-    }
-  `,
-    {
-      email: email,
-      password: password,
-    },
-  );
-
-  return response.authenticate.jwtToken;
-}
 
 async function newStatusUpdate(crossingToUpdate, lokka) {
   const response = await lokka.send(
@@ -40,13 +23,17 @@ async function newStatusUpdate(crossingToUpdate, lokka) {
         }
       }
     }
-  `, crossingToUpdate);
+  `,
+    crossingToUpdate,
+  );
 
   return response.newStatusUpdate.statusUpdate;
 }
 
 async function getCrossings() {
-  const anonLokka = new Lokka({ transport: new HttpTransport('https://5199xk4uxc.execute-api.us-east-1.amazonaws.com/dev/graphql') });
+  const anonLokka = new Lokka({
+    transport: new HttpTransport('http://localhost:5000/graphql'),
+  });
 
   const response = await anonLokka.send(
     `
@@ -59,7 +46,8 @@ async function getCrossings() {
         }
       }
     }
-  `);
+  `,
+  );
 
   return response.allCrossings.nodes;
 }
@@ -68,13 +56,17 @@ function getCrossingsToUpdate(dbCrossings, legacyCrossings) {
   const crossingsToUpdate = [];
 
   for (legacyCrossing of legacyCrossings) {
-    const match = dbCrossings.find(c => c.legacyId === legacyCrossing.id && c.latestStatusId !== legacyCrossing.status);
+    const match = dbCrossings.find(
+      c =>
+        c.legacyId === legacyCrossing.id &&
+        c.latestStatusId !== legacyCrossing.status,
+    );
     if (match) {
       crossingsToUpdate.push({
         crossingId: match.id,
         statusId: legacyCrossing.status,
         statusReasonId: legacyCrossing.status === 2 ? 1 : null,
-        notes: 'From ATXFloods.com'
+        notes: 'From ATXFloods.com',
       });
     }
   }
@@ -86,15 +78,10 @@ async function processLegacyCrossings(legacyCrossings) {
   const dbCrossings = await getCrossings();
   const crossingsToUpdate = getCrossingsToUpdate(dbCrossings, legacyCrossings);
 
-  const token = await getToken('superadmin@flo.ods', 'texasfloods');
-  const headers = {
-    Authorization: 'Bearer ' + token,
-  };
-  const lokka = new Lokka({
-    transport: new HttpTransport('https://5199xk4uxc.execute-api.us-east-1.amazonaws.com/dev/graphql', { headers }),
-  });
+  // FIXME: Make a new user and put in ENV
+  const lokka = await getAuthorizedLokka('superadmin@flo.ods', 'texasfloods');
 
-  for(crossing of crossingsToUpdate) {
+  for (crossing of crossingsToUpdate) {
     const updated = await newStatusUpdate(crossing, lokka);
     console.log(updated);
   }
@@ -104,15 +91,20 @@ async function getLegacy(url) {
   try {
     const response = await axios.get(url);
     parseString(response.data, (err, result) => {
-      const crossings = result.markers.marker.map(crossing => {return {id: parseInt(crossing.$.id), status: statuses[crossing.$.type]}});
+      const crossings = result.markers.marker.map(crossing => {
+        return {
+          id: parseInt(crossing.$.id),
+          status: statuses[crossing.$.type],
+        };
+      });
       processLegacyCrossings(crossings);
     });
   } catch (err) {
-    console.log(err);
+    logError(err);
   }
 }
 
 module.exports.handle = (event, context, cb) => {
   getLegacy(url);
   cb(null, null);
-}
+};

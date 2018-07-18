@@ -2,37 +2,34 @@ const nodemailer = require('nodemailer');
 const Client = require('pg').Client;
 const jwt = require('jsonwebtoken');
 
-const sendResetEmail = (transporter, firstname, lastname, email, token, cb) => {
-  let message = {
-    from: 'CTXfloods <ctxfloodstestmailer@gmail.com>',
-    to: `${firstname} ${lastname} <${email}>`,
-    subject: 'Reset CTXfloods Password',
-    text: `CTXfloods password reset url: http://${
-      process.env.FRONTEND_URL
-    }/dashboard/reset_password/${token}`,
-    html: `<p>Click <a href="http://${
-      process.env.FRONTEND_URL
-    }/dashboard/reset_password/${token}">here</a> to reset your CTXfloods password.</p>`,
-  };
+const { sendEmail } = require('./emailer');
+const { logError } = require('./logger');
 
-  transporter.sendMail(message, (err, info) => {
-    if (err) {
-      console.log('Error occurred. ' + err.message);
-      return process.exit(1);
-    }
+async function sendResetEmail(firstname, lastname, email, token, cb) {
+  try {
+    await sendEmail({
+      from: 'CTXfloods <ctxfloodstestmailer@gmail.com>',
+      to: `${firstname} ${lastname} <${email}>`,
+      subject: 'Reset CTXfloods Password',
+      text: `CTXfloods password reset url: http://${
+        process.env.FRONTEND_URL
+      }/dashboard/reset_password/${token}`,
+      html: `<p>Click <a href="http://${
+        process.env.FRONTEND_URL
+      }/dashboard/reset_password/${token}">here</a> to reset your CTXfloods password.</p>`,
+    });
 
-    console.log('Message sent: %s', info.messageId);
-    // Preview only available when sending through an Ethereal account
-    const previewURL = nodemailer.getTestMessageUrl(info);
-    console.log('Preview URL: %s', previewURL);
     const response = {
       statusCode: 204,
       headers: { 'Access-Control-Allow-Origin': '*' },
     };
 
     cb(null, response);
-  });
-};
+  } catch (err) {
+    logError(err);
+    return process.exit(1);
+  }
+}
 
 module.exports.handle = (event, context, cb) => {
   const pgClient = new Client(process.env.PGCON);
@@ -68,44 +65,8 @@ module.exports.handle = (event, context, cb) => {
         { expiresIn: '30m', audience: 'postgraphql' },
       );
 
-      // If we have gmail credentials, use gmail to send the email
-      if (process.env.GMAIL_ADDRESS) {
-        let transporter = nodemailer.createTransport({
-          service: 'gmail',
-          auth: {
-            user: process.env.GMAIL_ADDRESS,
-            pass: process.env.GMAIL_PASSWORD,
-          },
-        });
-
-        sendResetEmail(transporter, firstname, lastname, email, token, cb);
-        return;
-      }
-
-      // If we don't have gmail credentials, send an ethereal test email
-      // Generate SMTP service account from ethereal.email
-      nodemailer.createTestAccount((err, account) => {
-        if (err) {
-          console.error('Failed to create a testing account. ' + err.message);
-          return process.exit(1);
-        }
-
-        console.log('Ethereal email credentials obtained, sending message...');
-
-        // Create a SMTP transporter object
-        let transporter = nodemailer.createTransport({
-          host: account.smtp.host,
-          port: account.smtp.port,
-          secure: account.smtp.secure,
-          auth: {
-            user: account.user,
-            pass: account.pass,
-          },
-        });
-
-        sendResetEmail(transporter, firstname, lastname, email, token, cb);
-      });
+      return sendResetEmail(firstname, lastname, email, token, cb);
     })
-    .catch(err => console.log({ errors: [err] }))
+    .catch(err => logError(err))
     .then(() => pgClient.end());
 };
