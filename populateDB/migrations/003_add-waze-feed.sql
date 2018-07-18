@@ -165,7 +165,7 @@ returns setof floods.waze_feed_incidents as $$
       to_char(st_x (c.coordinates), 'FM999.000000') || ' ' ||
       to_char(st_y (c.coordinates), 'FM999.000000') || ' ' ||
       to_char(st_x (c.coordinates), 'FM999.000000') as polyline,
-    'BOTH_DIRECTIONS' as direction,
+    'BOTH_DIRECTIONS'::text as direction,
     case c.latest_status_id
       when 2 then 'ROAD_CLOSED'
       when 4 then 'ROAD_CLOSED'
@@ -178,7 +178,7 @@ returns setof floods.waze_feed_incidents as $$
       end as subtype,
     su.created_at as starttime,
     su.notes as description,
-    'CTXfloods' as reference
+    'CTXfloods'::text as reference
   from
     floods.crossing c
     join floods.status_update su on c.latest_status_update_id = su.id
