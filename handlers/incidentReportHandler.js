@@ -1,6 +1,6 @@
 const handlebars = require('handlebars');
 
-const { getAuthorizedLokka } = require('./graphql');
+const { getAuthorizedLokka, findUsersInCommunities } = require('./graphql');
 const { sendEmail } = require('./emailer');
 const { logError } = require('./logger');
 const { verifyCaptcha } = require('./captcha');
@@ -38,26 +38,6 @@ async function newIncidentReport(lokka, incidentReport) {
   return response.newIncidentReport.incidentReport;
 }
 
-async function findUsersInCommunities(lokka, incidentReport) {
-  const response = await lokka.send(
-    `
-    query (
-      $communityIds: [Int],
-    ) {
-      findUsersInCommunities(communityIds: $communityIds) {
-        nodes {
-          firstName
-          lastName
-          emailAddress
-        }
-      }
-    }
-  `,
-    incidentReport,
-  );
-
-  return response.findUsersInCommunities.nodes;
-}
 
 const AdminEmailTextTemplate = handlebars.compile(
   `
@@ -107,7 +87,7 @@ module.exports.handle = async (event, context, cb) => {
 
     // TODO: Make a new user and store it in encrypted travis env variable
     // https://github.com/cityofaustin/ctxfloods/issues/200
-    const lokka = getAuthorizedLokka('superadmin@flo.ods', 'texasfloods');
+    const lokka = await getAuthorizedLokka('superadmin@flo.ods', 'texasfloods');
 
     const createdReport = await newIncidentReport(lokka, incidentReport);
 

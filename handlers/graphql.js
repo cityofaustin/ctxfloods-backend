@@ -35,5 +35,26 @@ async function getAuthorizedLokka(username, password) {
   return lokka;
 }
 
+async function findUsersInCommunities(lokka, {communityIds}) {
+  const response = await lokka.send(
+    `
+    query (
+      $communityIds: [Int],
+    ) {
+      findUsersInCommunities(communityIds: $communityIds) {
+        nodes {
+          firstName
+          lastName
+          emailAddress
+        }
+      }
+    }
+  `,
+    {communityIds},
+  );
+
+  return response.findUsersInCommunities.nodes;
+}
+
 module.exports.getToken = getToken;
 module.exports.getAuthorizedLokka = getAuthorizedLokka;
