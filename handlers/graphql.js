@@ -23,6 +23,12 @@ async function getToken(email, password) {
   return response.authenticate.jwtToken;
 }
 
+async function getAnonLokka() {
+  return new Lokka({
+    transport: new HttpTransport('http://localhost:5000/graphql'),
+  });
+}
+
 async function getAuthorizedLokka(username, password) {
   const token = await getToken(username, password);
   const headers = {
@@ -58,3 +64,4 @@ async function findUsersInCommunities(lokka, {communityIds}) {
 
 module.exports.getToken = getToken;
 module.exports.getAuthorizedLokka = getAuthorizedLokka;
+module.exports.getAnonLokka = getAnonLokka;

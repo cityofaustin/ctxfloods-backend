@@ -1,77 +1,71 @@
-const nodemailer = require('nodemailer');
-const Client = require('pg').Client;
-const jwt = require('jsonwebtoken');
+const handlebars = require('handlebars');
 
 const { sendEmail } = require('./emailer');
 const { logError } = require('./logger');
+const { getAnonLokka } = require('./graphql');
 
-function sendOngoingClosureEmail(communityId, ongoingClosureCount) {
+const AdminEmailTemplate = handlebars.compile(
+  `{{count}} crossings in {{communityName}} have been marked as closed or caution for over 24 hours.`.trim(),
+);
 
-}
-
-async function queryAndAlertCommunity(pgClient, lokka, communityId) {
-  const pgres = pgClient.query(
-    `select count(0) from floods.crossing c
-      where c.latest_status_id in (2, 3)
-      and c.community_ids @> $1
-      and c.latest_status_ceated_at < now() - '1 day'::interval
-    `,
-    [[communityId]],
-  );
-  const ongoingClosureCount = pgres.rows[0].count;
-
-  if (ongoingClosureCount === 0) {
-    return;
-  }
-
-
+async function sendOngoingClosureEmail(emailData) {
+  const templateData = {
+    ...emailData,
+    FRONTEND_URL: process.env.FRONTEND_URL,
+  };
+  await sendEmail({
+    from: 'CTXfloods <ctxfloodstestmailer@gmail.com>',
+    to: `${emailData.firstName} ${emailData.lastName} <${emailData.emailAddress}>`,
+    subject: `${emailData.count} crossings closed over 24 hours`,
+    text: AdminEmailTemplate(templateData),
+    html: AdminEmailTemplate(templateData),
+  });
 }
 
 module.exports.handle = handle;
+
 async function handle(event, context, cb) {
-  const pgClient = new Client(process.env.PGCON);
-  const { email } = JSON.parse(event.body);
+  const lokka = await getAnonLokka();
 
-  // TODO: Make a new user and store it in encrypted travis env variable
-  // https://github.com/cityofaustin/ctxfloods/issues/200
-  const lokka = await getAuthorizedLokka('superadmin@flo.ods', 'texasfloods');
-
-  pgClient.connect();
-
-  pgClient
-    .query(
-      `select comm.id, count(0)
-        from floods.crossing c, (select id from floods.community) as comm
-        where c.latest_status_id in (2, 3)
-        and c.community_ids @> ARRAY[comm.id]
-        and c.latest_status_created_at < now() - '1 day'::interval
-        group by comm.id;
-
-      `,
-      [[9018]],
-    )
-    .then(pgres => {
-
-      if (!pgres.rowCount) {
-        const response = {
-          statusCode: 400,
-          headers: {
-            'Access-Control-Allow-Origin': '*',
-            'Content-Type': 'text/plain',
-          },
-          body: `Could not find user accont for email: ${email}`,
-        };
-
-        cb(null, response);
-        return;
+  const response = await lokka.send(`
+    query {
+      ongoingClosureCountByCommunity {
+        nodes {
+          communityId
+          count
+          communityByCommunityId {
+            name
+            usersByCommunityId {
+              nodes {
+                firstName
+                lastName
+                emailAddress
+              }
+            }
+          }
+        }
       }
+    }
+  `);
 
-      console.log(pgres.rows[0].count);
+  const emails = response.ongoingClosureCountByCommunity.nodes.reduce(
+    (emails, node) => {
+      return [
+        ...emails,
+        ...node.communityByCommunityId.usersByCommunityId.nodes.map(user => ({
+          ...user,
+          communityId: node.communityId,
+          count: node.count,
+          communityName: node.communityByCommunityId.name,
+        })),
+      ];
+    },
+    [],
+  );
 
-      return sendResetEmail(firstname, lastname, email, token, cb);
-    })
-    .catch(err => logError(err))
-    .then(() => pgClient.end());
+  for (const emailData of emails) {
+    await sendOngoingClosureEmail(emailData);
+  }
 }
 
 handle({ body: '{}' });

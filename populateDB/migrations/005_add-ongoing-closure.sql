@@ -7,7 +7,7 @@ create table floods.ongoing_closure_count (
   count bigint
 );
 
-create or replace function floods.ongoing_closure()
+create or replace function floods.ongoing_closure_count_by_community()
   returns setof floods.ongoing_closure_count as $$
   select comm.id as community_id, count(0) as count
     from floods.crossing c, (select id from floods.community) as comm
