@@ -9,6 +9,8 @@ const pgClientFromContext = require('postgraphql/build/postgres/inventory/pgClie
 const setupRequestPgClientTransaction = require('postgraphql/build/postgraphql/http/setupRequestPgClientTransaction');
 const PgCat = JSON.parse(fs.readFileSync('pgCatalog/pgCatalog.json', 'utf8'));
 
+const { logError } = require('./logger');
+
 module.exports.handle = (event, context, cb) => {
   // Setup connection to PostgresDB
   const pgClient = new Client(process.env.PGCON);
@@ -60,17 +62,20 @@ module.exports.handle = (event, context, cb) => {
             })
             .then(() => pgClient.query('commit'))
             .catch(err => {
-              pgClient.end();
+              logError(err);
               cb(null, { errors: [err] });
+              pgClient.end();
             });
         });
       } catch (err) {
-        pgClient.end();
+        logError(err);
         cb(null, { errors: [err] });
+        pgClient.end();
       }
     })
     .catch(err => {
-      pgClient.end();
+      logError(err);
       cb(null, { errors: [err] });
+      pgClient.end();
     });
 };
