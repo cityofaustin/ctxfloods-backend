@@ -20,7 +20,7 @@ deploy:
     # env npm_config_PGCON=postgresql://example:serverless@cptfgvdskz2sa2.cg5ybcpnkj4u.us-east-1.rds.amazonaws.com:5432/floods \
     # env POSTGRAPHQL_ENDPOINT=https://fzd0rh62c5.execute-api.us-east-1.amazonaws.com/dev/graphql \
     # env FRONTEND_URL=ctxfloods-frontend-master.s3-website-us-east-1.amazonaws.com \
-  script: yarn deploy
+  script: yarn; yarn deploy;
   on:
     branch: dev-travis
 env:
