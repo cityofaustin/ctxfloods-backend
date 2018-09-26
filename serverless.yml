@@ -1,4 +1,4 @@
-service: ctxfloods-${env:CURRENT_FLOODS_BRANCH_NAME}
+service: ${env:AWS_SERVICE_NAME}
 
 plugins:
   - serverless-content-encoding
@@ -131,7 +131,7 @@ resources:
   pgSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
-      GroupDescription: Acess to Postgre
+      GroupDescription: Access to Postgres
       SecurityGroupIngress:
       - IpProtocol: tcp
         FromPort: '5432'
