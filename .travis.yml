@@ -8,29 +8,43 @@ addons:
     - postgresql-9.5-postgis-2.3
 services:
 - postgresql
-install: yarn;
+install: yarn; yarn global add serverless@1.25.0;
 before_script: yarn init-local-db;
-script: yarn test;
+script: yarn test
 deploy:
-  provider: script
-  script: yarn add global serverless@1.25.0; yarn; yarn deploy;
-  on:
-    all_branches: true
-    condition: "$AWS_ACCESS_KEY_ID"
-env:
-  global:
-  - secure: Rlou+Liikyse3HobcSpbbqUlKDqtvX/mZ5UrkLtwEeuKpnA2IL2U+i/ClIQOTmGFJf6Ts2mTFxs2ktliL8mAqR5rR/ld1GSB0WYbQO6up0dNUPGKgd2GU9ZkAQow1qBVSqE1Bthq//oQpXlEohubGKy6A3tqsMqaIydLX7Fg/6TBZVEdrvyL95lbl9Qbhtl4PoLvwzqWf/t1snKQqUeDREqKrVMgtVg2ztKmGsO9usxlFlMN3PSjwiTY4yljZ+FRWguobgqbzf8t0QTRMk3qGeU+BHTAXyjssa3TRfu/z8lRjiyZf8Q0DHRZAAPQJjqkuGvfAVv1dPks7R9tjDR2n70Av/gmsvxWm5kG7inVCibXllUgWVabn2feMAFp5ZXmwajJ+ky7QDdyRVYbZ87qNc5hxWvEE5oGe8jYgazTNbYQKu3ol7O+htYdn52tx+2CDYjeda8OaWHyBfk4GGk5HWIpIyoEklFJqTLNrRaJY0cFhtrC0FKBSYfs4dVQUuwPDXTpCDwghF5YBgc+Sohd/qSWuOsAu3WxpgX7jv0Q5ggz8rdkZjSAdSIVXi9Vel+cF+lX9/PsrgjuO/BXqTfDkJqstaAVuPlcTIuONpL3XSySrG54qmLJ0q1dzE9SKNPK7yLSvGv/G+1hyADo5suCBq2pG83wQgntcCLKul5xy28=
-  - secure: iFb/B6W/U4OINKI6CK6t9zvdJc+T4JZGe00W3jUp30BWlcI+p/CofpC87AsvbTNSyxgFYnFsJ76Y3SSZaHx9iWIp+SQQNL3BpJCFPkrU3y+HaCoHFMjLIzrrE/Hnnd0YoXJ4vK8Ce31X00wNJIS4l1Ol3xgQQ9+UVN6DwmcbJUCzDaWsrJesjJoSRfSsJLHJlo08K28R7zLCDNthfOnzCFGlnGyofwgFhqz1//TxbB7ZkcxvZD+i1bgxh5cLLGPg1s1ecG1i1n9tZoax8cTTa5uOzkpz7951JVi+P25SwEAoYHa3pUSzaDoQ/vsQPCiHyBGZohAZ+R96D3X5GoqqaeCb+DUCJqw/eCp5shuXJxOeK0hHMOCnIzBcXYqMZhh/RCwXyGv/OI4UEG/2z3OfvcDNr1mEqLG0NAL9IdI30mloymVwDEdeTMzOtQyb5Mrm59/Rz7eVzBLFXzrASNQtfwxRWqRCO1YAJjY5TXJ9UPd7J/lldwEzR4nwBE74aC41eMe0l0S3ZInNB8oProHyqKTfzmo1rrDpPripVskA/ja7BBrxVa5dcbTTfiH9Rqqi2/solkI6eqpToFcFp7QNxRgW+zbJRfrgseYwJ17Py1H0GOLEiEThKaZ1Vfj2v0n6ZdrXtfHcEKLBqs3rlwmpFNQtHX/HKYRS5e7HHyOP1RY=
-  - secure: nJcXc/4C0qq4f1vIgOKWJUPE8Lli8f5BtS9IreTaJmDCNDr67gMAwb2029xkebf2moW+pUESRMBfTG5WWEg3GtY5LsfKx18AhxAoknw/AwQHUU2AOQDUe01TdvKcQXAEVZZtQUVZPFtczqN0IpDyEYul+GN5nQQ/kXsFaD26hnSzIqdRsyiB7WzJkwzntASEbN+0GG2FP6uwuHcxLUH9EENAaMiF8Nhjd12uHDAhFg887bI9xIRVJ0eyUKmiZBjcdQ6ffuzsyGW44b0Rep6h76H/Zd1CyfHdA+vZ+cxSV1bGHHsI9sgevOxmqLADoh2DUs/lt9kkmGjOmeb8wlrFdYowqDVY+WHg1KIP+xYzqHRyxJ23vVbV7qIuBQBlg7VAa41196Wi+QvkgvbTLKv7CyBqM99zGVe9fi+VwjLdAuF4vSU5A3PVUKye+a2jJoGf2tCejnqv3qgy3tt7skpGJkQ0/S3DqFlVwku7oiy3UJM3bJ3TzVNSJsvYH6yd9yPk4/4A9ZlFjAsgo6T6bAhAacOFL5siz5m38qddvaytY7B3wPHHyDGBRorvmLTHPt9qDVGqC/maz7smaK4CD+s4r7VPkvUvKwn4hSRPYQHYHpVWiHewib3mpLDUZPC0hrGwkT18MBue4UEY/6Lt9fa+RY9LcWejeTZHgUMfWyZwRKA=
-  - secure: hHI+2blM1TG4z6/YPzihoIf4U8xrrRbCX/FMK/3YGIDqZK3IoqCeyaDE2TQtQN4yofHQATwjh1lkrFzsL77vqPbooHe8RVFbg2ASPbfjxM3WJQT2VggCk4Q6ZgH+b+9hR3kmp67ze8FR9xBx1QVniw7qxyQMb4yaX9Bn9Ix+hB/1tINBhJej52jeIW34PC+/AIUhg1aX67ZUWcOkx91OqdrCHIi0TknQ6Ae5ZcE/rOMgH3mx+/0/RbxVmlmFphvGtikRilS5DF255p7Sxkbaz+bVoEn7nipuSp7P8yzM7TMo96VKnp1ih1JFwh2c0w7okaufq8Q0Yt6hBddllpBYai6P+eR6/Cb5uEoT/S6GMyyh3U23k9m5nwVwkUw7yPbyqSPqJfPnAwf8XdFXnJEKB5eT/Rlzlvkd3onROzDZYjrPQbLYBGTX5cCxdPZG+5UaoCzLpeBF8bjFkCCVktnnSjklUmkFTE3JtJqUonJxrP+Mebq6i9eP8QGtwrK6SLcapEC3JTtMFDfGcUi9erRVKuUy0KALfkoSshqMCthPhezfGVWDEWTYIl8BndU9tkDmv5u1FSCh81RUqAvrgJ/uejHdlZqbShPnc7kKv8o5F7bynbTffU0GBiUOOuou5SSaRnWmlgdk2oRUw7TErSL2lKVMnbbxW2e5oMfW2F2hI78=
-  - secure: JVDz0NrP4I8Oer7CNNefHEYhEJrJizQUIORjqathYOs80sH1BNhpBN5Q/t8HnhV3yJ7xy5T09gOb1b2ypNVpkObGQY+MPY8T8WFRGTxMdEcRiuwd0bLWVhaplopzCJCFOHf9pYhiJjIvgeR9Y3gqEU2NPevjz/RtE184fkIDQAg6RR4PwsErDldQgiP6KuRQrnWVoBnmedmblYoq9MFPNVSwBStfs6K1wsVt4pl1OBOpcLJhaC+56/dOm8a7PfIV8p6Wvg8EkqSc8DxHncxUtVRBMUrhcnIRWTKoWZTr+z1tTA8ybuXbI3yFN9LItu5s3p1ENHhfAWtwnOmQoGBCBrlsXvzCUA/cJ4w2qjIgPg5+g3G4pPxqVbhanLA2/3NnZJHNBH7Jd5O400EmwdbUTQGNstRlTH5Thk9SHtmEC0/m6m2UgbhsVOfAc7w8sQuwSI/v24LGp6kO2rjfTZ8BOJcemxsgrpUnC3DVGSFHvw4NCtdOVidXqfsYzHgiiKNNCeQzD1UUqDKXnRubSbSiQPlsp0W9HIgPijaHnFZmoeLmGJanOD14aTGMBIWEglYjLPamFgcLS5KpnPFnQF7MPcuBJ8hg0otOvmHQSKwIJpDdElScPDJWlxbCi3DwPW2CXw/l+DwjZM/T/56Grdi0RczYhHnK6wYnVg1I+TItjH0=
-  - secure: I7tZ6iuh+Ii5T+1mXeeT8YahA5LDVP5plcp1IQK7TFCZDyjlXMG4soSdHs7G/x736bISKjtPZosdxmpIcua7LMSIfLhbmFETr/FDZlpTamD2ubN75AMeJUNV2MTNFbbq5Fy31Jr4hxMoUmA9DuzSE7hievgPLQNRF/n59Df95plLrR4IEMr0XDUJ4DwGPIm/XRVEYkOiDdvB6+QQT5iVXN0VDudj4lqnKoLj+2udxIptBW2KD7mm4cy68kzqdsCUdeyFb06Z41KKBk0OU99qAquxwODIUKmxa4Of58n9ZZJeOrTPSnPZwdQpiK4hC22SiJSwMibSX8MoRGToVLeOId6WR7OtXH57u650CT/9EYCTlBct6pRP3yZV4q1fjjzjui6lgS7T1qvylIJhTBAhXXZQw5u+4z8MnG6xum+d8CTjOfEd+IIh02DrOLbHrou1Eg0T3yCTb8viTXwM/RrhJHJFT8TcrW6YhMwIXzOMo0G5AnkNGj/CYTFMZWvkkLdDPyFq1Vt5ZmI4wUtzfL4EBMrX9OtNRWI0RGJKiSrVs3kbk2N6q2hnePQ9vS+BQrcBX8PVzYvrw4Xlcu2HZSmYWVxfL10mQ3a1UrI4jgrSpEqgZzvpBo1eqriZ7BZWAjX1sUL5/wasNKeeHGnm6e4/98rGVBSix+Kf9G2i66g4LOU=
-  - PGENDPOINT=cptfgvdskz2sa2.cg5ybcpnkj4u.us-east-1.rds.amazonaws.com
-  - PGUSERNAME=example
-  - PGPASSWORD=serverless
-  - npm_config_PGCON=postgresql://example:serverless@cptfgvdskz2sa2.cg5ybcpnkj4u.us-east-1.rds.amazonaws.com:5432/floods
-  - npm_config_PGRUNCON=postgresql://floods_postgraphql:xyz@cptfgvdskz2sa2.cg5ybcpnkj4u.us-east-1.rds.amazonaws.com:5432/floods
-  - POSTGRAPHQL_ENDPOINT=https://fzd0rh62c5.execute-api.us-east-1.amazonaws.com/dev/graphql
-  - CURRENT_FLOODS_BRANCH_NAME=master
-  - FRONTEND_URL=ctxfloods-frontend-master.s3-website-us-east-1.amazonaws.com
-  - GMAIL_ADDRESS=ctxfloodstestmailer@gmail.com
+  - provider: script
+    script: |
+    env AWS_SERVICE_NAME=ctx-floods-backend-dev-travis \
+    env AWS_ACCESS_KEY_ID=$ACCESS_KEY_ID_DEV_TRAVIS \
+    env AWS_SECRET_ACCESS_KEY=$SECRET_ACCESS_KEY_DEV_TRAVIS \
+    env GMAIL_ADDRESS=$GMAIL_ADDRESS_DEV_TRAVIS \
+    env GMAIL_PASSWORD=$GMAIL_PASSWORD_DEV_TRAVIS \
+    env JWT_SECRET=$JWT_SECRET_DEV_TRAVIS \
+
+    # Deal with this
+    # env PGENDPOINT=cptfgvdskz2sa2.cg5ybcpnkj4u.us-east-1.rds.amazonaws.com \
+    env PGUSERNAME=example \
+    env PGPASSWORD=serverless \
+    # env npm_config_PGCON=postgresql://example:serverless@cptfgvdskz2sa2.cg5ybcpnkj4u.us-east-1.rds.amazonaws.com:5432/floods \
+    # env POSTGRAPHQL_ENDPOINT=https://fzd0rh62c5.execute-api.us-east-1.amazonaws.com/dev/graphql \
+    # env FRONTEND_URL=ctxfloods-frontend-master.s3-website-us-east-1.amazonaws.com \
+    yarn deploy
+    on:
+      branch: dev-travis
+      condition: "$AWS_ACCESS_KEY_ID"
+  # - provider: script
+  #   script: |
+  #   env SERVICE_NAME=ctx-floods-backend-dev-travis-again \
+  #   env AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID_FLOODS_BACKEND_DEV_TRAVIS \
+  #   env AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY_FLOODS_BACKEND_DEV_TRAVIS \
+  #   env GMAIL_PASSWORD=$GMAIL_PASSWORD_DEV_TRAVIS \
+  #   env JWT_SECRET=$JWT_SECRET_DEV_TRAVIS \
+  #   sls deploy -v;
+  #   on:
+  #     branch: dev-travis
+  #     condition: "$AWS_ACCESS_KEY_ID"
+  # - provider: script
+  #   script: deploy-from-local
+  #   on:
+  #     branch: /^dev-.*$/
+  #     condition: "$AWS_ACCESS_KEY_ID"
