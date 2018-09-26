@@ -2,7 +2,7 @@ language: node_js
 node_js:
 - 8
 addons:
-  postgresql: 9.5
+  postgresql: "9.5"
   apt:
     packages:
     - postgresql-9.5-postgis-2.3
@@ -13,25 +13,26 @@ before_script: yarn init-local-db;
 script: yarn test
 deploy:
   provider: script
-  script: |
-  env AWS_SERVICE_NAME=ctx-floods-backend-dev-travis \
-  env AWS_ACCESS_KEY_ID=$ACCESS_KEY_ID_DEV_TRAVIS \
-  env AWS_SECRET_ACCESS_KEY=$SECRET_ACCESS_KEY_DEV_TRAVIS \
-  env GMAIL_ADDRESS=$GMAIL_ADDRESS_DEV_TRAVIS \
-  env GMAIL_PASSWORD=$GMAIL_PASSWORD_DEV_TRAVIS \
-  env JWT_SECRET=$JWT_SECRET_DEV_TRAVIS \
 
-  # Deal with this
-  # env PGENDPOINT=cptfgvdskz2sa2.cg5ybcpnkj4u.us-east-1.rds.amazonaws.com \
-  env PGUSERNAME=example \
-  env PGPASSWORD=serverless \
-  # env npm_config_PGCON=postgresql://example:serverless@cptfgvdskz2sa2.cg5ybcpnkj4u.us-east-1.rds.amazonaws.com:5432/floods \
-  # env POSTGRAPHQL_ENDPOINT=https://fzd0rh62c5.execute-api.us-east-1.amazonaws.com/dev/graphql \
-  # env FRONTEND_URL=ctxfloods-frontend-master.s3-website-us-east-1.amazonaws.com \
-  yarn deploy
+    # Deal with this
+    # env PGENDPOINT=cptfgvdskz2sa2.cg5ybcpnkj4u.us-east-1.rds.amazonaws.com \
+
+    # env npm_config_PGCON=postgresql://example:serverless@cptfgvdskz2sa2.cg5ybcpnkj4u.us-east-1.rds.amazonaws.com:5432/floods \
+    # env POSTGRAPHQL_ENDPOINT=https://fzd0rh62c5.execute-api.us-east-1.amazonaws.com/dev/graphql \
+    # env FRONTEND_URL=ctxfloods-frontend-master.s3-website-us-east-1.amazonaws.com \
+  script: yarn deploy
   on:
-    all_branches: true
-    condition: $TRAVIS_PULL_REQUEST_BRANCH = dev-travis
+    branch: dev-travis
+env:
+- AWS_SERVICE_NAME=ctx-floods-backend-dev-travis
+- AWS_ACCESS_KEY_ID=$ACCESS_KEY_ID_DEV_TRAVIS
+- AWS_SECRET_ACCESS_KEY=$SECRET_ACCESS_KEY_DEV_TRAVIS
+- GMAIL_ADDRESS=$GMAIL_ADDRESS_DEV_TRAVIS
+- GMAIL_PASSWORD=$GMAIL_PASSWORD_DEV_TRAVIS
+- JWT_SECRET=$JWT_SECRET_DEV_TRAVIS
+- PGUSERNAME=example
+- PGPASSWORD=serverless
+    # condition: $TRAVIS_PULL_REQUEST_BRANCH = dev-travis
   # - provider: script
   #   script: |
   #   env SERVICE_NAME=ctx-floods-backend-dev-travis-again \
