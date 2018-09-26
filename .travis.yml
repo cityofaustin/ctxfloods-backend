@@ -30,6 +30,7 @@ deploy:
     # env FRONTEND_URL=ctxfloods-frontend-master.s3-website-us-east-1.amazonaws.com \
     yarn deploy
     on:
+      all_branches: true
       condition: $TRAVIS_PULL_REQUEST_BRANCH = dev-travis
   # - provider: script
   #   script: |
