@@ -6,6 +6,7 @@ plugins:
 custom:
   contentEncoding:
     minimumCompressionSize: 0
+  PGCON: ${cf:${env:AWS_SERVICE_NAME}:pgEndpoint}
 
 provider:
   name: aws
@@ -75,7 +76,7 @@ functions:
                 }
 
     environment:
-      PGCON: ${env:npm_config_PGRUNCON}
+      PGCON: ${self:custom.PGCON}
       JWT_SECRET: ${env:JWT_SECRET}
   xml:
     handler: handlers/xmlHandler.handle
@@ -85,7 +86,7 @@ functions:
           path: xml
 
     environment:
-      PGCON: ${env:npm_config_PGRUNCON}
+      PGCON: ${postgresql://floods_postgraphql:xyz@${env:npm_config_PGRUNCON}:5432/floods}
   waze_feed:
     handler: handlers/wazeFeedHandler.handle
     events:
@@ -94,7 +95,7 @@ functions:
           path: waze/feed
 
     environment:
-      PGCON: ${env:npm_config_PGRUNCON}
+      PGCON: ${self:custom.PGCON}
   incidentreport:
     handler: handlers/incidentReportHandler.handle
     events:
@@ -113,7 +114,7 @@ functions:
           cors: true
 
     environment:
-      PGCON: ${env:npm_config_PGRUNCON}
+      PGCON: ${self:custom.PGCON}
       FRONTEND_URL: ${env:FRONTEND_URL}
       JWT_SECRET: ${env:JWT_SECRET}
       GMAIL_ADDRESS: ${env:GMAIL_ADDRESS}
