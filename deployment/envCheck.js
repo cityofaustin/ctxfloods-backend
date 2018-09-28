@@ -8,7 +8,7 @@ const envCheck = () => {
   console.log(`PGPASSWORD: ${process.env.PGPASSWORD}`);
   console.log("And now the big one");
   console.log(`PGCON: ${process.env.PGCON}`);
-  console.log(`PGCON: ${process.env.ONLY_IN_SERVERLESS}`);
+  console.log(`ONLY_IN_SERVERLESS: ${process.env.ONLY_IN_SERVERLESS}`);
 }
 
 module.exports = envCheck;
