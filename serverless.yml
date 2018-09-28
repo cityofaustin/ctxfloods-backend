@@ -1,4 +1,4 @@
-service: ctxfloods-${env:CURRENT_FLOODS_BRANCH_NAME}
+service: ${env:AWS_SERVICE_NAME}
 
 plugins:
   - serverless-content-encoding
@@ -6,6 +6,10 @@ plugins:
 custom:
   contentEncoding:
     minimumCompressionSize: 0
+  ONLY_IN_SERVERLESS: "truetruetrue"
+  PGENDPOINT: ${cf:${env:AWS_SERVICE_NAME}:pgEndpoint}
+  PGCON: ${postgresql://floods_postgraphql:xyz@${self:custom.PGENDPOINT}:5432/floods}
+  PGRUNCON: ${${env:PGUSERNAME}:${env:PGPASSWORD}@${self:custom.PGENDPOINT}:5432/floods}
 
 provider:
   name: aws
@@ -75,7 +79,7 @@ functions:
                 }
 
     environment:
-      PGCON: ${env:npm_config_PGRUNCON}
+      PGCON: ${self:custom.PGCON}
       JWT_SECRET: ${env:JWT_SECRET}
   xml:
     handler: handlers/xmlHandler.handle
@@ -85,7 +89,7 @@ functions:
           path: xml
 
     environment:
-      PGCON: ${env:npm_config_PGRUNCON}
+      PGCON: ${self:custom.PGCON}
   waze_feed:
     handler: handlers/wazeFeedHandler.handle
     events:
@@ -94,7 +98,7 @@ functions:
           path: waze/feed
 
     environment:
-      PGCON: ${env:npm_config_PGRUNCON}
+      PGCON: ${self:custom.PGCON}
   incidentreport:
     handler: handlers/incidentReportHandler.handle
     events:
@@ -113,7 +117,7 @@ functions:
           cors: true
 
     environment:
-      PGCON: ${env:npm_config_PGRUNCON}
+      PGCON: ${self:custom.PGCON}
       FRONTEND_URL: ${env:FRONTEND_URL}
       JWT_SECRET: ${env:JWT_SECRET}
       GMAIL_ADDRESS: ${env:GMAIL_ADDRESS}
@@ -131,7 +135,7 @@ resources:
   pgSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
-      GroupDescription: Acess to Postgre
+      GroupDescription: Access to Postgres
       SecurityGroupIngress:
       - IpProtocol: tcp
         FromPort: '5432'

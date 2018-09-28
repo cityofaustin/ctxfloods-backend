@@ -1,5 +1,7 @@
 const HttpTransport = require('lokka-transport-http').Transport;
 const Lokka = require('lokka').Lokka;
+console.log("top of graphql.js");
+require('../deployment/envCheck')();
 
 async function getToken(email, password) {
   const anonLokka = new Lokka({
