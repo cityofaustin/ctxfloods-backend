@@ -7,7 +7,9 @@ const envCheck = () => {
   console.log(`PGUSERNAME: ${process.env.PGUSERNAME}`);
   console.log(`PGPASSWORD: ${process.env.PGPASSWORD}`);
   console.log("And now the big one");
+  console.log(`PGENDPOINT: ${process.env.PGENDPOINT}`);
   console.log(`PGCON: ${process.env.PGCON}`);
+  console.log(`PGRUNCON: ${process.env.PGRUNCON}`);
   console.log(`ONLY_IN_SERVERLESS: ${process.env.ONLY_IN_SERVERLESS}`);
 }
 

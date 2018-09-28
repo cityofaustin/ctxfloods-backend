@@ -6,8 +6,10 @@ plugins:
 custom:
   contentEncoding:
     minimumCompressionSize: 0
-  PGCON: ${cf:${env:AWS_SERVICE_NAME}:pgEndpoint}
   ONLY_IN_SERVERLESS: "truetruetrue"
+  PGENDPOINT: ${cf:${env:AWS_SERVICE_NAME}:pgEndpoint}
+  PGCON: ${postgresql://floods_postgraphql:xyz@${self:custom.PGENDPOINT}:5432/floods}
+  PGRUNCON: ${${env:PGUSERNAME}:${env:PGPASSWORD}@${self:custom.PGENDPOINT}:5432/floods}
 
 provider:
   name: aws
@@ -87,7 +89,7 @@ functions:
           path: xml
 
     environment:
-      PGCON: ${postgresql://floods_postgraphql:xyz@${env:npm_config_PGRUNCON}:5432/floods}
+      PGCON: ${self:custom.PGCON}
   waze_feed:
     handler: handlers/wazeFeedHandler.handle
     events:
