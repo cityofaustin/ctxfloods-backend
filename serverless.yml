@@ -7,6 +7,7 @@ custom:
   contentEncoding:
     minimumCompressionSize: 0
   PGCON: ${cf:${env:AWS_SERVICE_NAME}:pgEndpoint}
+  ONLY_IN_SERVERLESS: "truetruetrue"
 
 provider:
   name: aws
