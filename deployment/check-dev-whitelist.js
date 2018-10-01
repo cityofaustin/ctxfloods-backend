@@ -9,8 +9,4 @@ if (process.env.TRAVIS_PULL_REQUEST === "false") {
   branch = process.env.TRAVIS_PULL_REQUEST_BRANCH;
 }
 
-if whitelist.includes(branch) {
-  console.log("true");
-} else {
-  console.log("false");
-}
+console.log(whitelist.includes(branch));
