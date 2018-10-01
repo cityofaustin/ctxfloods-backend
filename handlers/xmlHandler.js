@@ -2,7 +2,7 @@ const Client = require('pg').Client;
 const { logError } = require('./logger');
 
 module.exports.handle = (event, context, cb) => {
-  const pgClient = new Client(process.env.PGCON);
+  const pgClient = new Client(process.env.PG_CON);
   pgClient.connect();
 
   pgClient

@@ -6,16 +6,17 @@ plugins:
 custom:
   contentEncoding:
     minimumCompressionSize: 0
+  PG_ENDPOINT:
+    Fn::GetAtt:
+      - pgDB
+      - Endpoint.Address
+  PG_CON: postgresql://floods_postgraphql:xyz@${self:custom.PG_ENDPOINT}:5432/floods
 
 provider:
   name: aws
   runtime: nodejs8.10
   # profile: reportingtool
   # region: eu-central-1
-
-package:
-  exclude:
-    - populateDB/**
 
 functions:
   graphql:
@@ -75,7 +76,7 @@ functions:
                 }
 
     environment:
-      PGCON: ${env:npm_config_PGRUNCON}
+      PG_CON: ${self:custom.PG_CON}
       JWT_SECRET: ${env:JWT_SECRET}
   xml:
     handler: handlers/xmlHandler.handle
@@ -85,7 +86,7 @@ functions:
           path: xml
 
     environment:
-      PGCON: ${env:npm_config_PGRUNCON}
+      PG_CON: ${self:custom.PG_CON}
   waze_feed:
     handler: handlers/wazeFeedHandler.handle
     events:
@@ -94,7 +95,7 @@ functions:
           path: waze/feed
 
     environment:
-      PGCON: ${env:npm_config_PGRUNCON}
+      PG_CON: ${self:custom.PG_CON}
   incidentreport:
     handler: handlers/incidentReportHandler.handle
     events:
@@ -113,7 +114,7 @@ functions:
           cors: true
 
     environment:
-      PGCON: ${env:npm_config_PGRUNCON}
+      PG_CON: ${self:custom.PG_CON}
       FRONTEND_URL: ${env:FRONTEND_URL}
       JWT_SECRET: ${env:JWT_SECRET}
       GMAIL_ADDRESS: ${env:GMAIL_ADDRESS}
@@ -159,7 +160,7 @@ resources:
     DeletionPolicy: "Snapshot"
 
  Outputs:
-    pgEndpoint:
+    PGENDPOINT:
       Description: "JDBC connection string for database"
       Value:
         Fn::GetAtt:
