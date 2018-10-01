@@ -7,4 +7,4 @@ export GMAIL_PASSWORD=$GMAIL_PASSWORD_DEV_TRAVIS
 export JWT_SECRET=$JWT_SECRET_DEV_TRAVIS
 export PGUSERNAME=example
 export PGPASSWORD=serverless
-bash deploy.sh
+sh deploy.sh
