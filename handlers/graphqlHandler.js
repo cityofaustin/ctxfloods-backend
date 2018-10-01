@@ -16,7 +16,7 @@ module.exports.handle = (event, context, cb) => {
   require('../deployment/envCheck')();
 
   // Setup connection to PostgresDB
-  const pgClient = new Client(process.env.PG_CON);
+  const pgClient = new Client(process.env.PGCON);
   pgClient.connect();
 
   // Parse PgCatalog
