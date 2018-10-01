@@ -10,7 +10,6 @@ custom:
     Fn::GetAtt:
       - pgDB
       - Endpoint.Address
-  PGCON: postgresql://floods_postgraphql:xyz@${self:custom.PG_ENDPOINT}:5432/floods
 
 provider:
   name: aws
@@ -76,7 +75,7 @@ functions:
                 }
 
     environment:
-      PGCON: ${self:custom.PGCON}
+      PG_ENDPOINT: ${self:custom.PG_ENDPOINT}
       JWT_SECRET: ${env:JWT_SECRET}
   xml:
     handler: handlers/xmlHandler.handle
@@ -86,7 +85,7 @@ functions:
           path: xml
 
     environment:
-      PGCON: ${self:custom.PGCON}
+      PG_ENDPOINT: ${self:custom.PG_ENDPOINT}
   waze_feed:
     handler: handlers/wazeFeedHandler.handle
     events:
@@ -95,7 +94,7 @@ functions:
           path: waze/feed
 
     environment:
-      PGCON: ${self:custom.PGCON}
+      PG_ENDPOINT: ${self:custom.PG_ENDPOINT}
   incidentreport:
     handler: handlers/incidentReportHandler.handle
     events:
@@ -114,7 +113,7 @@ functions:
           cors: true
 
     environment:
-      PGCON: ${self:custom.PGCON}
+      PG_ENDPOINT: ${self:custom.PG_ENDPOINT}
       FRONTEND_URL: ${env:FRONTEND_URL}
       JWT_SECRET: ${env:JWT_SECRET}
       GMAIL_ADDRESS: ${env:GMAIL_ADDRESS}

@@ -14,7 +14,7 @@ const { logError } = require('./logger');
 module.exports.handle = (event, context, cb) => {
 
   // Setup connection to PostgresDB
-  const pgClient = new Client(process.env.PGCON);
+  const pgClient = new Client(require('../tools/getPgCon')());
   pgClient.connect();
 
   // Parse PgCatalog
