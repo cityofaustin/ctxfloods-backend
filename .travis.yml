@@ -17,13 +17,13 @@ deploy:
     on:
       # branch: master
       all_branches: true
-      condition: branch = dev-travis-hack
+      condition: $(node ./deployment/check-dev-whitelist.js)
   - provider: script
     script: bash ./deployment/deploy.sh prod-legacy-sync
     on:
       # branch: master
       all_branches: true
-      condition: branch = dev-travis-hack
+      condition: $(node ./deployment/check-dev-whitelist.js)
   # - provider: script
   #   script: bash ./deployment/deploy.sh
   #   on:

@@ -159,7 +159,7 @@ resources:
     DeletionPolicy: "Snapshot"
 
  Outputs:
-    PGENDPOINT:
+    pgEndpoint:
       Description: "JDBC connection string for database"
       Value:
         Fn::GetAtt:
