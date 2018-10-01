@@ -15,15 +15,17 @@ deploy:
   - provider: script
     script: bash ./deployment/deploy.sh prod
     on:
+      # branch: master
       condition: |
-        false OR \
-        branch = dev-travis-hack
+        branch = dev-travis-hack OR \
+        false
   - provider: script
     script: bash ./deployment/deploy.sh prod-legacy-sync
     on:
+      # branch: master
       condition: |
-        false OR \
-        branch = dev-travis-hack
+        branch = dev-travis-hack OR \
+        false
   # - provider: script
   #   script: bash ./deployment/deploy.sh
   #   on:
