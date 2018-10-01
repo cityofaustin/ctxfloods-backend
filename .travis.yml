@@ -16,11 +16,13 @@ deploy:
     script: bash ./deployment/deploy.sh prod
     on:
       # branch: master
+      all_branches: true
       condition: branch = dev-travis-hack
   - provider: script
     script: bash ./deployment/deploy.sh prod-legacy-sync
     on:
       # branch: master
+      all_branches: true
       condition: branch = dev-travis-hack
   # - provider: script
   #   script: bash ./deployment/deploy.sh
