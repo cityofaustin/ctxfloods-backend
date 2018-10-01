@@ -15,13 +15,13 @@ deploy:
   - provider: script
     script: bash ./deployment/deploy.sh prod
     on:
-      branch: |
+      condition: |
         false OR \
         branch = dev-travis-hack
   - provider: script
     script: bash ./deployment/deploy.sh prod-legacy-sync
     on:
-      branch: |
+      condition: |
         false OR \
         branch = dev-travis-hack
   # - provider: script
