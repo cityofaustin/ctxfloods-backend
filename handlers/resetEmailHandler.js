@@ -32,7 +32,7 @@ async function sendResetEmail(firstname, lastname, email, token, cb) {
 }
 
 module.exports.handle = (event, context, cb) => {
-  const pgClient = new Client(process.env.PGCON);
+  const pgClient = new Client(process.env.PG_CON);
   const { email } = JSON.parse(event.body);
 
   pgClient.connect();
