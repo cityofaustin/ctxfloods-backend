@@ -21,7 +21,7 @@ function getPgResAsIncidentJson(rows) {
 module.exports.getPgResAsIncidentJson = getPgResAsIncidentJson;
 
 module.exports.handle = (event, context, cb) => {
-  const pgClient = new Client(process.env.PG_CON);
+  const pgClient = new Client(process.env.PGCON);
   pgClient.connect();
 
   pgClient
