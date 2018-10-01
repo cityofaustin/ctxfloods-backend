@@ -22,7 +22,7 @@ yarn
 sls deploy -v | tee out.tmp
 
 # Run migrations
-PGENDPOINT=$(grep "pgEndpoint" out.tmp | cut -f2- -d: | cut -c2-)
+export PGENDPOINT=$(grep "pgEndpoint" out.tmp | cut -f2- -d: | cut -c2-)
 echo PGENDPOINT is $PGENDPOINT
 yarn migrate
 
