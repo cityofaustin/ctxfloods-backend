@@ -12,8 +12,6 @@ const PgCat = JSON.parse(fs.readFileSync('pgCatalog/pgCatalog.json', 'utf8'));
 const { logError } = require('./logger');
 
 module.exports.handle = (event, context, cb) => {
-  console.log("top of graphqlHandler.js");
-  require('../deployment/envCheck')();
 
   // Setup connection to PostgresDB
   const pgClient = new Client(process.env.PGCON);
