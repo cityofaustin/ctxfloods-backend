@@ -13,10 +13,10 @@ before_script: yarn init-local-db;
 script: yarn test
 deploy:
   - provider: script
-    script: bash ./deployment/test-env-1.sh; bash ./deployment/deploy.sh;
+    script: bash ./deployment/env-test-1/deploy-test-1.sh
     on:
       branch: dev-travis-hack
   - provider: script
-    script: bash ./deployment/test-env-2.sh; bash ./deployment/deploy.sh;
+    script: bash ./deployment/env-test-2/deploy-test-2.sh
     on:
       branch: dev-travis-hack
