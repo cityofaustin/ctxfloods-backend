@@ -1,5 +1,7 @@
 const {createDb, migrate} = require("postgres-migrations")
 
+console.log("Do we have a PGENDPOINT?", process.env.PGENDPOINT);
+
 createDb("floods", {
   defaultDatabase: "floods", // optional, default: "postgres"
   user: process.env.PGUSERNAME,

@@ -1,7 +1,5 @@
 let branch;
-const whitelist = [
-  "dev-travis-hack"
-];
+const whitelist = require('./devBranchWhitelist.js');''
 
 if (process.env.TRAVIS_PULL_REQUEST === "false") {
   branch = process.env.TRAVIS_BRANCH;
