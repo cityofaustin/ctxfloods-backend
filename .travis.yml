@@ -17,13 +17,13 @@ deploy:
     on:
       # branch: master
       all_branches: true
-      condition: $(node ./deployment/check-dev-whitelist.js)
+      condition: $(node ./deployment/checkDevBranchWhitelist.js)
   - provider: script
     script: bash ./deployment/deploy.sh prod-legacy-sync
     on:
       # branch: master
       all_branches: true
-      condition: $(node ./deployment/check-dev-whitelist.js)
+      condition: $(node ./deployment/checkDevBranchWhitelist.js)
   # - provider: script
   #   script: bash ./deployment/deploy.sh
   #   on:
