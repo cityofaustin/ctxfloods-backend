@@ -13,10 +13,20 @@ before_script: yarn init-local-db;
 script: yarn test;
 deploy:
   - provider: script
-    script: bash ./deployment/env-test-1/deploy-test-1.sh
+    script: bash ./deployment/deploy.sh prod
     on:
-      branch: dev-travis-hack
+      branch: |
+        false OR \
+        branch = dev-travis-hack
   - provider: script
-    script: bash ./deployment/env-test-2/deploy-test-2.sh
+    script: bash ./deployment/deploy.sh prod-legacy-sync
     on:
-      branch: dev-travis-hack
+      branch: |
+        false OR \
+        branch = dev-travis-hack
+  # - provider: script
+  #   script: bash ./deployment/deploy.sh
+  #   on:
+  #     condition: |
+  #       false OR \
+  #       branch = dev-travis-hack
