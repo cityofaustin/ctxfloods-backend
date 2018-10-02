@@ -161,9 +161,6 @@ resources:
     DeletionPolicy: "Snapshot"
 
  Outputs:
-    pgEndpoint:
+    PgEndpoint:
       Description: "JDBC connection string for database"
-      Value:
-        Fn::GetAtt:
-          - pgDB
-          - Endpoint.Address
+      Value: ${self:custom.PG_ENDPOINT}
