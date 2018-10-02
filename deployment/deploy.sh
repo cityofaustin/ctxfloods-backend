@@ -22,11 +22,7 @@ yarn
 sls deploy -v | tee out.tmp
 
 # Run migrations
-export PG_ENDPOINT=$(grep "pgEndpoint" out.tmp | cut -f2- -d: | cut -c2-)
-echo PG_ENDPOINT is $PG_ENDPOINT
+export PG_ENDPOINT=$(grep "PgEndpoint" out.tmp | cut -f2- -d: | cut -c2-)
 yarn migrate
-
-
-# MIGRATE_ENDPOINT=$(grep "POST.*migrate" out.tmp | cut -f2- -d- | cut -c2-)
+node ./pgCatalog/buildPgCatalog.js postgresql://$PGUSERNAME:$PGPASSWORD@$PG_ENDPOINT:5432/floods floods
 rm out.tmp
-# curl MIGRATE_ENDPOINT
