@@ -32,7 +32,7 @@ async function newStatusUpdate(crossingToUpdate, lokka) {
 
 async function getCrossings() {
   const anonLokka = new Lokka({
-    transport: new HttpTransport('http://localhost:5000/graphql'),
+    transport: new HttpTransport(`http://localhost:${process.env.BACKEND_PORT}/graphql`),
   });
 
   const response = await anonLokka.send(
