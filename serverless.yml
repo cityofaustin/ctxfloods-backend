@@ -6,7 +6,7 @@ plugins:
 custom:
   contentEncoding:
     minimumCompressionSize: 0
-  PG_ENDPOINT:
+  PGENDPOINT:
     Fn::GetAtt:
       - pgDB
       - Endpoint.Address
@@ -77,7 +77,7 @@ functions:
                 }
 
     environment:
-      PG_ENDPOINT: ${self:custom.PG_ENDPOINT}
+      PGENDPOINT: ${self:custom.PGENDPOINT}
       JWT_SECRET: ${env:JWT_SECRET}
   xml:
     handler: handlers/xmlHandler.handle
@@ -87,7 +87,7 @@ functions:
           path: xml
 
     environment:
-      PG_ENDPOINT: ${self:custom.PG_ENDPOINT}
+      PGENDPOINT: ${self:custom.PGENDPOINT}
   waze_feed:
     handler: handlers/wazeFeedHandler.handle
     events:
@@ -96,7 +96,7 @@ functions:
           path: waze/feed
 
     environment:
-      PG_ENDPOINT: ${self:custom.PG_ENDPOINT}
+      PGENDPOINT: ${self:custom.PGENDPOINT}
   incidentreport:
     handler: handlers/incidentReportHandler.handle
     events:
@@ -115,7 +115,7 @@ functions:
           cors: true
 
     environment:
-      PG_ENDPOINT: ${self:custom.PG_ENDPOINT}
+      PGENDPOINT: ${self:custom.PGENDPOINT}
       FRONTEND_URL: ${env:FRONTEND_URL}
       JWT_SECRET: ${env:JWT_SECRET}
       GMAIL_ADDRESS: ${env:GMAIL_ADDRESS}
@@ -163,4 +163,4 @@ resources:
  Outputs:
     PgEndpoint:
       Description: "JDBC connection string for database"
-      Value: ${self:custom.PG_ENDPOINT}
+      Value: ${self:custom.PGENDPOINT}
