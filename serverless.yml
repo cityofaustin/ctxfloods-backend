@@ -14,6 +14,8 @@ custom:
 provider:
   name: aws
   runtime: nodejs8.10
+  environment:
+    BACKEND_PORT: ${env:BACKEND_PORT}
   # profile: reportingtool
   # region: eu-central-1
 

@@ -62,6 +62,14 @@ app.post('/email/reset', (req, res) => {
 const server = app.listen(process.env.BACKEND_PORT);
 
 process.on('SIGTERM', () => {
+  console.log("Signal Terminated");
+  server.close(() => {
+    process.exit();
+  });
+});
+
+process.on('SIGINT', () => {
+  console.log("Signal Interrupted");
   server.close(() => {
     process.exit();
   });
