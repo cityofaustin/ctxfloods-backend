@@ -1,4 +1,4 @@
-var endpoint = 'http://localhost:5000/graphql';
+var endpoint = `http://localhost:${process.env.BACKEND_PORT}/graphql`;
 
 if (process.env.USE_AWS_ENDPOINT) {
   endpoint = process.env.POSTGRAPHQL_ENDPOINT;

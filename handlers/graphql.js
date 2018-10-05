@@ -3,7 +3,7 @@ const Lokka = require('lokka').Lokka;
 
 async function getToken(email, password) {
   const anonLokka = new Lokka({
-    transport: new HttpTransport('http://localhost:5000/graphql'),
+    transport: new HttpTransport(`http://${process.env.GRAPHQL_ENDPOINT}:${process.env.BACKEND_PORT}/graphql`),
   });
 
   const response = await anonLokka.send(
@@ -29,7 +29,7 @@ async function getAuthorizedLokka(username, password) {
     Authorization: 'Bearer ' + token,
   };
   const lokka = new Lokka({
-    transport: new HttpTransport('http://localhost:5000/graphql', { headers }),
+    transport: new HttpTransport(`http://${process.env.GRAPHQL_ENDPOINT}:${process.env.BACKEND_PORT}/graphql`, { headers }),
   });
 
   return lokka;

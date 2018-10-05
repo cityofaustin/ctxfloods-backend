@@ -2,3 +2,5 @@ node_modules
 .serverless
 pgCatalog/pgCatalog.json
 yarn-error.log
+*.tmp
+local
