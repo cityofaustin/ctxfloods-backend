@@ -25,4 +25,8 @@ sls deploy -v | tee out.tmp
 export PGENDPOINT=$(grep "PgEndpoint" out.tmp | cut -f2- -d: | cut -c2-)
 yarn migrate
 # node ./pgCatalog/buildPgCatalog.js postgresql://$PGUSERNAME:$PGPASSWORD@$PGENDPOINT:5432/floods floods
+
+# Seed Data
+export GRAPHQL_ENDPOINT=$(grep "GraphqlEndpoint" out.tmp | cut -f2- -d: | cut -c2-)
+
 rm out.tmp
