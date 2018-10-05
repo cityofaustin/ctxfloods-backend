@@ -20,6 +20,9 @@ yarn
 
 # Deploy with serverless
 sls deploy -v | tee out.tmp
+if [ "${PIPESTATUS[0]}" != "0" ]; then
+  exit 1
+fi
 
 # Run migrations
 export PGENDPOINT=$(grep "PgEndpoint" out.tmp | cut -f2- -d: | cut -c2-)
