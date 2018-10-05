@@ -23,3 +23,4 @@ export JWT_SECRET=$JWT_SECRET_DEV_TRAVIS
 export PGUSERNAME=example
 export PGPASSWORD=serverless
 export BACKEND_PORT=5000
+export AWS_STAGE=dev
