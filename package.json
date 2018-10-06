@@ -11,20 +11,21 @@
     "BACKEND_PORT_LOCAL": "5000"
   },
   "scripts": {
-    "start": "yarn migrate-local; yarn build-local-schema; yarn start-express-server",
-    "start-express-server": "PGCON=$npm_package_config_PGLOCALRUNCON FRONTEND_URL=$npm_package_config_FRONTEND_URL_LOCAL BACKEND_PORT=$npm_package_config_BACKEND_PORT_LOCAL JWT_SECRET='insecure' node localServer.js",
+    "start-local": "yarn source-local; yarn migrate-local; yarn build-local-schema; yarn start-express-server",
+    "start-express-server": "yarn source-local; node localServer.js",
     "test": "yarn drop-local-data; yarn migrate-local; yarn build-local-schema; yarn add-test-data; yarn start-express-server & JWT_SECRET='insecure' BACKEND_PORT=$npm_package_config_BACKEND_PORT_LOCAL react-scripts test",
     "migrate": "node populateDB/migrate.js",
-    "migrate-local": "PGENDPOINT='localhost' PGUSERNAME='postgres' PGPASSWORD='password' node populateDB/migrate.js",
+    "migrate-local": "yarn source-local; node populateDB/migrate.js",
     "add-setup-data-local": "psql $npm_package_config_PGLOCALCON -f ./populateDB/addSetupData.sql",
     "add-communities-local": "psql $npm_package_config_PGLOCALCON -f ./populateDB/data/addCommunities.sql",
     "add-waze-streets-local": "BACKEND_PORT=$npm_package_config_BACKEND_PORT_LOCAL node ./populateDB/data/addWazeStreets.js",
     "add-crossings-local": "BACKEND_PORT=$npm_package_config_BACKEND_PORT_LOCAL node ./populateDB/data/addLegacyCrossings.js",
     "init-local-db": "psql $npm_package_config_PGLOCALINITCON -f ./populateDB/initLocal.sql",
-    "drop-local-data": "psql $npm_package_config_PGLOCALCON -f ./populateDB/drop.sql",
+    "drop-local-data": "yarn source-local; psql $npm_package_config_PGLOCALCON -f ./populateDB/drop.sql",
     "build-schema": "node ./pgCatalog/buildPgCatalog.js $npm_config_PGCON floods",
-    "build-local-schema": "node ./pgCatalog/buildPgCatalog.js $npm_package_config_PGLOCALCON floods",
-    "add-test-data": "psql $npm_package_config_PGLOCALCON -f ./populateDB/testing/addTestData.sql"
+    "build-local-schema": "node ./pgCatalog/buildPgCatalog.js floods",
+    "add-test-data": "psql $npm_package_config_PGLOCALCON -f ./populateDB/testing/addTestData.sql",
+    "source-local": "source ./deployment/vars/local.sh"
   },
   "author": "Richard",
   "license": "MIT",

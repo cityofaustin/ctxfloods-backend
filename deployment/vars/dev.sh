@@ -1,3 +1,4 @@
+# AWS
 case $TRAVIS_EVENT_TYPE in
   push)
     # Set to branch name during push builds
@@ -14,13 +15,21 @@ case $TRAVIS_EVENT_TYPE in
     export AWS_SERVICE_NAME=ctx-floods-backend-$TRAVIS_EVENT_TYPE-$TRAVIS_JOB_ID
     ;;
 esac
-export FRONTEND_URL="derp@nick.arg"
 export AWS_ACCESS_KEY_ID=$ACCESS_KEY_ID_DEV_TRAVIS
 export AWS_SECRET_ACCESS_KEY=$SECRET_ACCESS_KEY_DEV_TRAVIS
+export AWS_STAGE=dev
+
+# Gmail
 export GMAIL_ADDRESS=$GMAIL_ADDRESS_DEV_TRAVIS
 export GMAIL_PASSWORD=$GMAIL_PASSWORD_DEV_TRAVIS
+
+# App
 export JWT_SECRET=$JWT_SECRET_DEV_TRAVIS
+export FRONTEND_URL=""
+export BACKEND_PORT=5000
+# POSTGRAPHQL_ENDPOINT defined in serverless.yml
+
+# Postgres
 export PGUSERNAME=example
 export PGPASSWORD=serverless
-export BACKEND_PORT=5000
-export AWS_STAGE=dev
+# PGENDPOINT assigned in serverless.yml
