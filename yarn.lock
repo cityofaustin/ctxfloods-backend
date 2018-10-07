@@ -1033,6 +1033,10 @@ bluebird@^3.3.5, bluebird@^3.4.7:
   version "3.5.1"
   resolved "https://registry.yarnpkg.com/bluebird/-/bluebird-3.5.1.tgz#d9551f9de98f1fcda1e683d17ee91a0602ee2eb9"
 
+bluebird@^3.5.2:
+  version "3.5.2"
+  resolved "https://registry.yarnpkg.com/bluebird/-/bluebird-3.5.2.tgz#1be0908e054a751754549c270489c1505d4ab15a"
+
 bn.js@^4.0.0, bn.js@^4.1.0, bn.js@^4.1.1, bn.js@^4.4.0:
   version "4.11.8"
   resolved "https://registry.yarnpkg.com/bn.js/-/bn.js-4.11.8.tgz#2cde09eb5ee341f484746bb0309b3253b1b1442f"
@@ -4600,6 +4604,10 @@ makeerror@1.0.x:
   dependencies:
     tmpl "1.0.x"
 
+manakin@0.5.1:
+  version "0.5.1"
+  resolved "https://registry.yarnpkg.com/manakin/-/manakin-0.5.1.tgz#c4a7116f6b00df3d5f1a37ad3ca515d22065a658"
+
 map-cache@^0.2.2:
   version "0.2.2"
   resolved "https://registry.yarnpkg.com/map-cache/-/map-cache-0.2.2.tgz#c32abd0bd6525d9b051645bb4f26ac5dc98a0dbf"
@@ -5355,6 +5363,10 @@ pg-int8@1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/pg-int8/-/pg-int8-1.0.1.tgz#943bd463bf5b71b4170115f80f8efc9a0c0eb78c"
 
+pg-minify@0.5.4:
+  version "0.5.4"
+  resolved "https://registry.yarnpkg.com/pg-minify/-/pg-minify-0.5.4.tgz#89d5261cacfd44dd7927fa052222a404e9b2a3c9"
+
 pg-minify@^0.4.1, pg-minify@^0.4.2:
   version "0.4.5"
   resolved "https://registry.yarnpkg.com/pg-minify/-/pg-minify-0.4.5.tgz#d3e92fb690f9283b8a37866e4566fce9fed26150"
@@ -5369,6 +5381,15 @@ pg-pool@1.*:
 pg-pool@~2.0.3:
   version "2.0.3"
   resolved "https://registry.yarnpkg.com/pg-pool/-/pg-pool-2.0.3.tgz#c022032c8949f312a4f91fb6409ce04076be3257"
+
+pg-promise@^8.4.6:
+  version "8.4.6"
+  resolved "https://registry.yarnpkg.com/pg-promise/-/pg-promise-8.4.6.tgz#daccfcd5545e7fe165f26f76b4141661afe48d05"
+  dependencies:
+    manakin "0.5.1"
+    pg "7.4.3"
+    pg-minify "0.5.4"
+    spex "2.0.2"
 
 pg-types@1.*:
   version "1.13.0"
@@ -5388,6 +5409,18 @@ pg-types@~1.12.1:
     postgres-bytea "~1.0.0"
     postgres-date "~1.0.0"
     postgres-interval "^1.1.0"
+
+pg@7.4.3:
+  version "7.4.3"
+  resolved "https://registry.yarnpkg.com/pg/-/pg-7.4.3.tgz#f7b6f93f5340ecc2596afbb94a13e3d6b609834b"
+  dependencies:
+    buffer-writer "1.0.1"
+    packet-reader "0.3.1"
+    pg-connection-string "0.1.3"
+    pg-pool "~2.0.3"
+    pg-types "~1.12.1"
+    pgpass "1.x"
+    semver "4.3.2"
 
 pg@^6.1.0:
   version "6.4.2"
@@ -6777,6 +6810,10 @@ spdy@^3.4.1:
     safe-buffer "^5.0.1"
     select-hose "^2.0.0"
     spdy-transport "^2.0.18"
+
+spex@2.0.2:
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/spex/-/spex-2.0.2.tgz#e8c8d633a4c67af642dded701ec2350c9de964a0"
 
 split-string@^3.0.1, split-string@^3.0.2:
   version "3.1.0"
