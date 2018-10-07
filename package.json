@@ -26,7 +26,8 @@
     "build-local-schema": "node ./pgCatalog/buildPgCatalog.js floods",
     "add-test-data": "psql $npm_package_config_PGLOCALCON -f ./populateDB/testing/addTestData.sql",
     "local-source": "source ./deployment/vars/local.sh",
-    "nick-init": "yarn local-source; node ./seed/initialize.js"
+    "nick-init": "yarn local-source; node ./db/index.js",
+    "nick-drop": "yarn local-source; node ./db/drop.js"
   },
   "author": "Richard",
   "license": "MIT",

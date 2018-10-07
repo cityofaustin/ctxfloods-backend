@@ -1,5 +1,6 @@
 # AWS
-# Not required for local testing
+export AWS_STAGE='dev'
+# Others not required for local testing
 
 # Gmail
 # Not required for local testing
