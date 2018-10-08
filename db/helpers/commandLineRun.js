@@ -11,14 +11,14 @@ module.exports = (cb, db) => {
     return cb(conn);
   })
   .catch((err)=>{
-    console.log("oh noo", err);
+    console.error(err);
     errFlag = true;
-    process.exit(1);
   })
   .finally(() => {
     if (conn) conn.done();
   })
   .then(() => {
     if (errFlag) process.exit(1); //Must exit with error for propagate to TravisCI
+    process.exit();
   })
 }

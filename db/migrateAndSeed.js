@@ -6,12 +6,20 @@ const path = require('path');
 const floodsExists = require('./floodsExists');
 const initialize = require('./initialize');
 const migrate = require('./migrate');
-const addWazeStreets = require('../populateDB/data/addWazeStreets');
-const addLegacyCrossings = require('../populateDB/data/addLegacyCrossings')
+const seed = require('./seed');
 
 const defaultDb = require('./cons/default');
 let localServer, defaultConn, floodsConn, errFlag = false, newInstance = false;
 
+/**
+  Complete database initialization script.
+  1) initialize: Creates 'floods' database if it doesn't exist
+  2) migrate: Performs migrations
+  3) seed: Will only seed data if this is a new database
+
+  Idempotent - can be run multiple times without contaminating data.
+  Seed script only runs at first db initialization.
+**/
 return defaultDb.connect({direct: true})
 .then((result) => {
   defaultConn = result;
@@ -31,31 +39,7 @@ return defaultDb.connect({direct: true})
     return floodsDb.connect({direct: true})
     .then((result) => {
       floodsConn = result;
-      console.log("Adding Setup Data");
-      const addSetupData = new QueryFile(path.join(__dirname, '/../populateDB/data/addSetupData.sql'), {minify: true});
-      return floodsConn.query(addSetupData)
-    })
-    .then(() => {
-      console.log("Adding Communities");
-      const addCommunities = new QueryFile(path.join(__dirname, '/../populateDB/data/addCommunities.sql'), {minify: true});
-      return floodsConn.query(addCommunities)
-    })
-    .then(() => {
-      localServer = require('../localServer');
-      console.log("Adding Waze Streets");
-      return Promise.method(addWazeStreets)()
-      // .tap(()=> {
-      //   console.log("TAPPED WazeStreets")
-      // })
-    })
-    .then(() => {
-      return Promise.method(addLegacyCrossings)()
-      // .tap(()=> {
-      //   console.log("TAPPED legacy")
-      // })
-      // .then(()=>{
-      //   console.log("THENED")
-      // })
+      return seed(floodsConn)
     })
   }
 })

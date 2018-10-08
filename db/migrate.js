@@ -1,7 +1,7 @@
 const {migrate} = require("postgres-migrations")
 const path = require('path');
 
-module.exports = () => {
+const runMigrate = () => {
   console.log("Migrate is running now!");
   return migrate({
     database: "floods",
@@ -10,4 +10,10 @@ module.exports = () => {
     host: process.env.PGENDPOINT,
     port: 5432,
   }, path.join(__dirname, "/../populateDB/migrations"))
+}
+
+module.exports = runMigrate;
+
+if (require.main === module) {
+  runMigrate();
 }
