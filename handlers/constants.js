@@ -5,4 +5,4 @@ module.exports.PGCON =
   `postgresql://floods_postgraphql:xyz@${process.env.PGENDPOINT}:5432/floods`;
 
 module.exports.PGCON_BUILD_SCHEMA =
-  `postgresql://postgres@${process.env.PGENDPOINT}:5432/floods`
+  `postgresql://${process.env.PGUSERNAME}:${process.env.PGPASSWORD}@${process.env.PGENDPOINT}:5432/floods`
