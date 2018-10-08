@@ -1,5 +1,4 @@
 const fs = require('fs');
-const csv = require('csv');
 const util = require('util');
 const dsv = require('d3-dsv');
 const readFile = util.promisify(fs.readFile);
@@ -134,19 +133,4 @@ async function processCrossings() {
   }
 }
 
-async function addLegacyCrossings() {
-  // const localServer = require('../../localServer');
-  await fs.readFile('populateDB/data/legacyCrossings.csv', 'utf8', async (err, data) => {
-    await csv.parse(data, { columns: true }, async (err, data) => {
-      await processCrossings(data);
-    });
-  });
-}
-
 module.exports = processCrossings;
-
-if (require.main === module) {
-  process.env.JWT_SECRET="insecure";
-  localServer = require('../../localServer');
-  processCrossings();
-}

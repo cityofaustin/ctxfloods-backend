@@ -31,16 +31,16 @@ const dropFloodsData = (destroy=false) => {
   })
   .then((result) => {
     floodsConn = result;
-    const dropScript1 = new QueryFile(path.join(__dirname, '/../populateDb/drop1.sql'), {minify: true});
+    const dropScript1 = new QueryFile(path.join(__dirname, '/../populateDB/drop1.sql'), {minify: true});
     return floodsConn.query(dropScript1);
   })
   .then(() => {
     floodsConn.done();
     if (destroy) {
-      const dropScript2 = new QueryFile(path.join(__dirname, '/../populateDb/drop2.sql'), {minify: true});
+      const dropScript2 = new QueryFile(path.join(__dirname, '/../populateDB/drop2.sql'), {minify: true});
       return defaultConn.query(dropScript2)
       .then(() => {
-        const dropScript3 = new QueryFile(path.join(__dirname, '/../populateDb/drop3.sql'), {minify: true});
+        const dropScript3 = new QueryFile(path.join(__dirname, '/../populateDB/drop3.sql'), {minify: true});
         return defaultConn.query(dropScript3);
       })
     }
@@ -65,6 +65,7 @@ const dropFloodsData = (destroy=false) => {
   })
   .then(() => {
     if (errFlag) process.exit(1);
+    process.exit();
   })
 }
 

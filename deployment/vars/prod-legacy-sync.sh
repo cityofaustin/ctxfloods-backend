@@ -1,8 +1,8 @@
 # AWS
-export AWS_SERVICE_NAME=test2-ctx-floods-backend-dev-travis
+export AWS_SERVICE_NAME=ctx-floods-backend-prod-legacy-sync-test
 export AWS_ACCESS_KEY_ID=$ACCESS_KEY_ID_DEV_TRAVIS
 export AWS_SECRET_ACCESS_KEY=$SECRET_ACCESS_KEY_DEV_TRAVIS
-export AWS_STAGE=dev
+export AWS_STAGE=prod # TODO - check if "prod"" triggers anything different
 
 # Gmail
 export GMAIL_ADDRESS=$GMAIL_ADDRESS_DEV_TRAVIS

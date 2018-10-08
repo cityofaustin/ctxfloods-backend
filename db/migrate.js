@@ -15,5 +15,8 @@ const runMigrate = () => {
 module.exports = runMigrate;
 
 if (require.main === module) {
-  runMigrate();
+  runMigrate()
+  .catch((err) => {
+    console.log(err);
+  })
 }

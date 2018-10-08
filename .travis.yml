@@ -2,7 +2,7 @@ language: node_js
 node_js:
 - 8
 addons:
-  postgresql: "9.5"
+  postgresql: 9.5
   apt:
     packages:
     - postgresql-9.5-postgis-2.3
@@ -15,18 +15,13 @@ deploy:
   - provider: script
     script: bash ./deployment/deploy.sh prod
     on:
-      # branch: master
-      all_branches: true
-      condition: $(node ./deployment/checkDevBranchWhitelist.js)
+      branch: master
   - provider: script
     script: bash ./deployment/deploy.sh prod-legacy-sync
     on:
-      # branch: master
+      branch: master
+  - provider: script
+    script: bash ./deployment/deploy.sh
+    on:
       all_branches: true
       condition: $(node ./deployment/checkDevBranchWhitelist.js)
-  # - provider: script
-  #   script: bash ./deployment/deploy.sh
-  #   on:
-  #     condition: |
-  #       false OR \
-  #       branch = dev-travis-hack

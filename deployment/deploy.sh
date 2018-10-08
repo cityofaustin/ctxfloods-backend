@@ -30,7 +30,7 @@ export GRAPHQL_ENDPOINT=$(grep "GraphqlEndpoint" out.tmp | cut -f2- -d: | cut -c
 node ./db/migrateAndSeed.js
 
 # Build-Schema
-# TODOD - remove this hack step and replace with lambda service in graphile update
+# TODO - remove this hack step and replace with lambda service during graphile update
 echo Building Schema
 node ./pgCatalog/buildPgCatalog.js
 sls deploy -v

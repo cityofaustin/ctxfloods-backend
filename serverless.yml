@@ -1,4 +1,4 @@
-service: ctxfloods-${env:CURRENT_FLOODS_BRANCH_NAME}
+service: ${env:AWS_SERVICE_NAME}
 
 plugins:
   - serverless-content-encoding
@@ -116,7 +116,6 @@ functions:
           path: incident/report
           cors: true
     environment:
-      JWT_SECRET: ${env:JWT_SECRET}
       GRAPHQL_ENDPOINT: ${self:custom.GRAPHQL_ENDPOINT}
   emailreset:
     handler: handlers/resetEmailHandler.handle
@@ -182,21 +181,3 @@ resources:
     GraphqlEndpoint:
       Description: "URL of /graphql Endpoint"
       Value: ${self:custom.GRAPHQL_ENDPOINT}
-        # Fn::Join: [ "", [ 'https://', '.execute-api.']]
-
-          # - ''
-          # - - 'https://'
-          #   - '.execute-api.'
-            # - ${self:provider.region}
-            # - .amazonaws.com/
-            # - ${self:provider.stage}
-            # - /graphql
-        # { "Fn::Join" : [ "", [
-        #   "https://",
-        #   {"Ref": "ApiGatewayRestApi" },
-        #   ".execute-api.",
-        #   ${self:provider.region},
-        #   ".amazonaws.com/",
-        #   ${self:provider.stage},
-        #   "/graphql"
-        # ]]}
