@@ -28,11 +28,21 @@ fi
 export PGENDPOINT=$(grep "PgEndpoint" out.tmp | cut -f2- -d: | cut -c2-)
 export GRAPHQL_ENDPOINT=$(grep "GraphqlEndpoint" out.tmp | cut -f2- -d: | cut -c2-)
 node ./db/migrateAndSeed.js
+if [ $? != 0 ]; then
+  exit 1
+fi
 
 # Build-Schema
 # TODO - remove this hack step and replace with lambda service during graphile update
 echo Building Schema
 node ./pgCatalog/buildPgCatalog.js
+if [ $? != 0 ]; then
+  exit 1
+fi
+
 sls deploy -v
+if [ $? != 0 ]; then
+  exit 1
+fi
 
 rm out.tmp

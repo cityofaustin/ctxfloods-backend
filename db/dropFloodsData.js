@@ -16,6 +16,7 @@ let floodsConn, defaultConn, errFlag = false;
   @param destroy: Boolean, default=false - if triggered, will destroy floods database in addition to deleting its data
 **/
 const dropFloodsData = (destroy=false) => {
+  console.log("Begin Dropping Floods Data");
   defaultDb.connect({direct: true})
   .then((result) => {
     defaultConn = result;
@@ -44,6 +45,9 @@ const dropFloodsData = (destroy=false) => {
         return defaultConn.query(dropScript3);
       })
     }
+  })
+  .then(()=>{
+    console.log("Finish Dropping Floods Data");
   })
   .catch((err)=>{
     console.log(err);

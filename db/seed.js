@@ -27,7 +27,9 @@ const seed = (conn) => {
     return conn.query(addCommunities)
   })
   .then(() => {
-    localServer = require('../localServer');
+    if (process.env.PG_ENDPOINT === "localhost") {
+      localServer = require('../localServer');
+    }
     console.log("Adding Waze Streets");
     return Promise.method(addWazeStreets)()
   })
