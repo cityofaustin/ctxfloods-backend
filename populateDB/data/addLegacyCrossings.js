@@ -1,7 +1,17 @@
 const fs = require('fs');
 const csv = require('csv');
+const util = require('util');
+const dsv = require('d3-dsv');
+const readFile = util.promisify(fs.readFile);
 
 const { getAuthorizedLokka } = require('../../handlers/graphql');
+
+const LegacyCrossingsCsvPath = `${__dirname}/legacyCrossings.csv`;
+
+async function loadCsv(path) {
+  const str = await readFile(path, 'utf-8');
+  return dsv.csvParse(str)
+}
 
 async function addCrossing(lokka, crossing) {
   const response = await lokka.send(
@@ -14,7 +24,7 @@ async function addCrossing(lokka, crossing) {
         }
       }
     }
-  `,
+    `,
     {
       name: crossing.name,
       communityId: crossing.communityId,
@@ -41,7 +51,7 @@ async function addCrossingToCommunity(lokka, crossingId, communityId) {
         }
       }
     }
-  `,
+    `,
     {
       crossingId: crossingId,
       communityId: communityId,
@@ -86,46 +96,57 @@ async function removeCrossing(lokka, crossingId) {
   return response.removeCrossing.crossing.id;
 }
 
-async function processCrossings(crossings) {
-  try {
-    const lokka = await getAuthorizedLokka('superadmin@flo.ods', 'texasfloods');
+async function processCrossings() {
 
-    console.log('Removing Existing Crossings');
-    const existingCrossings = await getExistingCrossings(lokka);
+  const lokka = await getAuthorizedLokka('superadmin@flo.ods', 'texasfloods');
 
-    for (crossing of existingCrossings) {
-      const removedCrossingId = await removeCrossing(lokka, crossing.id);
-      console.log(`Removed existing crossing with id: ${removedCrossingId}`);
+  let crossings = await loadCsv(LegacyCrossingsCsvPath);
+
+  console.log('Removing Existing Crossings');
+  const existingCrossings = await getExistingCrossings(lokka);
+
+  for (crossing of existingCrossings) {
+    const removedCrossingId = await removeCrossing(lokka, crossing.id);
+    // console.log(`Removed existing crossing with id: ${removedCrossingId}`);
+  }
+
+  console.log('Adding Legacy Crossings');
+  let legacyToNewMap = {};
+  for (crossing of crossings) {
+    const newId = legacyToNewMap[crossing.legacyId];
+
+    if (!newId) {
+      const newCrossing = await addCrossing(lokka, crossing);
+      legacyToNewMap[newCrossing.legacyId] = newCrossing.id;
+      // console.log(`Added legacy crossing ${newCrossing.legacyId} to DB`);
+    } else {
+      const updatedCrossing = await addCrossingToCommunity(
+        lokka,
+        newId,
+        crossing.communityId,
+      );
+      // console.log(
+      //   `Added legacy crossing ${updatedCrossing.legacyId} to community ${
+      //     crossing.communityId
+      //   }`,
+      // );
     }
-
-    let legacyToNewMap = {};
-    for (crossing of crossings) {
-      const newId = legacyToNewMap[crossing.legacyId];
-
-      if (!newId) {
-        const newCrossing = await addCrossing(lokka, crossing);
-        legacyToNewMap[newCrossing.legacyId] = newCrossing.id;
-        console.log(`Added legacy crossing ${newCrossing.legacyId} to DB`);
-      } else {
-        const updatedCrossing = await addCrossingToCommunity(
-          lokka,
-          newId,
-          crossing.communityId,
-        );
-        console.log(
-          `Added legacy crossing ${updatedCrossing.legacyId} to community ${
-            crossing.communityId
-          }`,
-        );
-      }
-    }
-  } catch (err) {
-    console.error(err);
   }
 }
 
-fs.readFile('populateDB/data/legacyCrossings.csv', 'utf8', (err, data) => {
-  csv.parse(data, { columns: true }, (err, data) => {
-    processCrossings(data);
+async function addLegacyCrossings() {
+  // const localServer = require('../../localServer');
+  await fs.readFile('populateDB/data/legacyCrossings.csv', 'utf8', async (err, data) => {
+    await csv.parse(data, { columns: true }, async (err, data) => {
+      await processCrossings(data);
+    });
   });
-});
+}
+
+module.exports = processCrossings;
+
+if (require.main === module) {
+  process.env.JWT_SECRET="insecure";
+  localServer = require('../../localServer');
+  processCrossings();
+}

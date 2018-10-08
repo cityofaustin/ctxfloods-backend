@@ -6,4 +6,14 @@ const pg = require('pg-promise')({
   promiseLib: Promise
 });
 
+process.on('SIGTERM', () => {
+  console.log("Signal Terminated - closing pg");
+  pg.end();
+});
+
+process.on('SIGINT', () => {
+  console.log("Signal Interrupted - closing pg");
+  pg.end();
+});
+
 module.exports = pg;

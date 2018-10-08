@@ -14,7 +14,7 @@ async function loadCsv(path) {
   return dsv.csvParse(str);
 }
 
-async function main() {
+async function addWazeStreets() {
   const lokka = await getAuthorizedLokka('superadmin@flo.ods', 'texasfloods');
 
   let wazeStreetsCsv = await loadCsv(WazeStreetsCsvPath);
@@ -51,15 +51,10 @@ async function main() {
     `,
       wazeStreet,
     );
-    console.log(
-      `Added wazeStreet ${result.newWazeStreetWithId.wazeStreet.id} to DB`,
-    );
+    // console.log(
+    //   `Added wazeStreet ${result.newWazeStreetWithId.wazeStreet.id} to DB`,
+    // );
   }
 }
 
-try {
-  main();
-} catch (err) {
-  console.error(err);
-  throw err;
-}
+module.exports = addWazeStreets;

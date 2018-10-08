@@ -12,7 +12,7 @@ fs.readFile(
       .query({
         name: 'introspectionQuery',
         text: minify(data.toString()),
-        values: [[process.argv[2]]],
+        values: [['floods']],
       })
       .then(res => {
         const out = res.rows.map(function(x) {

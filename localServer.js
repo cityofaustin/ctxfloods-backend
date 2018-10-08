@@ -59,20 +59,18 @@ app.post('/email/reset', (req, res) => {
   });
 });
 
-const server = app.listen(process.env.BACKEND_PORT);
+const server = app.listen(process.env.BACKEND_PORT, () => {
+  console.log("Local Server started");
+});
 
 process.on('SIGTERM', () => {
-  console.log("Signal Terminated");
-  server.close(() => {
-    process.exit();
-  });
+  console.log("Signal Terminated - closing express server");
+  server.close();
 });
 
 process.on('SIGINT', () => {
-  console.log("Signal Interrupted");
-  server.close(() => {
-    process.exit();
-  });
+  console.log("Signal Interrupted - closing express server");
+  server.close();
 });
 
 module.exports = server;

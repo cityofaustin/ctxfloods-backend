@@ -27,7 +27,7 @@ export GMAIL_PASSWORD=$GMAIL_PASSWORD_DEV_TRAVIS
 export JWT_SECRET=$JWT_SECRET_DEV_TRAVIS
 export FRONTEND_URL=""
 export BACKEND_PORT=5000
-# POSTGRAPHQL_ENDPOINT defined in serverless.yml
+# GRAPHQL_ENDPOINT defined in serverless.yml
 
 # Postgres
 export PGUSERNAME=example
