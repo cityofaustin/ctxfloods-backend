@@ -1,12 +1,10 @@
-const Promise = require('bluebird');
-const pg = require('./pg.js');
-const QueryFile = pg.QueryFile;
+const fs = require('fs');
 const path = require('path');
 const commandLineRun = require("./helpers/commandLineRun")
 
 const addWazeStreets = require('../populateDB/data/addWazeStreets');
 const addLegacyCrossings = require('../populateDB/data/addLegacyCrossings');
-
+let localServer;
 /**
   Seeds a database with
   1) Setup data
@@ -15,35 +13,40 @@ const addLegacyCrossings = require('../populateDB/data/addLegacyCrossings');
   4) Legacy Crossings
 
   Migrate must be run before seeding.
-  @param conn Client - a connection to a database
+  @param client Client - a connection to a database
 **/
-const seed = (conn) => {
+const seed = (client) => {
   console.log("Adding Setup Data");
-  const addSetupData = new QueryFile(path.join(__dirname, '/../populateDB/data/addSetupData.sql'), {minify: true});
-  return conn.query(addSetupData)
+  const addSetupData = fs.readFileSync(path.join(__dirname, '/../populateDB/data/addSetupData.sql'), 'utf8');
+  return client.query(addSetupData)
   .then(() => {
     console.log("Adding Communities");
-    const addCommunities = new QueryFile(path.join(__dirname, '/../populateDB/data/addCommunities.sql'), {minify: true});
-    return conn.query(addCommunities)
+    const addCommunities = fs.readFileSync(path.join(__dirname, '/../populateDB/data/addCommunities.sql'), 'utf8');
+    return client.query(addCommunities)
   })
-  .then(() => {
-    if (process.env.PG_ENDPOINT === "localhost") {
+  .then(async () => {
+    if (process.env.PGENDPOINT === "localhost") {
       localServer = require('../localServer');
     }
     console.log("Adding Waze Streets");
-    return Promise.method(addWazeStreets)()
+    await addWazeStreets();
+    console.log("Skipping??")
   })
-  .then(() => {
-    return Promise.method(addLegacyCrossings)()
+  .then(async () => {
+    await addLegacyCrossings()
   })
   .then(() => {
     console.log("Finished Seeding Data")
+  })
+  .finally(() => {
+    if (localServer) localServer.close(()=>{
+      console.log("Local server closed");
+    });
   })
 };
 
 module.exports = seed;
 
 if (require.main === module) {
-  const floodsDb = require('./cons/floods');
-  commandLineRun(seed, floodsDb);
+  commandLineRun(seed, "floodsAPI");
 }

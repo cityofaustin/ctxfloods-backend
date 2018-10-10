@@ -1,12 +1,11 @@
-const Promise = require('bluebird');
-const pg = require('../db/pg.js');
-const QueryFile = pg.QueryFile;
+require('promise.prototype.finally').shim();
+const fs = require('fs');
 const path = require('path');
-const floodsDb = require('./cons/floods');
-const defaultDb = require('./cons/default');
+
+const getClient = require('./cons/getClient');
 const floodsExists = require('./floodsExists');
 
-let floodsConn, defaultConn, errFlag = false;
+let floodsClient, masterClient, errFlag = false;
 
 /**
   Drops all data in floods database.
@@ -17,32 +16,34 @@ let floodsConn, defaultConn, errFlag = false;
 **/
 const dropFloodsData = (destroy=false) => {
   console.log("Begin Dropping Floods Data");
-  defaultDb.connect({direct: true})
+  getClient("master")
   .then((result) => {
-    defaultConn = result;
-    return floodsExists(defaultConn);
+    masterClient = result;
+    return floodsExists(masterClient);
   })
   .then((result) => {
     if (!result) {
       console.log("Nothing to drop - floods already doesn't exist");
-      defaultConn.done();
-      process.exit(0);
+      return masterClient.end()
+      .then(()=>{
+        process.exit(0);
+      })
     }
-    return floodsDb.connect({direct: true})
+    return getClient("floodsAPI")
   })
   .then((result) => {
-    floodsConn = result;
-    const dropScript1 = new QueryFile(path.join(__dirname, '/../populateDB/drop1.sql'), {minify: true});
-    return floodsConn.query(dropScript1);
+    floodsClient = result;
+    const dropScript1 = fs.readFileSync(path.join(__dirname, '/../populateDB/drop1.sql'), 'utf8');
+    return floodsClient.query(dropScript1);
   })
+  .then(() => floodsClient.end())
   .then(() => {
-    floodsConn.done();
     if (destroy) {
-      const dropScript2 = new QueryFile(path.join(__dirname, '/../populateDB/drop2.sql'), {minify: true});
-      return defaultConn.query(dropScript2)
+      const dropScript2 = fs.readFileSync(path.join(__dirname, '/../populateDB/drop2.sql'), 'utf8');
+      return masterClient.query(dropScript2)
       .then(() => {
-        const dropScript3 = new QueryFile(path.join(__dirname, '/../populateDB/drop3.sql'), {minify: true});
-        return defaultConn.query(dropScript3);
+        const dropScript3 = fs.readFileSync(path.join(__dirname, '/../populateDB/drop3.sql'), 'utf8');
+        return masterClient.query(dropScript3);
       })
     }
   })
@@ -55,19 +56,19 @@ const dropFloodsData = (destroy=false) => {
   })
   .finally(() => {
     try {
-      if (floodsConn && !floodsConn._ending && floodsConn._connected) floodsConn.done();
+      if (floodsClient && !floodsClient._ending && floodsClient._connected) floodsClient.end();
     } catch(err) {
-      console.log("Problem disconnecting floodsConn", err)
-      errFlag = true
+      console.log("Problem disconnecting floodsClient", err);
+      errFlag = true;
     }
     try {
-      if (defaultConn) defaultConn.done();
+      if (masterClient) masterClient.end();
     } catch(err) {
-      console.log("Problem disconnecting defaultConn", err)
-      errFlag = true
+      console.log("Problem disconnecting masterClient", err);
+      errFlag = true;
     }
   })
-  .then(() => {
+  .finally(() => {
     if (errFlag) process.exit(1);
     process.exit();
   })

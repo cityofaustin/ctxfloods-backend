@@ -28,7 +28,6 @@ provider:
     BACKEND_PORT: ${env:BACKEND_PORT}
   region: us-east-1
   stage: ${env:AWS_STAGE}
-  # profile: reportingtool
 
 functions:
   graphql:
@@ -147,7 +146,7 @@ resources:
   pgSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
-      GroupDescription: Acess to Postgre
+      GroupDescription: Access to Postgres
       SecurityGroupIngress:
       - IpProtocol: tcp
         FromPort: '5432'

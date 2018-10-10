@@ -4,11 +4,11 @@ Check if "floods" database exists on target Postgres connection
 **/
 const floodsExists = (conn) => {
   return conn.query(`select 1 as result from pg_database where datname='floods'`)
-  .then((data) => {
-    if (data.length === 0) {
+  .then((result) => {
+    if (result.rowCount === 0) {
       return false
     } else {
-      return data[0].result === 1
+      return result.rows[0].result === 1
     }
   })
 }

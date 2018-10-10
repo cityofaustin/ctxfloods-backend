@@ -1,15 +1,13 @@
-const Promise = require('bluebird');
-const pg = require('./pg.js');
-const QueryFile = pg.QueryFile;
+require('promise.prototype.finally').shim();
 const path = require('path');
 
+const getClient = require('./cons/getClient');
 const floodsExists = require('./floodsExists');
 const initialize = require('./initialize');
 const migrate = require('./migrate');
 const seed = require('./seed');
 
-const defaultDb = require('./cons/default');
-let localServer, defaultConn, floodsConn, errFlag = false, newInstance = false;
+let localServer, masterClient, floodsClient, errFlag = false, newInstance = false;
 
 /**
   Complete database initialization script.
@@ -20,26 +18,25 @@ let localServer, defaultConn, floodsConn, errFlag = false, newInstance = false;
   Idempotent - can be run multiple times without contaminating data.
   Seed script only runs at first db initialization.
 **/
-return defaultDb.connect({direct: true})
+getClient("master")
 .then((result) => {
-  defaultConn = result;
-  return floodsExists(defaultConn);
+  masterClient = result;
+  return floodsExists(masterClient);
 })
 .then((result) => {
   if (!result) {
     newInstance = true;
-    return initialize(defaultConn);
+    return initialize(masterClient);
   }
 })
 .then(() => migrate())
 .then(() => {
   if (newInstance) {
     console.log("Seeding data for new floods database");
-    const floodsDb = require('./cons/floods');
-    return floodsDb.connect({direct: true})
+    return getClient("floodsAPI")
     .then((result) => {
-      floodsConn = result;
-      return seed(floodsConn)
+      floodsClient = result;
+      return seed(floodsClient)
     })
   }
 })
@@ -51,10 +48,9 @@ return defaultDb.connect({direct: true})
   errFlag = true;
 })
 .finally(() => {
-  if (defaultConn) defaultConn.done();
-  if (floodsConn) floodsConn.done();
-  // if (localServer) localServer.close();
+  if (masterClient) masterClient.end();
+  if (floodsClient) floodsClient.end();
+  console.log("Exiting Safely");
   if (errFlag) process.exit(1); //Must exit with error to propagate to TravisCI
-  console.log("Exiting");
   process.exit();
 })

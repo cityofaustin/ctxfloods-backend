@@ -40,7 +40,7 @@ if [ $? != 0 ]; then
   exit 1
 fi
 
-sls deploy -v
+sls deploy -f graphql
 if [ $? != 0 ]; then
   exit 1
 fi

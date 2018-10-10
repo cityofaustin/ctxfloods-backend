@@ -1,16 +1,14 @@
-const pg = require('./pg.js');
-const QueryFile = pg.QueryFile;
+const fs = require('fs');
 const path = require('path');
 const commandLineRun = require('./helpers/commandLineRun');
 
-const addTestData = (conn) => {
-  const addTestData = new QueryFile(path.join(__dirname, '/../populateDB/testing/addTestData.sql'), {minify: true});
-  return conn.query(addTestData);
+const addTestData = (client) => {
+  const addTestData = fs.readFileSync(path.join(__dirname, '/../populateDB/testing/addTestData.sql'), 'utf8');
+  return client.query(addTestData);
 }
 
 module.exports = addTestData;
 
 if (require.main === module) {
-  const floodsDb = require('./cons/floods');
-  commandLineRun(addTestData, floodsDb);
+  commandLineRun(addTestData, "floodsAPI");
 }

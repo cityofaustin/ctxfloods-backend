@@ -18,5 +18,6 @@ if (require.main === module) {
   runMigrate()
   .catch((err) => {
     console.log(err);
+    process.exit(1);
   })
 }
