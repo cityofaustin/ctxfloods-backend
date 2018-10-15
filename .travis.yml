@@ -21,7 +21,7 @@ deploy:
     on:
       branch: master
   - provider: script
-    script: bash ./deployment/deploy.sh
+    script: travis_wait 30 bash ./deployment/deploy.sh
     on:
       all_branches: true
       condition: $(node ./deployment/checkDevBranchWhitelist.js)
