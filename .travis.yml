@@ -13,15 +13,15 @@ before_script: yarn init-local-db;
 script: yarn test;
 deploy:
   - provider: script
-    script: bash ./deployment/deploy.sh prod
+    script: bash ./deployment/timeoutWrapper.sh prod
     on:
       branch: master
   - provider: script
-    script: bash ./deployment/deploy.sh prod-legacy-sync
+    script: bash ./deployment/timeoutWrapper.sh prod-legacy-sync
     on:
       branch: master
   - provider: script
-    script: travis_wait 30 bash ./deployment/deploy.sh
+    script: bash ./deployment/timeoutWrapper.sh
     on:
       all_branches: true
       condition: $(node ./deployment/checkDevBranchWhitelist.js)

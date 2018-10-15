@@ -160,7 +160,7 @@ resources:
       AllocatedStorage: 5
       DBInstanceClass: "db.t2.micro"
       Engine: "postgres"
-      EngineVersion: "9.5.4"
+      EngineVersion: "9.5.10"
       MasterUsername: ${env:PGUSERNAME}
       MasterUserPassword: ${env:PGPASSWORD}
       VPCSecurityGroups:
