@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 
 const floodsExists = require('./floodsExists');
-const commandLineRun = require('./helpers/commandLineRun');
+const commandLineRun = require('../helpers/commandLineRun');
 
 const initialize = (client) => {
   console.log("Creating Floods Database")
@@ -11,7 +11,7 @@ const initialize = (client) => {
     if (result) {
       console.log("Floods Database already exists");
     } else {
-      const createScript = fs.readFileSync(path.join(__dirname, '/createFloods.sql'), 'utf8');
+      const createScript = fs.readFileSync(path.join(__dirname, '/../sql/createFloods.sql'), 'utf8');
       return client.query(createScript)
     }
   })
@@ -20,5 +20,5 @@ const initialize = (client) => {
 module.exports = initialize;
 
 if (require.main === module) {
-  commandLineRun(initialize, "master");
+  commandLineRun(initialize, "masterAdmin");
 }

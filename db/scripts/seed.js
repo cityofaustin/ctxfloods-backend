@@ -1,9 +1,9 @@
 const fs = require('fs');
 const path = require('path');
-const commandLineRun = require("./helpers/commandLineRun")
+const commandLineRun = require("../helpers/commandLineRun")
 
-const addWazeStreets = require('../populateDB/data/addWazeStreets');
-const addLegacyCrossings = require('../populateDB/data/addLegacyCrossings');
+const addWazeStreets = require('../../populateDB/data/addWazeStreets');
+const addLegacyCrossings = require('../../populateDB/data/addLegacyCrossings');
 let localServer;
 /**
   Seeds a database with
@@ -17,20 +17,19 @@ let localServer;
 **/
 const seed = (client) => {
   console.log("Adding Setup Data");
-  const addSetupData = fs.readFileSync(path.join(__dirname, '/../populateDB/data/addSetupData.sql'), 'utf8');
+  const addSetupData = fs.readFileSync(path.join(__dirname, '/../../populateDB/data/addSetupData.sql'), 'utf8');
   return client.query(addSetupData)
   .then(() => {
     console.log("Adding Communities");
-    const addCommunities = fs.readFileSync(path.join(__dirname, '/../populateDB/data/addCommunities.sql'), 'utf8');
+    const addCommunities = fs.readFileSync(path.join(__dirname, '/../../populateDB/data/addCommunities.sql'), 'utf8');
     return client.query(addCommunities)
   })
   .then(async () => {
     if (process.env.PGENDPOINT === "localhost") {
-      localServer = require('../localServer');
+      localServer = require('../../localServer');
     }
     console.log("Adding Waze Streets");
     await addWazeStreets();
-    console.log("Skipping??")
   })
   .then(async () => {
     await addLegacyCrossings()
@@ -48,5 +47,5 @@ const seed = (client) => {
 module.exports = seed;
 
 if (require.main === module) {
-  commandLineRun(seed, "floodsAPI");
+  commandLineRun(seed, "floodsAdmin");
 }

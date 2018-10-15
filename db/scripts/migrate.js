@@ -9,7 +9,7 @@ const runMigrate = () => {
     password: process.env.PGPASSWORD,
     host: process.env.PGENDPOINT,
     port: 5432,
-  }, path.join(__dirname, "/../populateDB/migrations"))
+  }, path.join(__dirname, "/../../populateDB/migrations"))
 }
 
 module.exports = runMigrate;
