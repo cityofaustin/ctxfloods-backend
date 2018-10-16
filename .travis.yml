@@ -24,4 +24,4 @@ deploy:
     script: bash ./deployment/timeoutWrapper.sh
     on:
       all_branches: true
-      condition: $(node ./deployment/checkDevBranchWhitelist.js)
+      condition: "$(node ./deployment/checkDevBranchWhitelist.js) = true"
