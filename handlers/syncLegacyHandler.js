@@ -41,7 +41,7 @@ async function getCrossings() {
       allCrossings {
         nodes {
           id
-          legacyId
+          geojson
           latestStatusId
         }
       }
@@ -56,11 +56,14 @@ function getCrossingsToUpdate(dbCrossings, legacyCrossings) {
   const crossingsToUpdate = [];
 
   for (legacyCrossing of legacyCrossings) {
-    const match = dbCrossings.find(
-      c =>
-        c.legacyId === legacyCrossing.id &&
-        c.latestStatusId !== legacyCrossing.status,
-    );
+    const match = dbCrossings.find(c => {
+      const coordinates = JSON.parse(c.geojson).coordinates;
+      return (
+        coordinates[1] == legacyCrossing.lat &&
+        coordinates[0] == legacyCrossing.lng &&
+        c.latestStatusId !== legacyCrossing.status
+      )
+    });
     if (match) {
       crossingsToUpdate.push({
         crossingId: match.id,
@@ -91,9 +94,11 @@ async function getLegacy(url, cb) {
   try {
     const response = await axios.get(url);
     parseString(response.data, async (err, result) => {
+      debugger;
       const crossings = result.markers.marker.map(crossing => {
         return {
-          id: parseInt(crossing.$.id),
+          lat: crossing.$.lat,
+          lng: crossing.$.lng,
           status: statuses[crossing.$.type],
         };
       });
