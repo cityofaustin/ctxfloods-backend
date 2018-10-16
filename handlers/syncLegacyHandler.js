@@ -94,7 +94,6 @@ async function getLegacy(url, cb) {
   try {
     const response = await axios.get(url);
     parseString(response.data, async (err, result) => {
-      debugger;
       const crossings = result.markers.marker.map(crossing => {
         return {
           lat: crossing.$.lat,
