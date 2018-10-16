@@ -107,7 +107,7 @@ module.exports.handle = async (event, context, cb) => {
 
     // TODO: Make a new user and store it in encrypted travis env variable
     // https://github.com/cityofaustin/ctxfloods/issues/200
-    const lokka = getAuthorizedLokka('superadmin@flo.ods', 'texasfloods');
+    const lokka = await getAuthorizedLokka('superadmin@flo.ods', 'texasfloods');
 
     const createdReport = await newIncidentReport(lokka, incidentReport);
 
