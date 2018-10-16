@@ -1,5 +1,5 @@
 # AWS
-export AWS_SERVICE_NAME=ctx-floods-backend-prod-legacy-sync-test
+export AWS_SERVICE_NAME=ctx-floods-backend-prod-legacy-sync
 export AWS_ACCESS_KEY_ID=$ACCESS_KEY_ID_DEV_TRAVIS
 export AWS_SECRET_ACCESS_KEY=$SECRET_ACCESS_KEY_DEV_TRAVIS
 export AWS_STAGE=prod # TODO - check if "prod"" triggers anything different
