@@ -87,25 +87,31 @@ async function processLegacyCrossings(legacyCrossings) {
   }
 }
 
-async function getLegacy(url) {
+async function getLegacy(url, cb) {
   try {
     const response = await axios.get(url);
-    parseString(response.data, (err, result) => {
+    parseString(response.data, async (err, result) => {
       const crossings = result.markers.marker.map(crossing => {
         return {
           id: parseInt(crossing.$.id),
           status: statuses[crossing.$.type],
         };
       });
-      processLegacyCrossings(crossings);
+      await processLegacyCrossings(crossings);
+      cb(null, {
+        statusCode: 200,
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
     });
   } catch (err) {
-    // logError(err);
-    console.error(err);
+    logError(err);
+    console.log(err);
+    cb(null, {statusCode: 500, errors: [err]});
   }
 }
 
 module.exports.handle = (event, context, cb) => {
-  getLegacy(url);
-  cb(null, null);
+  getLegacy(url, cb);
 };

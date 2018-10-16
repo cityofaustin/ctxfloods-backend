@@ -6,6 +6,7 @@ const wazeFeedHandler = require('./handlers/wazeFeedHandler');
 const incidentReportHandler = require('./handlers/incidentReportHandler');
 const graphqlHandler = require('./handlers/graphqlHandler');
 const resetEmailHandler = require('./handlers/resetEmailHandler');
+const syncLegacyHandler = require('./handlers/syncLegacyHandler');
 
 const app = express();
 app.use(cors());
@@ -53,6 +54,17 @@ app.post('/email/reset', (req, res) => {
   // AWS gets body as stringified json
   req.body = JSON.stringify(req.body);
   resetEmailHandler.handle(req, null, (error, response) => {
+    res.statusCode = response.statusCode;
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.send(response);
+  });
+});
+
+app.get('/sync_legacy', (req, res) => {
+  // AWS gets body as stringified json
+  req.body = JSON.stringify(req.body);
+
+  syncLegacyHandler.handle(req, null, (error, response) => {
     res.statusCode = response.statusCode;
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.send(response);
