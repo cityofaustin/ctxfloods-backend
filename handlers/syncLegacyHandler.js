@@ -107,7 +107,6 @@ async function getLegacy(url, cb) {
     });
   } catch (err) {
     logError(err);
-    console.log(err);
     cb(null, {statusCode: 500, errors: [err]});
   }
 }
