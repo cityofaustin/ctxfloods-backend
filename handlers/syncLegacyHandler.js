@@ -90,6 +90,7 @@ async function processLegacyCrossings(legacyCrossings) {
 async function getLegacy(url) {
   try {
     const response = await axios.get(url);
+    console.log(response.data);
     parseString(response.data, (err, result) => {
       const crossings = result.markers.marker.map(crossing => {
         return {
