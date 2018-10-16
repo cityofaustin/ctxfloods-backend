@@ -6,6 +6,7 @@ const wazeFeedHandler = require('./handlers/wazeFeedHandler');
 const incidentReportHandler = require('./handlers/incidentReportHandler');
 const graphqlHandler = require('./handlers/graphqlHandler');
 const resetEmailHandler = require('./handlers/resetEmailHandler');
+const syncLegacyHandler = require('./handlers/syncLegacyHandler');
 
 const app = express();
 app.use(cors());
@@ -59,10 +60,29 @@ app.post('/email/reset', (req, res) => {
   });
 });
 
-const server = app.listen(process.env.BACKEND_PORT);
+app.get('/sync_legacy', (req, res) => {
+  // AWS gets body as stringified json
+  req.body = JSON.stringify(req.body);
 
-process.on('SIGTERM', () => {
-  server.close(() => {
-    process.exit();
+  syncLegacyHandler.handle(req, null, (error, response) => {
+    res.statusCode = response.statusCode;
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.send(response);
   });
 });
+
+const server = app.listen(process.env.BACKEND_PORT, () => {
+  console.log("Local Server started");
+});
+
+process.on('SIGTERM', () => {
+  console.log("Signal Terminated - closing express server");
+  server.close();
+});
+
+process.on('SIGINT', () => {
+  console.log("Signal Interrupted - closing express server");
+  server.close();
+});
+
+module.exports = server;

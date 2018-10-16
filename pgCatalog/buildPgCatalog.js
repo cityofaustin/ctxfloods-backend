@@ -2,7 +2,7 @@ const fs = require('fs');
 const Client = require('pg').Client;
 const minify = require('pg-minify');
 
-var client = new Client(process.argv[2]);
+var client = new Client(require('../handlers/constants').PGCON_BUILD_SCHEMA);
 client.connect();
 
 fs.readFile(
@@ -12,7 +12,7 @@ fs.readFile(
       .query({
         name: 'introspectionQuery',
         text: minify(data.toString()),
-        values: [[process.argv[3]]],
+        values: [['floods']],
       })
       .then(res => {
         const out = res.rows.map(function(x) {

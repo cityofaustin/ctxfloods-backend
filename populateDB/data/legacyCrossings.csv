@@ -1,4 +1,4 @@
-﻿communityId,legacyId,name,humanAddress,latitude,longitude,description,wazeStreetId
+communityId,legacyId,name,humanAddress,latitude,longitude,description,wazeStreetId
 9001,118,Big Sandy @ Long Hollow,"22700 Big Sandy Drive, Leander, tx",30.570244,-97.948425,,0
 9001,192,CR 273 at Mason Creek,"Leander, TX",30.576651,-97.845581,,1
 9001,193,Ridgmar Road at Brushy Creek,"Leander, TX",30.583527,-97.812286,Northern entrance to Ridgmar Landing subdivision,2
@@ -311,7 +311,6 @@
 9010,1097,Old San Antonio @ 1626,Old San Antonio @ 1626,30.142878,-97.801559,,18
 9010,1112,Camp Craft Rd at West bank Dr ," Travis County, TX ",30.276579,-97.815819,,422
 9010,1127,11900-Blk Old San Antonio Rd,"Travis County, TX ",30.134632,-97.809334,,
-9010,1129,3700-Blk Wyldwood Rd,"Travis County, TX ",32.62265,-94.835587,,423
 9010,1130,5700-Blk Jesse Bohls Dr,"Travis County, TX",30.43634,-97.563698,,424
 9010,1131,Cameron Rd @ Fuchs Grove Ln,"Travis County, TX",30.400906,-97.545593,,426
 9010,1132,Cameron Rd @ Schmidt Ln,"Travis County, TX",30.407438,-97.541405,,427
@@ -762,7 +761,7 @@
 9012,854,P4006 - Watersedge Terrace Dr.,"123 Watersedge Terrace Dr., Elgin, TX 78621",30.21368,-97.481857,,1062
 9012,855,P4007 - 209 Old Sayers Rd,"209 Old Sayers Rd, Elgin, TX 78621",30.32074,-97.365662,,1063
 9012,856,P4008 - Beaver Rd,"197 Beaver Rd, Elgin, TX 78621",30.30175,-97.37719,,1064
-9012,857,P4009 - Arbuckle Rd,"175 Arbuckle Rd, Elgin, TX 78621",30.287029,97.380966,,
+9012,857,P4009 - Arbuckle Rd,"175 Arbuckle Rd, Elgin, TX 78621",30.287029,-97.380966,,
 9012,858,P4010 - 1333 Old Sayers Rd,"1333 Old Sayers Rd, Elgin, TX 78621",30.252769,-97.350853,,1065
 9012,859,P4011 - 1800 Old Sayers Rd,"1800 Old Sayers Rd, Elgin, TX 78621",30.233141,-97.329559,,1066
 9012,860,P4012 -  Marlin Rd. / Paint Creek,"299 Marlin Rd, McDade, TX 78650",30.29125,-97.223778,,1067
@@ -1734,7 +1733,6 @@
 9017,364,FM 1660 AT COTTONWOOD CREEK / FM 1660,Williamson County,30.51236,-97.527565,,2379
 9017,365,FM 685 AT BRUSHY CREEK / FM 685,Williamson County,30.52635,-97.566811,,2380
 9017,366,CR 129 AT BRUSHY CREEK / CR 129,Williamson County,30.489567,-97.499069,,2381
-9017,694,CR 272,CR 272 @ San Gabriel River,0,0,,
 9017,716,Barton Springs Road,2000 W Barton Springs Road ,30.264969,-97.764992,,11
 9017,718,CR 473 South of CR 112,CR 473 South of CR 112,30.518572,-97.247803,,
 9017,719,Patricia @ Deer Draw,Patricia @ Deer Draw,30.588125,-97.766129,,

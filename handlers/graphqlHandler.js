@@ -12,8 +12,9 @@ const PgCat = JSON.parse(fs.readFileSync('pgCatalog/pgCatalog.json', 'utf8'));
 const { logError } = require('./logger');
 
 module.exports.handle = (event, context, cb) => {
+
   // Setup connection to PostgresDB
-  const pgClient = new Client(process.env.PGCON);
+  const pgClient = new Client(require('./constants').PGCON);
   pgClient.connect();
 
   // Parse PgCatalog
