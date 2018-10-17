@@ -137,46 +137,52 @@ functions:
           rate: rate(5 minutes)
     environment:
       GRAPHQL_ENDPOINT: ${self:custom.GRAPHQL_ENDPOINT}
-
+  scrapeCameras:
+    handler: handlers/cameraScrapeHandler.handle
+    events:
+      - schedule:
+          rate: rate(5 minutes)
+          enabled: false
+    environment:
+      GRAPHQL_ENDPOINT: ${self:custom.GRAPHQL_ENDPOINT}
 
 # For a pgDB inside a VPC look e.g. here:
 # http://www.stojanveselinovski.com/blog/2016/01/12/simple-postgresql-rds-cloudformation-template/
 resources:
- Resources:
-  pgSecurityGroup:
-    Type: AWS::EC2::SecurityGroup
-    Properties:
-      GroupDescription: Access to Postgres
-      SecurityGroupIngress:
-      - IpProtocol: tcp
-        FromPort: '5432'
-        ToPort: '5432'
-        CidrIp: 0.0.0.0/0
+  Resources:
+    pgSecurityGroup:
+      Type: AWS::EC2::SecurityGroup
+      Properties:
+        GroupDescription: Access to Postgres
+        SecurityGroupIngress:
+          - IpProtocol: tcp
+            FromPort: '5432'
+            ToPort: '5432'
+            CidrIp: 0.0.0.0/0
 
-  pgDB:
-    Type: "AWS::RDS::DBInstance"
-    Properties:
-      DBName: "floods"
-      AllocatedStorage: 5
-      DBInstanceClass: "db.t2.micro"
-      Engine: "postgres"
-      EngineVersion: "9.5.10"
-      MasterUsername: ${env:PGUSERNAME}
-      MasterUserPassword: ${env:PGPASSWORD}
-      VPCSecurityGroups:
-      - Fn::GetAtt:
-        - pgSecurityGroup
-        - GroupId
-      Tags:
-        -
-          Key: "Name"
-          Value: "floods"
-    DeletionPolicy: "Snapshot"
+    pgDB:
+      Type: 'AWS::RDS::DBInstance'
+      Properties:
+        DBName: 'floods'
+        AllocatedStorage: 5
+        DBInstanceClass: 'db.t2.micro'
+        Engine: 'postgres'
+        EngineVersion: '9.5.10'
+        MasterUsername: ${env:PGUSERNAME}
+        MasterUserPassword: ${env:PGPASSWORD}
+        VPCSecurityGroups:
+          - Fn::GetAtt:
+              - pgSecurityGroup
+              - GroupId
+        Tags:
+          - Key: 'Name'
+            Value: 'floods'
+      DeletionPolicy: 'Snapshot'
 
- Outputs:
+  Outputs:
     PgEndpoint:
-      Description: "JDBC connection string for database"
+      Description: 'JDBC connection string for database'
       Value: ${self:custom.PGENDPOINT}
     GraphqlEndpoint:
-      Description: "URL of /graphql Endpoint"
+      Description: 'URL of /graphql Endpoint'
       Value: ${self:custom.GRAPHQL_ENDPOINT}
