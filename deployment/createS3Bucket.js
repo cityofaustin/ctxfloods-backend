@@ -1,5 +1,6 @@
 const aws = require('aws-sdk');
 const s3 = new aws.S3();
+const fs = require('fs');
 
 const bucketName = process.env.AWS_SERVICE_NAME;
 
@@ -11,6 +12,7 @@ s3.listBuckets((err, data) => {
 
   if (data.Buckets.find(bucket => bucket.Name === bucketName)) {
     console.log(`Bucket "${bucketName}" already exists.`);
+    fs.writeFileSync(`${__dirname}/seed_trigger.tmp`, "export SEED_TRIGGER=false")
   } else {
     /**
     Warning: Adding "LocationConstraint" param will break for our region (us-east-1).
@@ -27,6 +29,7 @@ s3.listBuckets((err, data) => {
         process.exit(1);
       } else {
         console.log(`Bucket "${bucketName}" built in region ${data.Location}`);
+        fs.writeFileSync(`${__dirname}/seed_trigger.tmp`, "export SEED_TRIGGER=true")
       }
     });
   }
