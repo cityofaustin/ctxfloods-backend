@@ -148,6 +148,7 @@ create table floods.status_update (
   status_reason_id    integer references floods.status_reason(id),
   status_duration_id  integer references floods.status_duration(id),
   notes               text not null check (char_length(notes) < 800),
+  image               text,
   created_at          timestamp default now()
 );
 
@@ -159,6 +160,7 @@ comment on column floods.status_update.crossing_id is 'The id of the crossing.';
 comment on column floods.status_update.status_reason_id is 'The id of the status reason.';
 comment on column floods.status_update.status_duration_id is 'The id of the status duration.';
 comment on column floods.status_update.notes is 'Notes about the status update.';
+comment on column floods.status_update.notes is 'Image from a camera for the status update.';
 comment on column floods.status_update.created_at is 'The time this update was made.';
 
 -- Update the Crossings table and Add the Latest Status Update
@@ -445,6 +447,7 @@ create function floods.new_status_update(
   status_id integer,
   crossing_id integer,
   notes text,
+  image text,
   status_reason_id integer,
   status_duration_id integer
 ) returns floods.status_update as $$
@@ -514,8 +517,8 @@ begin
     end if;
   end if;
 
-  insert into floods.status_update (status_id, creator_id, crossing_id, notes, status_reason_id, status_duration_id) values
-    (status_id, current_setting('jwt.claims.user_id')::integer, crossing_id, notes, status_reason_id, status_duration_id)
+  insert into floods.status_update (status_id, creator_id, crossing_id, notes, image, status_reason_id, status_duration_id) values
+    (status_id, current_setting('jwt.claims.user_id')::integer, crossing_id, notes, image, status_reason_id, status_duration_id)
     returning * into floods_status_update;
 
   update floods.crossing
@@ -534,7 +537,7 @@ begin
 end;
 $$ language plpgsql security definer;
 
-comment on function floods.new_status_update(integer, integer, text, integer, integer) is 'Updates the status of a crossing.';
+comment on function floods.new_status_update(integer, integer, text, text, integer, integer) is 'Updates the status of a crossing.';
 
 -- Create function to create new crossings
 create function floods.new_crossing(
@@ -1121,7 +1124,7 @@ grant execute on function floods.current_user() to floods_community_editor;
 
 -- Allow community editors and up to update the status of crossings
 -- NOTE: Extra logic around permissions in function
-grant execute on function floods.new_status_update(integer, integer, text, integer, integer) to floods_community_editor;
+grant execute on function floods.new_status_update(integer, integer, text, text, integer, integer) to floods_community_editor;
 
 -- Allow community editors and up to add/edit crossings
 -- NOTE: Extra logic around permissions in function
