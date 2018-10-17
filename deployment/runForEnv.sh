@@ -7,4 +7,4 @@ ENV=$2
 CURRENT_DIR=`dirname $BASH_SOURCE`
 
 source $CURRENT_DIR/vars/$ENV.sh
-node $CURRENT_DIR/../$SCRIPT_PATH
+node --inspect $CURRENT_DIR/../$SCRIPT_PATH

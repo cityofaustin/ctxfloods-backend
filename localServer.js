@@ -8,6 +8,7 @@ const graphqlHandler = require('./handlers/graphqlHandler');
 const resetEmailHandler = require('./handlers/resetEmailHandler');
 const syncLegacyHandler = require('./handlers/syncLegacyHandler');
 const pushNotificationHandler = require('./handlers/pushNotificationHandler');
+const cameraScrapeHandler = require('./handlers/cameraScrapeHandler');
 
 const app = express();
 app.use(cors());
@@ -83,17 +84,28 @@ app.get('/send_push_notifications', (req, res) => {
   });
 });
 
+app.get('/scrape_cameras', (req, res) => {
+  // AWS gets body as stringified json
+  req.body = JSON.stringify(req.body);
+
+  cameraScrapeHandler.handle(req, null, (error, response) => {
+    res.statusCode = response.statusCode;
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.send(response);
+  });
+});
+
 const server = app.listen(process.env.BACKEND_PORT, () => {
-  console.log("Local Server started");
+  console.log('Local Server started');
 });
 
 process.on('SIGTERM', () => {
-  console.log("Signal Terminated - closing express server");
+  console.log('Signal Terminated - closing express server');
   server.close();
 });
 
 process.on('SIGINT', () => {
-  console.log("Signal Interrupted - closing express server");
+  console.log('Signal Interrupted - closing express server');
   server.close();
 });
 
