@@ -24,6 +24,8 @@ custom:
 provider:
   name: aws
   runtime: nodejs8.10
+  deploymentBucket:
+    name: ${env:AWS_SERVICE_NAME}
   environment:
     BACKEND_PORT: ${env:BACKEND_PORT}
   region: us-east-1
@@ -132,6 +134,7 @@ functions:
       GMAIL_PASSWORD: ${env:GMAIL_PASSWORD}
   synclegacy:
     handler: handlers/syncLegacyHandler.handle
+    timeout: 60
     events:
       - schedule:
           rate: rate(5 minutes)

@@ -18,6 +18,13 @@ source $CURRENT_DIR/vars/$DEPLOY_ENV.sh
 yarn global add serverless@1.32.0
 yarn
 
+# Create s3 bucket
+node $CURRENT_DIR/createS3Bucket.js
+if [ $? != 0 ]; then
+  echo "Bucket build failed"
+  exit 1
+fi
+
 # Deploy with serverless
 sls deploy -v | tee out.tmp
 if [ "${PIPESTATUS[0]}" != "0" ]; then
