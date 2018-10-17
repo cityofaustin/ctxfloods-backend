@@ -6,6 +6,9 @@ const Lokka = require('lokka').Lokka;
 const { getAuthorizedLokka } = require('./graphql');
 const { logError } = require('./logger');
 
+const beholderUrl = 'https://map.beholderhq.com/api/v1/beholderhq/cameras/';
+const beholderPhotoUrl = 'https://assets.beholderhq.com/v3/photos/';
+
 async function newStatusUpdate(update, lokka) {
   const response = await lokka.send(
     `
@@ -46,7 +49,20 @@ async function getCrossings() {
   return response.allCrossings.nodes;
 }
 
-function getCrossingsWithCameras(dbCrossings) {
+async function getLatestPicture(cameraId) {
+  const cameraUrl = `${beholderUrl}${cameraId}`;
+  const response = await axios.get(cameraUrl);
+  const latestId = response.data.data.attributes['latest-photo-id'];
+  const photoUrl = `${beholderPhotoUrl}${latestId}-original.jpg`;
+  debugger;
+  const photoResponse = await axios.get(photoUrl, {
+    responseType: 'arraybuffer',
+  });
+  const image = Buffer.from(photoResponse.data, 'binary').toString('base64');
+  return image;
+}
+
+async function getCrossingsWithCameras(dbCrossings) {
   const updates = [];
 
   const matches = dbCrossings.filter(
@@ -54,6 +70,10 @@ function getCrossingsWithCameras(dbCrossings) {
   );
 
   for (crossing of matches) {
+    const latestImage = await getLatestPicture(crossing.cameraId);
+
+    const imageInNotes = `<img src="data:image/png;base64, ${latestImage}" />`;
+
     updates.push({
       crossingId: crossing.id,
       statusId: 1,
@@ -67,10 +87,9 @@ function getCrossingsWithCameras(dbCrossings) {
 
 async function scrapeCameras(cb) {
   try {
-    debugger;
     const dbCrossings = await getCrossings();
 
-    const updates = getCrossingsWithCameras(dbCrossings);
+    const updates = await getCrossingsWithCameras(dbCrossings);
 
     // FIXME: Make a new user and put in ENV
     const lokka = await getAuthorizedLokka('superadmin@flo.ods', 'texasfloods');
