@@ -12,8 +12,8 @@ const beholderPhotoUrl = 'https://assets.beholderhq.com/v3/photos/';
 async function newStatusUpdate(update, lokka) {
   const response = await lokka.send(
     `
-    mutation ($crossingId:Int!, $statusId:Int!, $statusReasonId:Int, $notes:String!) {
-      newStatusUpdate(input:{crossingId:$crossingId, statusId:$statusId, statusReasonId:$statusReasonId, notes:$notes}) {
+    mutation ($crossingId:Int!, $statusId:Int!, $statusReasonId:Int, $notes:String!, $image:String!) {
+      newStatusUpdate(input:{crossingId:$crossingId, statusId:$statusId, statusReasonId:$statusReasonId, notes:$notes, image:$image}) {
         statusUpdate {
           crossingId
           statusId
@@ -72,13 +72,14 @@ async function getCrossingsWithCameras(dbCrossings) {
   for (crossing of matches) {
     const latestImage = await getLatestPicture(crossing.cameraId);
 
-    const imageInNotes = `<img src="data:image/png;base64, ${latestImage}" />`;
+    // const imageInNotes = `<img src="data:image/png;base64, ${latestImage}" />`;
 
     updates.push({
       crossingId: crossing.id,
       statusId: 1,
       statusReasonId: null,
       notes: 'FOUND A CAMERA',
+      image: latestImage,
     });
   }
 
