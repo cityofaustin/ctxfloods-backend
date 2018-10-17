@@ -35,11 +35,6 @@ fi
 # Run migrations
 export PGENDPOINT=$(grep "PgEndpoint" out.tmp | cut -f2- -d: | cut -c2-)
 export GRAPHQL_ENDPOINT=$(grep "GraphqlEndpoint" out.tmp | cut -f2- -d: | cut -c2-)
-
-echo "Time out!"
-sleep 120
-echo "Time in!"
-
 node $CURRENT_DIR/../db/scripts/migrateAndSeed.js
 if [ $? != 0 ]; then
   echo "migrateAndSeed script failed"

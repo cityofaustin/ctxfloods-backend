@@ -159,7 +159,7 @@ resources:
   pgDB:
     Type: "AWS::RDS::DBInstance"
     Properties:
-      DBName: "floods"
+      DBName: "postgres"
       AllocatedStorage: 5
       DBInstanceClass: "db.t2.micro"
       Engine: "postgres"
