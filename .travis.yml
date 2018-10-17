@@ -8,7 +8,10 @@ addons:
     - postgresql-9.5-postgis-2.3
 services:
 - postgresql
-install: yarn;
+install:
+  - yarn
+  - pip install --user awscli
+  - export PATH=$PATH:$HOME/.local/bin
 before_script: yarn init-local-db;
 script: yarn test;
 deploy:
