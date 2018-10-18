@@ -31,10 +31,24 @@ if [ "${PIPESTATUS[0]}" != "0" ]; then
   echo "sls deploy failed"
   exit 1
 fi
-
-# Run migrations
 export PGENDPOINT=$(grep "PgEndpoint" out.tmp | cut -f2- -d: | cut -c2-)
 export GRAPHQL_ENDPOINT=$(grep "GraphqlEndpoint" out.tmp | cut -f2- -d: | cut -c2-)
+
+# Check if seeding will be required
+node $CURRENT_DIR/../db/scripts/writeSeedFlag.js
+if [ $? != 0 ]; then
+  echo "seed flag script failed"
+  exit 1
+fi
+
+# Initialize floods database
+node $CURRENT_DIR/../db/scripts/initialize.js
+if [ $? != 0 ]; then
+  echo "initialize db script failed"
+  exit 1
+fi
+
+# Run migrations
 node $CURRENT_DIR/../db/scripts/migrate.js
 if [ $? != 0 ]; then
   echo "migrate script failed"
@@ -57,8 +71,8 @@ if [ $? != 0 ]; then
 fi
 
 # If its a new deployment (as indicated by createS3Bucket.js), then seed data
-source $CURRENT_DIR/seed_trigger.tmp
-if [ $SEED_TRIGGER = "true" ]; then
+source $CURRENT_DIR/seed_flag.tmp
+if [ $SEED_FLAG = "true" ]; then
   node $CURRENT_DIR/../db/scripts/seed.js
   if [ $? != 0 ]; then
     echo "seed script failed"
@@ -66,5 +80,5 @@ if [ $SEED_TRIGGER = "true" ]; then
   fi
 fi
 
-rm $CURRENT_DIR/seed_trigger.tmp
+rm $CURRENT_DIR/seed_flag.tmp
 rm out.tmp
