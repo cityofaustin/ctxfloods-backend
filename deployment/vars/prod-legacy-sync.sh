@@ -12,7 +12,7 @@ export GMAIL_PASSWORD=$TRAVIS_GMAIL_PASSWORD_DEV
 export JWT_SECRET=$TRAVIS_JWT_SECRET_DEV
 export FRONTEND_URL=""
 export BACKEND_PORT=5000
-export ENABLE_SYNC_LEGACY=true
+export ENABLE_SYNC_LEGACY=true # Interpretted as truthy by serverless.yml when any string is passed.
 # GRAPHQL_ENDPOINT defined in serverless.yml
 
 # Postgres

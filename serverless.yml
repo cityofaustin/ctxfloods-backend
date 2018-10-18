@@ -20,6 +20,7 @@ custom:
         - .amazonaws.com/
         - ${self:provider.stage}
         - /graphql
+  false: false
 
 provider:
   name: aws
@@ -138,7 +139,7 @@ functions:
     events:
       - schedule:
           rate: rate(5 minutes)
-          enabled: ${env:ENABLE_SYNC_LEGACY}
+          enabled: ${env:ENABLE_SYNC_LEGACY, self:custom.false}
     environment:
       GRAPHQL_ENDPOINT: ${self:custom.GRAPHQL_ENDPOINT}
 
