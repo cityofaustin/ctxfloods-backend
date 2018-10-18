@@ -36,7 +36,7 @@ process.on('exit', () => closeAllPools(_.template("Process Exiting - closing <%=
   @param poolType, String - flag to identify which postgres Pool you want to get
     floodsAdmin - for initialization scripts. Logs into "floods" db with master credentials
     floodsAPI - for normal API/Graphql operations. Logs into "floods" db with api credentials.
-    masterAdmin - only for databse destroy script. Logs into default "postgres" db with master credentials.
+    masterAdmin - only for database destroy script. Logs into default "postgres" db with master credentials.
   @returns: pool, a postgres Pool Instance
 **/
 const getPool = (poolType) => {
