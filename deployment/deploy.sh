@@ -18,24 +18,44 @@ source $CURRENT_DIR/vars/$DEPLOY_ENV.sh
 yarn global add serverless@1.32.0
 yarn
 
+# Create s3 bucket
+node $CURRENT_DIR/createS3Bucket.js
+if [ $? != 0 ]; then
+  echo "Bucket build failed"
+  exit 1
+fi
+
 # Deploy with serverless
 sls deploy -v | tee out.tmp
 if [ "${PIPESTATUS[0]}" != "0" ]; then
   echo "sls deploy failed"
   exit 1
 fi
-
-# Run migrations
 export PGENDPOINT=$(grep "PgEndpoint" out.tmp | cut -f2- -d: | cut -c2-)
 export GRAPHQL_ENDPOINT=$(grep "GraphqlEndpoint" out.tmp | cut -f2- -d: | cut -c2-)
-node $CURRENT_DIR/../db/scripts/migrateAndSeed.js
+
+# Check if seeding will be required
+node $CURRENT_DIR/writeSeedFlag.js
 if [ $? != 0 ]; then
-  echo "migrateAndSeed script failed"
+  echo "seed flag script failed"
   exit 1
 fi
 
-# Build-Schema
-# TODO - remove this hack step and replace with lambda service during graphile update
+# Initialize floods database
+node $CURRENT_DIR/../db/scripts/initialize.js
+if [ $? != 0 ]; then
+  echo "initialize db script failed"
+  exit 1
+fi
+
+# Run migrations
+node $CURRENT_DIR/../db/scripts/migrate.js
+if [ $? != 0 ]; then
+  echo "migrate script failed"
+  exit 1
+fi
+
+# Build Graphql Schema
 echo Building Schema
 node $CURRENT_DIR/../pgCatalog/buildPgCatalog.js
 if [ $? != 0 ]; then
@@ -43,10 +63,22 @@ if [ $? != 0 ]; then
   exit 1
 fi
 
+# Deploy graphql Lambda function with schema
 sls deploy -f graphql
 if [ $? != 0 ]; then
   echo "sls deploy -f graphql failed"
   exit 1
 fi
 
+# If its a new deployment (as indicated by createS3Bucket.js), then seed data
+source $CURRENT_DIR/seed_flag.tmp
+if [ $SEED_FLAG = "true" ]; then
+  node $CURRENT_DIR/../db/scripts/seed.js
+  if [ $? != 0 ]; then
+    echo "seed script failed"
+    exit 1
+  fi
+fi
+
+rm $CURRENT_DIR/seed_flag.tmp
 rm out.tmp

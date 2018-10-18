@@ -44,6 +44,7 @@
     "trailingComma": "all"
   },
   "devDependencies": {
+    "aws-sdk": "^2.212.1",
     "cors": "^2.8.4",
     "express": "^4.16.3",
     "serverless-content-encoding": "^1.0.22"
