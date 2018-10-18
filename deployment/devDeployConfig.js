@@ -17,5 +17,9 @@ module.exports = {
   "dev-deployment-fix": {
     deploy: true,
     seed: true
+  },
+  "dev-disable-syncing": {
+    deploy: true,
+    seed: true
   }
 };
