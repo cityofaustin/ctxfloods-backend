@@ -35,7 +35,7 @@ export PGENDPOINT=$(grep "PgEndpoint" out.tmp | cut -f2- -d: | cut -c2-)
 export GRAPHQL_ENDPOINT=$(grep "GraphqlEndpoint" out.tmp | cut -f2- -d: | cut -c2-)
 
 # Check if seeding will be required
-node $CURRENT_DIR/../db/scripts/writeSeedFlag.js
+node $CURRENT_DIR/writeSeedFlag.js
 if [ $? != 0 ]; then
   echo "seed flag script failed"
   exit 1
