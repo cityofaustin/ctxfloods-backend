@@ -1,31 +1,16 @@
-const fs = require('fs');
-const Client = require('pg').Client;
-const minify = require('pg-minify');
+// process.env.DEBUG="graphile-build:warn";
+const {createPostGraphileSchema} = require("postgraphile");
+const floodsPool = require('../db/helpers/getPool')('floodsAPI');
 
-var client = new Client(require('../handlers/constants').PGCON_BUILD_SCHEMA);
-client.connect();
-
-fs.readFile(
-  './node_modules/postgraphql/resources/introspection-query.sql',
-  (err, data) => {
-    client
-      .query({
-        name: 'introspectionQuery',
-        text: minify(data.toString()),
-        values: [['floods']],
-      })
-      .then(res => {
-        const out = res.rows.map(function(x) {
-          return x.object;
-        });
-        fs.writeFile('./pgCatalog/pgCatalog.json', JSON.stringify(out), err => {
-          if (err) {
-            console.log(err);
-          }
-          console.log('Wrote pgCatalog to /pgCatalog/pgCatalog.json');
-        });
-      })
-      .then(() => client.end())
-      .catch(err => console.log(err));
-  },
-);
+let errFlag;
+createPostGraphileSchema(floodsPool, 'floods', {
+  writeCache: `${__dirname}/postgraphile.cache`
+})
+.catch((err)=>{
+  console.error(err);
+  errFlag = true;
+})
+.then(() => {
+  if (errFlag) process.exit(1);
+  process.exit(0);
+});

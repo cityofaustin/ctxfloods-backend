@@ -186,7 +186,7 @@ describe('When registering, deactivating, and reactivating a user as a super adm
     var lokka;
 
     beforeAll(async done => {
-      const token = jwt.sign({ user_id: newUserId, role: 'floods_password_resetter' }, process.env.JWT_SECRET, {expiresIn: '30m', audience: 'postgraphql'});
+      const token = jwt.sign({ user_id: newUserId, role: 'floods_password_resetter' }, process.env.JWT_SECRET, {expiresIn: '30m', audience: 'postgraphile'});
       const headers = {
         Authorization: 'Bearer ' + token,
       };

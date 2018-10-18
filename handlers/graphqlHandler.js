@@ -1,82 +1,61 @@
-'use strict';
-const fs = require('fs');
-const graphql = require('graphql').graphql;
-const Client = require('pg').Client;
-
-const PgCatalogBuilder = require('postgraphql/build/postgres/introspection/PgCatalog');
-const createPostGraphQLSchema = require('postgraphql/build/postgraphql/schema/createPostGraphQLSchema');
-const pgClientFromContext = require('postgraphql/build/postgres/inventory/pgClientFromContext');
-const setupRequestPgClientTransaction = require('postgraphql/build/postgraphql/http/setupRequestPgClientTransaction');
-const PgCat = JSON.parse(fs.readFileSync('pgCatalog/pgCatalog.json', 'utf8'));
+// process.env.DEBUG="graphile-build:warn";
+const {createPostGraphileSchema, withPostGraphileContext} = require("postgraphile");
+const {graphql} = require('graphql');
 
 const { logError } = require('./logger');
+const floodsPool = require('../db/helpers/getPool')('floodsAPI');
+
+const extractToken = (event) => {
+  // lokka lowercases its headers
+  let authHeader = (event.headers && (event.headers.authorization || event.headers.Authorization)) || null;
+  let jwtToken = (authHeader ? authHeader.split("Bearer ")[1] : null);
+  return jwtToken || null;
+}
 
 module.exports.handle = (event, context, cb) => {
+  let schema;
 
-  // Setup connection to PostgresDB
-  const pgClient = new Client(require('./constants').PGCON);
-  pgClient.connect();
-
-  // Parse PgCatalog
-  const PgCatalog = new PgCatalogBuilder.default(PgCat);
-
-  // Set postgraphql options
-  // For all options see https://github.com/calebmer/postgraphql/blob/master/docs/library.md
-  const options = {
+  return createPostGraphileSchema(floodsPool, "floods", {
     pgDefaultRole: 'floods_anonymous',
     jwtSecret: process.env.JWT_SECRET,
     jwtPgTypeIdentifier: 'floods.jwt_token',
     pgDefaultRole: 'floods_anonymous',
     disableDefaultMutations: true,
-  };
-  let gqlSchema;
-  createPostGraphQLSchema
-    .default(pgClient, PgCatalog, options)
-    .then(schema => {
-      try {
-        gqlSchema = schema;
-        // To be honest i am not 100% that the following
-        // proppery uses 'begin' ... 'commit'
-        pgClient.query('begin').then(() => {
-          setupRequestPgClientTransaction
-            .default(event, pgClient, {
-              jwtSecret: options.jwtSecret,
-              pgDefaultRole: options.pgDefaultRole,
-            })
-            .then(pgRole => {
-              graphql(
-                gqlSchema,
-                event.query,
-                null,
-                { [pgClientFromContext.$$pgClient]: pgClient },
-                event.variables,
-                event.operationName,
-              )
-                .then(response => {
-                  pgClient.end();
-
-                  response.statusCode = 200;
-                  response.headers = { 'Access-Control-Allow-Origin': '*' };
-                  cb(null, response);
-                })
-                .catch(() => cb(e));
-            })
-            .then(() => pgClient.query('commit'))
-            .catch(err => {
-              logError(err);
-              cb(null, { errors: [err] });
-              pgClient.end();
-            });
-        });
-      } catch (err) {
-        logError(err);
-        cb(null, { errors: [err] });
-        pgClient.end();
-      }
-    })
-    .catch(err => {
-      logError(err);
-      cb(null, { errors: [err] });
-      pgClient.end();
-    });
-};
+    readCache: `${__dirname}/../pgCatalog/postgraphile.cache`
+  })
+  .then((result) => {
+    schema = result;
+    const jwtToken = extractToken(event);
+    return withPostGraphileContext(
+      {
+        pgPool: floodsPool,
+        jwtToken: jwtToken,
+        jwtSecret: process.env.JWT_SECRET,
+        pgDefaultRole: 'floods_anonymous'
+      }, (graphileContext) => {
+        // console.log("even with context", graphileContext);
+        // console.log("what was the query?", event.query);
+        return graphql(
+          schema,
+          event.query,
+          null,
+          graphileContext,
+          event.variables,
+          event.operationName
+        )
+      })
+  })
+  .then((response)=> {
+    // console.log("What is your response?", response);
+    response.statusCode = 200;
+    response.headers = { 'Access-Control-Allow-Origin': '*' };
+    cb(null, response);
+  })
+  .catch((err)=>{
+    console.log("There was a terrible error", err)
+    logError(err);
+    response.statusCode = 500;
+    response.headers = { 'Access-Control-Allow-Origin': '*' };
+    cb(null, {errors: err})
+  })
+}
