@@ -4,7 +4,6 @@ const commandLineRun = require("../helpers/commandLineRun")
 
 const addWazeStreets = require('../../populateDB/data/addWazeStreets');
 const addLegacyCrossings = require('../../populateDB/data/addLegacyCrossings');
-let localServer;
 /**
   Seeds a database with
   1) Setup data
@@ -25,22 +24,15 @@ const seed = (client) => {
     return client.query(addCommunities)
   })
   .then(async () => {
-    // if (process.env.PGENDPOINT === "localhost") {
-    //   localServer = require('../../localServer');
-    // }
     console.log("Adding Waze Streets");
     await addWazeStreets(client);
   })
-  // .then(async () => {
-  //   await addLegacyCrossings()
-  // })
+  .then(async () => {
+    console.log('Adding Legacy Crossings');
+    await addLegacyCrossings(client);
+  })
   .then(() => {
     console.log("Finished Seeding Data")
-  })
-  .finally(() => {
-    if (localServer) localServer.close(()=>{
-      console.log("Local server closed");
-    });
   })
 };
 
