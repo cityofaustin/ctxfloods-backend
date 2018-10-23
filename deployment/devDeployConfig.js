@@ -20,6 +20,6 @@ module.exports = {
   },
   "338-reset-cors": {
     deploy: true,
-    seed: false
+    seed: true
   }
 };
