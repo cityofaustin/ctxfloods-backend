@@ -29,7 +29,7 @@ begin
     perform floods.add_crossing_to_community(new_id, community_id);
   end if;
 end;
-$$ language plpgsql strict security definer;
+$$ language plpgsql security definer;
 
 comment on function floods.seed_legacy_crossing(text, text, integer, decimal, decimal, text, integer, integer) is 'Adds a new crossing or adds an existing legacy crossing to a community.';
 
