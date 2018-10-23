@@ -12,7 +12,7 @@ async function sendResetEmail(firstname, lastname, email, token, frontendURL, cb
       to: `${firstname} ${lastname} <${email}>`,
       subject: 'Reset CTXfloods Password',
       text: `CTXfloods password reset url: ${frontendURL}/dashboard/reset_password/${token}`,
-      html: `<p>Click <a href="http://${frontendURL}/dashboard/reset_password/${token}">here</a> to reset your CTXfloods password.</p>`,
+      html: `<p>Click <a href="${frontendURL}/dashboard/reset_password/${token}">here</a> to reset your CTXfloods password.</p>`,
     });
 
     const response = {
