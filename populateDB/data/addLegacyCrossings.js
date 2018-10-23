@@ -25,6 +25,7 @@ async function addLegacyCrossings(client) {
       header = false;
       continue
     }
+    // set null values instead of empty strings
     crossing[1] = crossing[1] || null;
     crossing[7] = crossing[7] || null;
     await client.query(queryText, crossing);

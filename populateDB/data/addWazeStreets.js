@@ -9,6 +9,7 @@ const readFile = util.promisify(fs.readFile);
 
 const WazeStreetsCsvPath = `${__dirname}/wazeStreets.csv`;
 
+// set empty arrays rather than an array with an empty string
 const parseNames = (names) => {
   return (names) ? names.split(',') : []
 }
