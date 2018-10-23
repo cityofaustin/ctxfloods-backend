@@ -103,7 +103,7 @@ async function sendEmailToAdmin({
 module.exports.handle = async (event, context, cb) => {
   try {
     const incidentReport = JSON.parse(event.body);
-    const frontendURL = JSON.parse(event.headers.origin);
+    const frontendURL = event.headers.origin;
 
     await verifyCaptcha(incidentReport.recaptchaResponse);
 
