@@ -5,18 +5,14 @@ const jwt = require('jsonwebtoken');
 const { sendEmail } = require('./emailer');
 const { logError } = require('./logger');
 
-async function sendResetEmail(firstname, lastname, email, token, cb) {
+async function sendResetEmail(firstname, lastname, email, token, frontendURL, cb) {
   try {
     await sendEmail({
       from: 'CTXfloods <ctxfloodstestmailer@gmail.com>',
       to: `${firstname} ${lastname} <${email}>`,
       subject: 'Reset CTXfloods Password',
-      text: `CTXfloods password reset url: http://${
-        process.env.FRONTEND_URL
-      }/dashboard/reset_password/${token}`,
-      html: `<p>Click <a href="http://${
-        process.env.FRONTEND_URL
-      }/dashboard/reset_password/${token}">here</a> to reset your CTXfloods password.</p>`,
+      text: `CTXfloods password reset url: ${frontendURL}/dashboard/reset_password/${token}`,
+      html: `<p>Click <a href="http://${frontendURL}/dashboard/reset_password/${token}">here</a> to reset your CTXfloods password.</p>`,
     });
 
     const response = {
@@ -34,7 +30,7 @@ async function sendResetEmail(firstname, lastname, email, token, cb) {
 module.exports.handle = (event, context, cb) => {
   const pgClient = new Client(require('./constants').PGCON);
   const { email } = JSON.parse(event.body);
-
+  const frontendURL = JSON.parse(event.headers.origin);
   pgClient.connect();
 
   pgClient
@@ -65,7 +61,7 @@ module.exports.handle = (event, context, cb) => {
         { expiresIn: '30m', audience: 'postgraphql' },
       );
 
-      return sendResetEmail(firstname, lastname, email, token, cb);
+      return sendResetEmail(firstname, lastname, email, token, frontendURL, cb);
     })
     .catch(err => logError(err))
     .then(() => pgClient.end());
