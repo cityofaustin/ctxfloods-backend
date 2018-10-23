@@ -18,7 +18,7 @@ module.exports = {
     deploy: true,
     seed: true
   },
-  "dev-disable-syncing": {
+  "dev-faster-seeding": {
     deploy: true,
     seed: true
   }

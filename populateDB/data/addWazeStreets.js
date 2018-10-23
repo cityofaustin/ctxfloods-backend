@@ -9,51 +9,29 @@ const readFile = util.promisify(fs.readFile);
 
 const WazeStreetsCsvPath = `${__dirname}/wazeStreets.csv`;
 
-async function loadCsv(path) {
-  const str = await readFile(path, 'utf-8');
-  return dsv.csvParse(str);
+// set empty arrays rather than an array with an empty string
+const parseNames = (names) => {
+  return (names) ? names.split(',') : []
 }
 
-async function addWazeStreets() {
-  const lokka = await getAuthorizedLokka('superadmin@flo.ods', 'texasfloods');
+async function loadCsv(path) {
+  const str = await readFile(path, 'utf-8');
+  return dsv.csvParseRows(str);
+}
 
+async function addWazeStreets(client) {
   let wazeStreetsCsv = await loadCsv(WazeStreetsCsvPath);
+  let header = true;
+  const queryText = `select floods.new_waze_street_with_id($8, $1, $2, $7, $3, $4::text[], $5, $6)`
   for (wazeStreet of wazeStreetsCsv) {
-    wazeStreet.createdAt = new Date(wazeStreet.createdAt);
-    wazeStreet.updatedAt = new Date(wazeStreet.updatedAt);
-    const result = await lokka.send(
-      `
-      mutation(
-        $id: Int,
-        $longitude: Float,
-        $latitude: Float,
-        $distance: Float,
-        $name: String,
-        $names: [String],
-        $createdAt: Datetime,
-        $updatedAt: Datetime,
-      ) {
-        newWazeStreetWithId(input: {
-          id: $id,
-          longitude: $longitude,
-          latitude: $latitude,
-          distance: $distance,
-          name: $name,
-          names: $names,
-          createdAt: $createdAt,
-          updatedAt: $updatedAt,
-        }) {
-          wazeStreet {
-            id
-          }
-        }
-      }
-    `,
-      wazeStreet,
-    );
-    // console.log(
-    //   `Added wazeStreet ${result.newWazeStreetWithId.wazeStreet.id} to DB`,
-    // );
+    if (header) {
+      header = false;
+      continue
+    }
+    wazeStreet[3] = parseNames(wazeStreet[3])
+    wazeStreet[4] = new Date(wazeStreet[4]);
+    wazeStreet[5] = new Date(wazeStreet[5]);
+    await client.query(queryText, wazeStreet);
   }
 }
 
