@@ -129,7 +129,6 @@ functions:
 
     environment:
       PGENDPOINT: ${self:custom.PGENDPOINT}
-      FRONTEND_URL: ${env:FRONTEND_URL}
       JWT_SECRET: ${env:JWT_SECRET}
       GMAIL_ADDRESS: ${env:GMAIL_ADDRESS}
       GMAIL_PASSWORD: ${env:GMAIL_PASSWORD}

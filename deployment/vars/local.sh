@@ -7,7 +7,6 @@ export AWS_STAGE='dev'
 
 # App
 export JWT_SECRET=insecure
-export FRONTEND_URL="localhost:3000"
 export BACKEND_PORT=5000
 # ENABLE_SYNC_LEGACY not required for local testing
 export GRAPHQL_ENDPOINT=http://localhost:$BACKEND_PORT/graphql

@@ -65,7 +65,7 @@ Report ID: {{reportId}}
 Notes: {{notes}}
 Location description: {{locationDescription}}
 Coordinates: {{latitude}},{{longitude}}  https://www.google.com/maps/?q={{latitude}},{{longitude}}
-Incidents are created at http://{{FRONTEND_URL}}/report-incident
+Incidents are created at http://{{frontendURL}}/report-incident
 `.trim(),
 );
 
@@ -75,7 +75,7 @@ const AdminEmailHtmlTemplate = handlebars.compile(
 <p>Notes: {{notes}}</p>
 <p>Location description: {{locationDescription}}</p>
 <p>Coordinates: <a href="https://www.google.com/maps/?q={{latitude}},{{longitude}}" target="_blank">{{latitude}},{{longitude}}</a></p>
-<p>Incidents are created at <a href="http://{{FRONTEND_URL}}/report-incident" target="_blank">http://{{FRONTEND_URL}}/report-incident</a></p>
+<p>Incidents are created at <a href="http://{{frontendURL}}/report-incident" target="_blank">http://{{frontendURL}}/report-incident</a></p>
 `.trim(),
 );
 
@@ -83,12 +83,13 @@ async function sendEmailToAdmin({
   user: { firstName, lastName, emailAddress },
   incidentReport,
   createdReport,
+  frontendURL
 }) {
   const reportId = createdReport.id;
   const templateData = {
     ...incidentReport,
     reportId,
-    FRONTEND_URL: process.env.FRONTEND_URL,
+    frontendURL,
   };
   await sendEmail({
     from: 'CTXfloods <ctxfloodstestmailer@gmail.com>',
@@ -102,6 +103,7 @@ async function sendEmailToAdmin({
 module.exports.handle = async (event, context, cb) => {
   try {
     const incidentReport = JSON.parse(event.body);
+    const frontendURL = event.headers.origin;
 
     await verifyCaptcha(incidentReport.recaptchaResponse);
 
@@ -116,7 +118,7 @@ module.exports.handle = async (event, context, cb) => {
     // Send email in series
     // Not sure if we need it or not, but I figure it could help avoid being rate limited by gmail
     for (var user of users) {
-      await sendEmailToAdmin({ user, incidentReport, createdReport });
+      await sendEmailToAdmin({ user, incidentReport, createdReport, frontendURL });
     }
 
     cb(null, {

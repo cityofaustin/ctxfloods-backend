@@ -18,7 +18,7 @@ module.exports = {
     deploy: true,
     seed: true
   },
-  "dev-faster-seeding": {
+  "338-reset-cors": {
     deploy: true,
     seed: true
   }
