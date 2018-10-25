@@ -21,5 +21,9 @@ module.exports = {
   "338-reset-cors": {
     deploy: true,
     seed: true
+  },
+  "355-cors": {
+    deploy: true,
+    seed: true
   }
 };

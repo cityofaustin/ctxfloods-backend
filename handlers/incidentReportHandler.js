@@ -127,10 +127,10 @@ module.exports.handle = async (event, context, cb) => {
         'Access-Control-Allow-Origin': '*',
         'Content-Type': 'application/json',
       },
-      body: {
+      body: JSON.stringify({
         usersNotifiedCount: users.length,
         createdReport,
-      },
+      }),
     });
   } catch (err) {
     logError(err);
