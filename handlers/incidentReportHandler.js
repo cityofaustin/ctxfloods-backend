@@ -64,8 +64,12 @@ const AdminEmailTextTemplate = handlebars.compile(
 Report ID: {{reportId}}
 Notes: {{notes}}
 Location description: {{locationDescription}}
+{{#if latitude}}
+{{#if longitude}}
 Coordinates: {{latitude}},{{longitude}}  https://www.google.com/maps/?q={{latitude}},{{longitude}}
-Incidents are created at http://{{frontendURL}}/report-incident
+{{/if}}
+{{/if}}
+Incidents are created at {{frontendURL}}/report-incident
 `.trim(),
 );
 
@@ -74,8 +78,12 @@ const AdminEmailHtmlTemplate = handlebars.compile(
 <h3>Report ID: {{reportId}}</h3>
 <p>Notes: {{notes}}</p>
 <p>Location description: {{locationDescription}}</p>
+{{#if latitude}}
+{{#if longitude}}
 <p>Coordinates: <a href="https://www.google.com/maps/?q={{latitude}},{{longitude}}" target="_blank">{{latitude}},{{longitude}}</a></p>
-<p>Incidents are created at <a href="http://{{frontendURL}}/report-incident" target="_blank">http://{{frontendURL}}/report-incident</a></p>
+{{/if}}
+{{/if}}
+<p>Incidents are created at <a href="{{frontendURL}}/report-incident" target="_blank">http://{{frontendURL}}/report-incident</a></p>
 `.trim(),
 );
 
@@ -127,10 +135,10 @@ module.exports.handle = async (event, context, cb) => {
         'Access-Control-Allow-Origin': '*',
         'Content-Type': 'application/json',
       },
-      body: {
+      body: JSON.stringify({
         usersNotifiedCount: users.length,
         createdReport,
-      },
+      }),
     });
   } catch (err) {
     logError(err);
