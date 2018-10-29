@@ -119,6 +119,8 @@ functions:
           cors: true
     environment:
       GRAPHQL_ENDPOINT: ${self:custom.GRAPHQL_ENDPOINT}
+      GMAIL_ADDRESS: ${env:GMAIL_ADDRESS}
+      GMAIL_PASSWORD: ${env:GMAIL_PASSWORD}
   emailreset:
     handler: handlers/resetEmailHandler.handle
     events:
