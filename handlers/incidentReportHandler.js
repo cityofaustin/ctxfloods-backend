@@ -64,7 +64,11 @@ const AdminEmailTextTemplate = handlebars.compile(
 Report ID: {{reportId}}
 Notes: {{notes}}
 Location description: {{locationDescription}}
+{{#if latitude}}
+{{#if longitude}}
 Coordinates: {{latitude}},{{longitude}}  https://www.google.com/maps/?q={{latitude}},{{longitude}}
+{{/if}}
+{{/if}}
 Incidents are created at http://{{frontendURL}}/report-incident
 `.trim(),
 );
@@ -74,7 +78,11 @@ const AdminEmailHtmlTemplate = handlebars.compile(
 <h3>Report ID: {{reportId}}</h3>
 <p>Notes: {{notes}}</p>
 <p>Location description: {{locationDescription}}</p>
+{{#if latitude}}
+{{#if longitude}}
 <p>Coordinates: <a href="https://www.google.com/maps/?q={{latitude}},{{longitude}}" target="_blank">{{latitude}},{{longitude}}</a></p>
+{{/if}}
+{{/if}}
 <p>Incidents are created at <a href="http://{{frontendURL}}/report-incident" target="_blank">http://{{frontendURL}}/report-incident</a></p>
 `.trim(),
 );
