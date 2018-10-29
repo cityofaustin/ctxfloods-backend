@@ -69,7 +69,7 @@ Location description: {{locationDescription}}
 Coordinates: {{latitude}},{{longitude}}  https://www.google.com/maps/?q={{latitude}},{{longitude}}
 {{/if}}
 {{/if}}
-Incidents are created at http://{{frontendURL}}/report-incident
+Incidents are created at {{frontendURL}}/report-incident
 `.trim(),
 );
 
@@ -83,7 +83,7 @@ const AdminEmailHtmlTemplate = handlebars.compile(
 <p>Coordinates: <a href="https://www.google.com/maps/?q={{latitude}},{{longitude}}" target="_blank">{{latitude}},{{longitude}}</a></p>
 {{/if}}
 {{/if}}
-<p>Incidents are created at <a href="http://{{frontendURL}}/report-incident" target="_blank">http://{{frontendURL}}/report-incident</a></p>
+<p>Incidents are created at <a href="{{frontendURL}}/report-incident" target="_blank">http://{{frontendURL}}/report-incident</a></p>
 `.trim(),
 );
 
