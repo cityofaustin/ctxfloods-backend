@@ -46,7 +46,6 @@ module.exports.handle = (event, context, cb) => {
       })
   })
   .then((response)=> {
-    // console.log("What is your response?", response);
     response.statusCode = 200;
     response.headers = { 'Access-Control-Allow-Origin': '*' };
     cb(null, response);
