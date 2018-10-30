@@ -33,9 +33,7 @@ app.all('/graphql', (req, res) => {
   var event = req.body;
   event.headers = req.headers;
   graphqlHandler.handle(req.body, null, (error, response) => {
-    res.statusCode = response.statusCode;
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.end(JSON.stringify({ data: response.data, errors: response.errors }));
+    res.end(JSON.stringify(response));
   });
 });
 

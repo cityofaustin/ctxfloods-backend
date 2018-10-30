@@ -52,10 +52,11 @@ module.exports.handle = (event, context, cb) => {
     cb(null, response);
   })
   .catch((err)=>{
-    console.log("There was a terrible error", err)
     logError(err);
+    let response = {};
     response.statusCode = 500;
     response.headers = { 'Access-Control-Allow-Origin': '*' };
-    cb(null, {errors: err})
+    response.errors = err;
+    cb(null, response)
   })
 }
