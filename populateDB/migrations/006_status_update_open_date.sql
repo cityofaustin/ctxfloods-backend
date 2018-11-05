@@ -5,19 +5,23 @@
 -----
 alter table floods.status_update add column open_date date;
 alter table floods.status_update add column indefinite_closure boolean default false;
+comment on column floods.status_update.open_date is 'Estimated date for longterm closure to re-open.';
+comment on column floods.status_update.indefinite_closure is 'Flag for a longterm closure with no estimated re-open date.';
 
 -----
--- 2. drop status_duration data
+-- 2. drop status_duration table data
 -----
--- statuses that previously had a status_duration will now be set to 'indefinite_closure'
+-- previously existing longterm_closure statuses that had a status_duration will now be set to 'indefinite_closure'
 do $$
 begin
   if exists (
     select 1 from information_schema.columns
     where table_schema='floods' and table_name='status_update' and column_name='status_duration_id'
   ) then
-  update floods.status_update set indefinite_closure = true
-  where status_duration_id is not null;
+    update floods.status_update set indefinite_closure = true
+    where status_duration_id is not null;
+    update floods.status_update set indefinite_closure = false
+    where status_duration_id is null;
 end if;
 end
 $$;
@@ -25,13 +29,6 @@ $$;
 alter table floods.status_update drop constraint status_update_status_duration_id_fkey;
 alter table floods.status_update drop column status_duration_id;
 drop table floods.status_duration cascade;
-
--- 'duration' value cannot be removed from floods.status_detail enum
-alter type floods.status_detail add value 'open_date';
-
-update floods.status_association
-set detail = 'open_date'
-where detail = 'duration';
 
 -----
 -- 3. Rewrite floods.new_status_update
@@ -95,20 +92,20 @@ begin
   end if;
 
   -- If the status duration is not null
-  if status_duration_id is not null then
+  if (open_date is not null or indefinite_closure is true) then
     -- but the association says it should be disabled
-    if (select rule from floods.status_association where floods.status_association.status_id = new_status_update.status_id and detail = 'open_date') = 'disabled' then
+    if (select rule from floods.status_association where floods.status_association.status_id = new_status_update.status_id and detail = 'duration') = 'disabled' then
       -- we shouldn't be here, throw
-      raise exception 'Open Dates are disabled for status:  %', (select name from floods.status where id = status_id);
+      raise exception 'Open dates and indefinite closure flags are disabled for status:  %', (select name from floods.status where id = status_id);
     end if;
   end if;
 
   -- If the status reason is null
   if (open_date is null and indefinite_closure is false) then
     -- but the association says it is required
-    if (select rule from floods.status_association where floods.status_association.status_id = new_status_update.status_id and detail = 'open_date') = 'required' then
+    if (select rule from floods.status_association where floods.status_association.status_id = new_status_update.status_id and detail = 'duration') = 'required' then
       -- we shouldn't be here, throw
-      raise exception 'Open Dates are required for status:  %', (select name from floods.status where id = status_id);
+      raise exception 'An open date or indefinite closure flag is required for status:  %', (select name from floods.status where id = status_id);
     end if;
   end if;
 
