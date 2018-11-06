@@ -33,7 +33,7 @@ drop table floods.status_duration cascade;
 -----
 -- 3. Rewrite floods.new_status_update
 -----
-drop function floods.new_status_update;
+drop function floods.new_status_update(integer, integer, text, integer, integer);
 -- Create function to update status
 create function floods.new_status_update(
   status_id integer,
