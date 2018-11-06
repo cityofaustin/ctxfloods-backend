@@ -60,7 +60,7 @@ describe('When searching users', () => {
       },
     );
 
-    expect(response.searchUsers.nodes).toMatchSnapshot();
+    expect(response.searchUsers.nodes.sort((a,b)=>a.id-b.id)).toMatchSnapshot();
   });
 
   it('should return nothing when search string doesnt match anything', async () => {
