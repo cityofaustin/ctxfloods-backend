@@ -32,7 +32,8 @@ function shouldWork(
   status,
   notes,
   reason,
-  duration,
+  openDate,
+  indefiniteClosure,
   extra_description,
 ) {
   var originalStatusId;
@@ -192,13 +193,14 @@ function shouldWork(
     it('should update the status', async () => {
       const response = await lokka.send(
         `
-        mutation($status:Int,$crossing:Int,$notes:String,$reason:Int,$duration:Int) {
+        mutation($status:Int,$crossing:Int,$notes:String,$reason:Int,$openDate:Date,$indefiniteClosure:Boolean) {
           newStatusUpdate(input: {
             statusId: $status,
             crossingId: $crossing,
             notes: $notes,
             statusReasonId: $reason,
-            statusDurationId: $duration
+            openDate: $openDate,
+            indefiniteClosure: $indefiniteClosure
           }) {
             statusUpdate {
               id
@@ -212,7 +214,8 @@ function shouldWork(
           crossing: crossingToUpdate,
           notes: notes,
           reason: reason,
-          duration: duration,
+          openDate: openDate,
+          indefiniteClosure: indefiniteClosure
         },
       );
 
@@ -282,7 +285,8 @@ function shouldFail(
   crossing,
   notes,
   reason,
-  duration,
+  openDate,
+  indefiniteClosure,
   extra_description,
 ) {
   var originalStatusId;
@@ -306,13 +310,14 @@ function shouldFail(
       try {
         const response = await lokka.send(
           `
-          mutation($status:Int,$crossing:Int,$notes:String,$reason:Int,$duration:Int) {
+          mutation($status:Int,$crossing:Int,$notes:String,$reason:Int,$openDate:Date,$indefiniteClosure) {
             newStatusUpdate(input: {
               statusId: $status,
               crossingId: $crossing,
               notes: $notes,
               statusReasonId: $reason,
-              statusDurationId: $duration
+              openDate: $openDate,
+              indefiniteClosure: $indefiniteClosure
             }) {
               statusUpdate {
                 id
@@ -326,7 +331,8 @@ function shouldFail(
             crossing: crossing,
             notes: notes,
             reason: reason,
-            duration: duration,
+            openDate: openDate,
+            indefiniteClosure: indefiniteClosure
           },
         );
       } catch (e) {
@@ -352,6 +358,7 @@ describe('When updating the status of a crossing', () => {
         'OPEN with no REASON or DURATION',
         null,
         null,
+        null,
         'In the same community as the crossing',
       );
       shouldFail(
@@ -360,6 +367,7 @@ describe('When updating the status of a crossing', () => {
         1,
         7,
         'OPEN with no REASON or DURATION',
+        null,
         null,
         null,
         'In another community without the crossing',
@@ -371,6 +379,7 @@ describe('When updating the status of a crossing', () => {
         'OPEN with no REASON or DURATION',
         null,
         null,
+        null,
         'In the same community as the crossing',
       );
       shouldFail(
@@ -379,6 +388,7 @@ describe('When updating the status of a crossing', () => {
         1,
         7,
         'OPEN with no REASON or DURATION',
+        null,
         null,
         null,
         'In another community without the crossing',
@@ -413,7 +423,8 @@ describe('When updating the status of a crossing', () => {
         3,
         'OPEN with DURATION',
         null,
-        1,
+        '2018-11-06',
+        false,
       );
       shouldFail(
         communityAdminEmail,
@@ -422,7 +433,8 @@ describe('When updating the status of a crossing', () => {
         3,
         'OPEN with DURATION',
         null,
-        1,
+        '2018-11-06',
+        false,
       );
       shouldFail(
         communityEditorEmail,
@@ -431,7 +443,8 @@ describe('When updating the status of a crossing', () => {
         3,
         'OPEN with DURATION',
         null,
-        1,
+        '2018-11-06',
+        false,
       );
     });
 
@@ -443,7 +456,8 @@ describe('When updating the status of a crossing', () => {
         3,
         'OPEN with REASON and DURATION',
         1,
-        1,
+        '2018-11-06',
+        false,
       );
       shouldFail(
         communityAdminEmail,
@@ -452,7 +466,8 @@ describe('When updating the status of a crossing', () => {
         3,
         'OPEN with REASON and DURATION',
         1,
-        1,
+        '2018-11-06',
+        false,
       );
       shouldFail(
         communityEditorEmail,
@@ -461,7 +476,8 @@ describe('When updating the status of a crossing', () => {
         3,
         'OPEN with REASON and DURATION',
         1,
-        1,
+        '2018-11-06',
+        false,
       );
     });
   });
@@ -501,6 +517,7 @@ describe('When updating the status of a crossing', () => {
           'CLOSED with REASON',
           1,
           null,
+          null,
           'In the same community as the crossing',
         );
         shouldFail(
@@ -511,6 +528,7 @@ describe('When updating the status of a crossing', () => {
           'CLOSED with REASON',
           1,
           null,
+          null,
           'In another community without the crossing',
         );
         shouldWork(
@@ -519,6 +537,7 @@ describe('When updating the status of a crossing', () => {
           2,
           'CLOSED with REASON',
           1,
+          null,
           null,
           'In the same community as the crossing',
         );
@@ -529,6 +548,7 @@ describe('When updating the status of a crossing', () => {
           7,
           'CLOSED with REASON',
           1,
+          null,
           null,
           'In another community without the crossing',
         );
@@ -569,7 +589,8 @@ describe('When updating the status of a crossing', () => {
         3,
         'CLOSED with DURATION',
         null,
-        1,
+        '2018-11-06',
+        false,
       );
       shouldFail(
         communityAdminEmail,
@@ -578,7 +599,8 @@ describe('When updating the status of a crossing', () => {
         3,
         'CLOSED with DURATION',
         null,
-        1,
+        '2018-11-06',
+        false,
       );
       shouldFail(
         communityEditorEmail,
@@ -587,7 +609,8 @@ describe('When updating the status of a crossing', () => {
         3,
         'CLOSED with DURATION',
         null,
-        1,
+        '2018-11-06',
+        false,
       );
     });
 
@@ -599,7 +622,8 @@ describe('When updating the status of a crossing', () => {
         3,
         'CLOSED with REASON and DURATION',
         1,
-        1,
+        '2018-11-06',
+        false,
       );
       shouldFail(
         communityAdminEmail,
@@ -617,7 +641,8 @@ describe('When updating the status of a crossing', () => {
         3,
         'CLOSED with REASON and DURATION',
         1,
-        1,
+        '2018-11-06',
+        false,
       );
     });
   });
@@ -653,6 +678,7 @@ describe('When updating the status of a crossing', () => {
         'CAUTION with REASON',
         3,
         null,
+        null,
         'In the same community as the crossing',
       );
       shouldFail(
@@ -661,6 +687,7 @@ describe('When updating the status of a crossing', () => {
         3,
         7,
         'CAUTION with REASON',
+        null,
         null,
         null,
         'In another community without the crossing',
@@ -672,6 +699,7 @@ describe('When updating the status of a crossing', () => {
         'CAUTION with REASON',
         3,
         null,
+        null,
         'In the same community as the crossing',
       );
       shouldFail(
@@ -680,6 +708,7 @@ describe('When updating the status of a crossing', () => {
         3,
         7,
         'CAUTION with REASON',
+        null,
         null,
         null,
         'In another community without the crossing',
@@ -694,7 +723,8 @@ describe('When updating the status of a crossing', () => {
         3,
         'CAUTION with DURATION',
         null,
-        1,
+        '2018-11-06',
+        false,
       );
       shouldFail(
         communityAdminEmail,
@@ -703,7 +733,8 @@ describe('When updating the status of a crossing', () => {
         3,
         'CAUTION with DURATION',
         null,
-        1,
+        '2018-11-06',
+        false,
       );
       shouldFail(
         communityEditorEmail,
@@ -712,7 +743,8 @@ describe('When updating the status of a crossing', () => {
         3,
         'CAUTION with DURATION',
         null,
-        1,
+        '2018-11-06',
+        false,
       );
     });
 
@@ -724,7 +756,8 @@ describe('When updating the status of a crossing', () => {
         3,
         'CAUTION with REASON and DURATION',
         3,
-        1,
+        '2018-11-06',
+        false,
       );
       shouldFail(
         communityAdminEmail,
@@ -733,7 +766,8 @@ describe('When updating the status of a crossing', () => {
         3,
         'CAUTION with REASON and DURATION',
         3,
-        1,
+        '2018-11-06',
+        false,
       );
       shouldFail(
         communityEditorEmail,
@@ -742,7 +776,8 @@ describe('When updating the status of a crossing', () => {
         3,
         'CAUTION with REASON and DURATION',
         3,
-        1,
+        '2018-11-06',
+        false,
       );
     });
   });
@@ -807,7 +842,8 @@ describe('When updating the status of a crossing', () => {
         3,
         'LONG TERM CLOSURE with DURATION',
         null,
-        1,
+        '2018-11-06',
+        false,
       );
       shouldFail(
         communityEditorEmail,
@@ -816,7 +852,8 @@ describe('When updating the status of a crossing', () => {
         3,
         'LONG TERM CLOSURE with DURATION',
         null,
-        1,
+        '2018-11-06',
+        false,
       );
       shouldFail(
         communityEditorEmail,
@@ -825,7 +862,8 @@ describe('When updating the status of a crossing', () => {
         3,
         'LONG TERM CLOSURE with DURATION',
         null,
-        1,
+        '2018-11-06',
+        false,
       );
     });
 
@@ -837,7 +875,8 @@ describe('When updating the status of a crossing', () => {
           4,
           'LONG TERM CLOSURE with REASON and DURATION',
           2,
-          2,
+          '2018-11-06',
+          false,
         );
         shouldWork(
           communityAdminEmail,
@@ -845,7 +884,8 @@ describe('When updating the status of a crossing', () => {
           4,
           'LONG TERM CLOSURE with REASON and DURATION',
           2,
-          2,
+          '2018-11-06',
+          false,
           'In the same community as the crossing',
         );
         shouldFail(
@@ -855,7 +895,8 @@ describe('When updating the status of a crossing', () => {
           7,
           'LONG TERM CLOSURE with REASON and DURATION',
           2,
-          2,
+          '2018-11-06',
+          false,
           'In another community without the crossing',
         );
         shouldWork(
@@ -864,7 +905,8 @@ describe('When updating the status of a crossing', () => {
           4,
           'LONG TERM CLOSURE with REASON and DURATION',
           2,
-          2,
+          '2018-11-06',
+          false,
           'In the same community as the crossing',
         );
         shouldFail(
@@ -874,7 +916,8 @@ describe('When updating the status of a crossing', () => {
           7,
           'LONG TERM CLOSURE with REASON and DURATION',
           2,
-          2,
+          '2018-11-06',
+          false,
           'In another community without the crossing',
         );
       });
@@ -886,7 +929,8 @@ describe('When updating the status of a crossing', () => {
           3,
           'LONG TERM CLOSURE with REASON and DURATION',
           2,
-          1,
+          '2018-11-06',
+          false,
         );
         shouldFail(
           communityAdminEmail,
@@ -895,7 +939,8 @@ describe('When updating the status of a crossing', () => {
           3,
           'LONG TERM CLOSURE with REASON and DURATION',
           2,
-          1,
+          '2018-11-06',
+          false,
         );
         shouldFail(
           communityEditorEmail,
@@ -904,65 +949,8 @@ describe('When updating the status of a crossing', () => {
           3,
           'LONG TERM CLOSURE with REASON and DURATION',
           2,
-          1,
-        );
-      });
-      describe('and duration matches status', () => {
-        shouldFail(
-          superAdminEmail,
-          everyPassword,
-          4,
-          3,
-          'LONG TERM CLOSURE with REASON and DURATION',
-          1,
-          2,
-        );
-        shouldFail(
-          communityAdminEmail,
-          everyPassword,
-          4,
-          3,
-          'LONG TERM CLOSURE with REASON and DURATION',
-          1,
-          2,
-        );
-        shouldFail(
-          communityEditorEmail,
-          everyPassword,
-          4,
-          3,
-          'LONG TERM CLOSURE with REASON and DURATION',
-          1,
-          2,
-        );
-      });
-      describe('and neither matches status', () => {
-        shouldFail(
-          superAdminEmail,
-          everyPassword,
-          4,
-          3,
-          'LONG TERM CLOSURE with REASON and DURATION',
-          1,
-          1,
-        );
-        shouldFail(
-          communityAdminEmail,
-          everyPassword,
-          4,
-          3,
-          'LONG TERM CLOSURE with REASON and DURATION',
-          1,
-          1,
-        );
-        shouldFail(
-          communityEditorEmail,
-          everyPassword,
-          4,
-          3,
-          'LONG TERM CLOSURE with REASON and DURATION',
-          1,
-          1,
+          '2018-11-06',
+          false,
         );
       });
     });

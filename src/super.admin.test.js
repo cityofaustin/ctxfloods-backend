@@ -125,7 +125,7 @@ describe('As a super admin', async () => {
             id
           }
         }
-      }      
+      }
       `,
         {
           id: newCommunityId,
@@ -238,7 +238,7 @@ describe('As a super admin', async () => {
             id
           }
         }
-      }      
+      }
       `,
         {
           id: newStatusId,
@@ -352,7 +352,7 @@ describe('As a super admin', async () => {
             id
           }
         }
-      }      
+      }
       `,
         {
           id: newStatusReasonId,
@@ -379,124 +379,6 @@ describe('As a super admin', async () => {
       );
 
       expect(response.statusReasonById).toBeNull();
-    });
-  });
-
-  describe('When adding and editing a status duration', () => {
-    var newStatusDurationId;
-
-    it('should add the status duration', async () => {
-      const response = await lokka.send(`
-        mutation {
-          newStatusDuration(input: {
-            name: "New Status Duration"
-            timespan: {
-              days: 1
-            }
-          }) {
-            statusDuration {
-              id
-            }
-          }
-        }
-      `);
-
-      newStatusDurationId = response.newStatusDuration.statusDuration.id;
-      expect(response).not.toBeNull();
-    });
-
-    it('the new status duration should show up in the DB', async () => {
-      const response = await lokka.send(
-        `
-        query ($id: Int!) {
-          statusDurationById(id: $id) {
-            name
-          }
-        }
-      `,
-        {
-          id: newStatusDurationId,
-        },
-      );
-
-      expect(response).toMatchSnapshot();
-    });
-
-    it('should rename the status duration', async () => {
-      const response = await lokka.send(
-        `
-        mutation ($id: Int!) {
-          changeStatusDurationName(input: {
-            statusDurationId: $id
-            name: "Renamed Status Duration"
-          }) {
-            statusDuration {
-              id
-            }
-          }
-        }
-      `,
-        {
-          id: newStatusDurationId,
-        },
-      );
-
-      expect(response).not.toBeNull();
-    });
-
-    it('the renamed status duration should show up in the DB', async () => {
-      const response = await lokka.send(
-        `
-        query ($id: Int!) {
-          statusDurationById(id: $id) {
-            name
-          }
-        }
-      `,
-        {
-          id: newStatusDurationId,
-        },
-      );
-
-      expect(response).toMatchSnapshot();
-    });
-
-    it('should delete the new status duration', async () => {
-      const response = await lokka.send(
-        `
-      mutation ($id: Int!) {
-        deleteStatusDuration(input: {statusDurationId: $id}) {
-          statusDuration {
-            id
-          }
-        }
-      }      
-      `,
-        {
-          id: newStatusDurationId,
-        },
-      );
-
-      expect(response.deleteStatusDuration.statusDuration.id).toEqual(
-        newStatusDurationId,
-      );
-    });
-
-    it('the new status duration should no longer show up in the DB', async () => {
-      const response = await lokka.send(
-        `
-        query ($id: Int!) {
-          statusDurationById(id: $id) {
-            name
-          }
-        }
-      `,
-        {
-          id: newStatusDurationId,
-        },
-      );
-
-      expect(response.statusDurationById).toBeNull();
     });
   });
 });
