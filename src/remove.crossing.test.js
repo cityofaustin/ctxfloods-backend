@@ -59,8 +59,8 @@ function shouldWork(
             humanAddress: "In test land"
             description: "TEST LAND IS MAGIC!"
             communityId: $communityId
-            longitude: -97.755996
-            latitude: 30.30718
+            longitude: "-97.755996"
+            latitude: "30.30718"
           }) {
             crossing {
               id
@@ -167,8 +167,8 @@ function shouldFail(email, password, communityId, extra_description) {
             humanAddress: "In test land"
             description: "TEST LAND IS MAGIC!"
             communityId: $communityId
-            longitude: -97.755996
-            latitude: 30.30718
+            longitude: "-97.755996"
+            latitude: "30.30718"
           }) {
             crossing {
               id
@@ -209,7 +209,7 @@ function shouldFail(email, password, communityId, extra_description) {
       expect(response).toMatchSnapshot();
     });
 
-    it('should fail to delete the new crossing', async () => {
+    it('should fail to delete the new crossing', async (done) => {
       var err;
       try {
         const response = await lokka.send(
@@ -229,6 +229,7 @@ function shouldFail(email, password, communityId, extra_description) {
       } catch (e) {
         expect(e).toMatchSnapshot();
       }
+      done();
     });
   });
 }
