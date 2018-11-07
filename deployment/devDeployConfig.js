@@ -25,5 +25,9 @@ module.exports = {
   "355-cors": {
     deploy: true,
     seed: true
+  },
+  "392-duration": {
+    deploy: true,
+    seed: true
   }
 };

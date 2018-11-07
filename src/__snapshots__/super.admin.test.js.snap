@@ -16,22 +16,6 @@ Object {
 }
 `;
 
-exports[`As a super admin When adding and editing a status duration the new status duration should show up in the DB 1`] = `
-Object {
-  "statusDurationById": Object {
-    "name": "New Status Duration",
-  },
-}
-`;
-
-exports[`As a super admin When adding and editing a status duration the renamed status duration should show up in the DB 1`] = `
-Object {
-  "statusDurationById": Object {
-    "name": "Renamed Status Duration",
-  },
-}
-`;
-
 exports[`As a super admin When adding and editing a status reason the new status reason should show up in the DB 1`] = `
 Object {
   "statusReasonById": Object {

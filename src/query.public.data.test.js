@@ -75,11 +75,6 @@ async function shouldWork(email = '', password = '', extra_description) {
               id
             }
           }
-          allStatusDurations {
-            nodes {
-              id
-            }
-          }
           allStatusAssociations {
             nodes {
               id
