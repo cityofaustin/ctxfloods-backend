@@ -32,7 +32,7 @@ function shouldWork(
   status,
   notes,
   reason,
-  openDate,
+  reopenDate,
   indefiniteClosure,
   extra_description,
 ) {
@@ -193,13 +193,13 @@ function shouldWork(
     it('should update the status', async () => {
       const response = await lokka.send(
         `
-        mutation($status:Int,$crossing:Int,$notes:String,$reason:Int,$openDate:Date,$indefiniteClosure:Boolean) {
+        mutation($status:Int,$crossing:Int,$notes:String,$reason:Int,$reopenDate:Date,$indefiniteClosure:Boolean) {
           newStatusUpdate(input: {
             statusId: $status,
             crossingId: $crossing,
             notes: $notes,
             statusReasonId: $reason,
-            openDate: $openDate,
+            reopenDate: $reopenDate,
             indefiniteClosure: $indefiniteClosure
           }) {
             statusUpdate {
@@ -214,7 +214,7 @@ function shouldWork(
           crossing: crossingToUpdate,
           notes: notes,
           reason: reason,
-          openDate: openDate,
+          reopenDate: reopenDate,
           indefiniteClosure: indefiniteClosure
         },
       );
@@ -285,7 +285,7 @@ function shouldFail(
   crossing,
   notes,
   reason,
-  openDate,
+  reopenDate,
   indefiniteClosure,
   extra_description,
 ) {
@@ -310,13 +310,13 @@ function shouldFail(
       try {
         const response = await lokka.send(
           `
-          mutation($status:Int,$crossing:Int,$notes:String,$reason:Int,$openDate:Date,$indefiniteClosure) {
+          mutation($status:Int,$crossing:Int,$notes:String,$reason:Int,$reopenDate:Date,$indefiniteClosure) {
             newStatusUpdate(input: {
               statusId: $status,
               crossingId: $crossing,
               notes: $notes,
               statusReasonId: $reason,
-              openDate: $openDate,
+              reopenDate: $reopenDate,
               indefiniteClosure: $indefiniteClosure
             }) {
               statusUpdate {
@@ -331,7 +331,7 @@ function shouldFail(
             crossing: crossing,
             notes: notes,
             reason: reason,
-            openDate: openDate,
+            reopenDate: reopenDate,
             indefiniteClosure: indefiniteClosure
           },
         );

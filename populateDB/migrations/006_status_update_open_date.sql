@@ -3,10 +3,10 @@
 -----
 -- 1. add new columns
 -----
-alter table floods.status_update add column open_date date;
+alter table floods.status_update add column reopen_date date;
 alter table floods.status_update add column indefinite_closure boolean default false;
-comment on column floods.status_update.open_date is 'Estimated date for longterm closure to re-open.';
-comment on column floods.status_update.indefinite_closure is 'Flag for a longterm closure with no estimated re-open date.';
+comment on column floods.status_update.reopen_date is 'Estimated date for longterm closure to reopen.';
+comment on column floods.status_update.indefinite_closure is 'Flag for a longterm closure with no estimated reopen date.';
 
 -----
 -- 2. drop status_duration table data
@@ -40,7 +40,7 @@ create function floods.new_status_update(
   crossing_id integer,
   notes text,
   status_reason_id integer,
-  open_date date,
+  reopen_date date,
   indefinite_closure boolean
 ) returns floods.status_update as $$
 declare
@@ -92,25 +92,25 @@ begin
   end if;
 
   -- If the status duration is not null
-  if (open_date is not null or indefinite_closure is true) then
+  if (reopen_date is not null or indefinite_closure is true) then
     -- but the association says it should be disabled
     if (select rule from floods.status_association where floods.status_association.status_id = new_status_update.status_id and detail = 'duration') = 'disabled' then
       -- we shouldn't be here, throw
-      raise exception 'Open dates and indefinite closure flags are disabled for status:  %', (select name from floods.status where id = status_id);
+      raise exception 'Reopen dates and indefinite closure flags are disabled for status:  %', (select name from floods.status where id = status_id);
     end if;
   end if;
 
   -- If the status reason is null
-  if (open_date is null and indefinite_closure is false) then
+  if (reopen_date is null and indefinite_closure is false) then
     -- but the association says it is required
     if (select rule from floods.status_association where floods.status_association.status_id = new_status_update.status_id and detail = 'duration') = 'required' then
       -- we shouldn't be here, throw
-      raise exception 'An open date or indefinite closure flag is required for status:  %', (select name from floods.status where id = status_id);
+      raise exception 'A reopen date or indefinite closure flag is required for status:  %', (select name from floods.status where id = status_id);
     end if;
   end if;
 
-  insert into floods.status_update (status_id, creator_id, crossing_id, notes, status_reason_id, open_date, indefinite_closure) values
-    (status_id, current_setting('jwt.claims.user_id')::integer, crossing_id, notes, status_reason_id, open_date, indefinite_closure)
+  insert into floods.status_update (status_id, creator_id, crossing_id, notes, status_reason_id, reopen_date, indefinite_closure) values
+    (status_id, current_setting('jwt.claims.user_id')::integer, crossing_id, notes, status_reason_id, reopen_date, indefinite_closure)
     returning * into floods_status_update;
 
   update floods.crossing
