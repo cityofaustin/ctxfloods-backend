@@ -1,8 +1,10 @@
 #!/bin/bash
 
+# can plug in an individual test file.
+# default behavior is to run all tests
+# ex: sh jestWithVars.sh super.admin.test.js
 SCRIPT_PATH=$1
-ENV=$2
 CURRENT_DIR=`dirname $BASH_SOURCE`
 
 source $CURRENT_DIR/vars/local.sh
-jest test
+jest $( echo $1 || echo 'test' ) --detectOpenHandles

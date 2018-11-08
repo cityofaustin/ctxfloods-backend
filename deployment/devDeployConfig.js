@@ -29,5 +29,9 @@ module.exports = {
   "392-duration": {
     deploy: true,
     seed: true
+  },
+  "379-graphile": {
+    deploy: true,
+    seed: true
   }
 };

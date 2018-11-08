@@ -120,7 +120,7 @@ describe('As a super admin', async () => {
       const response = await lokka.send(
         `
       mutation ($id: Int!) {
-        deleteCommunity(input: {communityId: $id}) {
+        deleteCommunityFunction(input: {communityId: $id}) {
           community {
             id
           }
@@ -132,7 +132,7 @@ describe('As a super admin', async () => {
         },
       );
 
-      expect(response.deleteCommunity.community.id).toEqual(newCommunityId);
+      expect(response.deleteCommunityFunction.community.id).toEqual(newCommunityId);
     });
 
     it('the new community should no longer show up in the DB', async () => {
@@ -233,7 +233,7 @@ describe('As a super admin', async () => {
       const response = await lokka.send(
         `
       mutation ($id: Int!) {
-        deleteStatus(input: {statusId: $id}) {
+        deleteStatusFunction(input: {statusId: $id}) {
           status {
             id
           }
@@ -245,7 +245,7 @@ describe('As a super admin', async () => {
         },
       );
 
-      expect(response.deleteStatus.status.id).toEqual(newStatusId);
+      expect(response.deleteStatusFunction.status.id).toEqual(newStatusId);
     });
 
     it('the new status should no longer show up in the DB', async () => {
@@ -347,7 +347,7 @@ describe('As a super admin', async () => {
       const response = await lokka.send(
         `
       mutation ($id: Int!) {
-        deleteStatusReason(input: {statusReasonId: $id}) {
+        deleteStatusReasonFunction(input: {statusReasonId: $id}) {
           statusReason {
             id
           }
@@ -359,12 +359,12 @@ describe('As a super admin', async () => {
         },
       );
 
-      expect(response.deleteStatusReason.statusReason.id).toEqual(
+      expect(response.deleteStatusReasonFunction.statusReason.id).toEqual(
         newStatusReasonId,
       );
     });
 
-    it('the new status reason should no longer show up in the DB', async () => {
+    it('the new status reason should no longer show up in the DB', async (done) => {
       const response = await lokka.send(
         `
         query ($id: Int!) {
@@ -379,6 +379,7 @@ describe('As a super admin', async () => {
       );
 
       expect(response.statusReasonById).toBeNull();
+      done();
     });
   });
 });

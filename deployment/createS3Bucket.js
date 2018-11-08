@@ -12,11 +12,6 @@ s3.listBuckets((err, data) => {
   if (data.Buckets.find(bucket => bucket.Name === bucketName)) {
     console.log(`Bucket "${bucketName}" already exists.`);
   } else {
-    /**
-    Warning: Adding "LocationConstraint" param will break for our region (us-east-1).
-    But, "LocationConstraint" would be required for any other region.
-    https://docs.aws.amazon.com/cli/latest/reference/s3api/create-bucket.html#examples
-    **/
     const bucketParams = {
       Bucket: bucketName
     };

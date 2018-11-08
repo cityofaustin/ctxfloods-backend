@@ -33,8 +33,6 @@ module.exports.handle = (event, context, cb) => {
         jwtSecret: process.env.JWT_SECRET,
         pgDefaultRole: 'floods_anonymous'
       }, (graphileContext) => {
-        // console.log("even with context", graphileContext);
-        // console.log("what was the query?", event.query);
         return graphql(
           schema,
           event.query,

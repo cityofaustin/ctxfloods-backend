@@ -48,7 +48,7 @@ describe('When searching users', () => {
     const response = await anonLokka.send(
       `
       query($lastName:String) {
-        searchUsers(search: $lastName, orderBy: NATURAL) {
+        searchUsers(search: $lastName) {
           nodes {
             id
           }
