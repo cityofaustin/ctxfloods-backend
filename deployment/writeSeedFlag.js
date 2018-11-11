@@ -1,6 +1,5 @@
 const fs = require('fs');
 
-const getPool = require('../db/helpers/getPool');
 const floodsExists = require('../db/scripts/floodsExists');
 const commandLineRun = require('../db/helpers/commandLineRun');
 const devDeployConfig = require('./devDeployConfig.js');''

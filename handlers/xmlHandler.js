@@ -1,15 +1,12 @@
 require('promise.prototype.finally').shim();
-const floodsPool = require('../db/helpers/getPool')('floodsAPI');
+const Client = require('pg').Client;
 const { logError } = require('./logger');
 
 module.exports.handle = (event, context, cb) => {
-  let client;
+  const pgClient = new Client(require('./constants').PGCON);
+  pgClient.connect();
 
-  return floodsPool.connect()
-  .then((result) => {
-    client = result;
-    return client.query('select floods.legacy_xml()')
-  })
+  pgClient.query('select floods.legacy_xml()')
   .then(pgres => {
     const response = {
       statusCode: 200,
@@ -28,5 +25,5 @@ module.exports.handle = (event, context, cb) => {
     response.errors = err;
     return cb(null, response);
   })
-  .finally(() => client.release());
+  .finally(() => pgClient.end());
 };

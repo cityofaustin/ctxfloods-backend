@@ -1,9 +1,9 @@
+require('promise.prototype.finally').shim();
 // process.env.DEBUG="graphile-build:warn";
 const {createPostGraphileSchema, withPostGraphileContext} = require("postgraphile");
 const {graphql} = require('graphql');
 
 const { logError } = require('./logger');
-const floodsPool = require('../db/helpers/getPool')('floodsAPI');
 
 const extractToken = (event) => {
   // lokka lowercases its headers
@@ -14,14 +14,20 @@ const extractToken = (event) => {
 
 module.exports.handle = (event, context, cb) => {
   let schema;
+  const floodsPool = require('../db/helpers/getClient')({
+    clientType: 'floodsAPI',
+    pool: true
+  });
 
-  return createPostGraphileSchema(floodsPool, "floods", {
-    pgDefaultRole: 'floods_anonymous',
-    jwtSecret: process.env.JWT_SECRET,
-    jwtPgTypeIdentifier: 'floods.jwt_token',
-    pgDefaultRole: 'floods_anonymous',
-    disableDefaultMutations: true,
-    readCache: `${__dirname}/../pgCatalog/postgraphile.cache`
+  return floodsPool.connect()
+  .then(() => {
+    return createPostGraphileSchema(floodsPool, "floods", {
+      jwtSecret: process.env.JWT_SECRET,
+      jwtPgTypeIdentifier: 'floods.jwt_token',
+      pgDefaultRole: 'floods_anonymous',
+      disableDefaultMutations: true,
+      readCache: `${__dirname}/../pgCatalog/postgraphile.cache`
+    })
   })
   .then((result) => {
     schema = result;
@@ -53,7 +59,13 @@ module.exports.handle = (event, context, cb) => {
     let response = {};
     response.statusCode = 500;
     response.headers = { 'Access-Control-Allow-Origin': '*' };
-    response.errors = err;
+    response.errors = [err];
     cb(null, response)
+  })
+  .finally(() => {
+    return floodsPool.end()
+    .catch((err) => {
+      logError(err);
+    })
   })
 }

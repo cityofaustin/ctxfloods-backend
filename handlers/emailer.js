@@ -1,5 +1,4 @@
 const nodemailer = require('nodemailer');
-const Client = require('pg').Client;
 const jwt = require('jsonwebtoken');
 
 async function getTransporter() {

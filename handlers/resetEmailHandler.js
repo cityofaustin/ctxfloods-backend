@@ -1,3 +1,4 @@
+require('promise.prototype.finally').shim();
 const nodemailer = require('nodemailer');
 const Client = require('pg').Client;
 const jwt = require('jsonwebtoken');
@@ -64,5 +65,5 @@ module.exports.handle = (event, context, cb) => {
       return sendResetEmail(firstname, lastname, email, token, frontendURL, cb);
     })
     .catch(err => logError(err))
-    .then(() => pgClient.end());
+    .finally(() => pgClient.end());
 };
