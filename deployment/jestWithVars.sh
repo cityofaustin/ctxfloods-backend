@@ -2,7 +2,7 @@
 
 # can plug in an individual test file.
 # default behavior is to run all tests
-# ex: sh jestWithVars.sh super.admin.test.js
+# ex: sh deployment/jestWithVars.sh super.admin.test.js
 SCRIPT_PATH=$1
 CURRENT_DIR=`dirname $BASH_SOURCE`
 

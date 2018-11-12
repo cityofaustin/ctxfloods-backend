@@ -19,15 +19,12 @@ module.exports.handle = (event, context, cb) => {
     pool: true
   });
 
-  return floodsPool.connect()
-  .then(() => {
-    return createPostGraphileSchema(floodsPool, "floods", {
-      jwtSecret: process.env.JWT_SECRET,
-      jwtPgTypeIdentifier: 'floods.jwt_token',
-      pgDefaultRole: 'floods_anonymous',
-      disableDefaultMutations: true,
-      readCache: `${__dirname}/../pgCatalog/postgraphile.cache`
-    })
+  return createPostGraphileSchema(floodsPool, "floods", {
+    jwtSecret: process.env.JWT_SECRET,
+    jwtPgTypeIdentifier: 'floods.jwt_token',
+    pgDefaultRole: 'floods_anonymous',
+    disableDefaultMutations: true,
+    readCache: `${__dirname}/../pgCatalog/postgraphile.cache`
   })
   .then((result) => {
     schema = result;

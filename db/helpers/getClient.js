@@ -1,4 +1,5 @@
-const {Pool, Client} = require('pg');
+const pg = require('pg');
+const {Pool, Client} = pg;
 const _ = require('lodash');
 const logError = require('../../handlers/logger');
 
@@ -46,6 +47,9 @@ const getClient = ({clientType, pool}) => {
   let client;
 
   if (pool) {
+    // For closing connection pools in lambda
+    // source: https://github.com/graphile/postgraphile/issues/724
+    // options.idleTimeoutMillis = 0.001;
     client = new Pool(options);
   } else {
     client = new Client(options);
@@ -53,6 +57,7 @@ const getClient = ({clientType, pool}) => {
 
   client.on('error', (err)=>{
     logError("Pool Error", err);
+    return client.end();
   })
 
   return client
