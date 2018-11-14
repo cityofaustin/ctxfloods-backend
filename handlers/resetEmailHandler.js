@@ -1,6 +1,4 @@
-require('promise.prototype.finally').shim();
-const nodemailer = require('nodemailer');
-const Client = require('pg').Client;
+require('promise.prototype.finally').shim();const Client = require('pg').Client;
 const jwt = require('jsonwebtoken');
 
 const { sendEmail } = require('./emailer');
