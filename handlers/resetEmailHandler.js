@@ -1,3 +1,4 @@
+require('promise.prototype.finally').shim();
 const nodemailer = require('nodemailer');
 const Client = require('pg').Client;
 const jwt = require('jsonwebtoken');
@@ -58,11 +59,11 @@ module.exports.handle = (event, context, cb) => {
       const token = jwt.sign(
         { user_id: pgres.rows[0].id, role: 'floods_password_resetter' },
         process.env.JWT_SECRET,
-        { expiresIn: '30m', audience: 'postgraphql' },
+        { expiresIn: '30m', audience: 'postgraphile' },
       );
 
       return sendResetEmail(firstname, lastname, email, token, frontendURL, cb);
     })
     .catch(err => logError(err))
-    .then(() => pgClient.end());
+    .finally(() => pgClient.end());
 };

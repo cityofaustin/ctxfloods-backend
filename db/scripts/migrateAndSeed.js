@@ -1,7 +1,7 @@
 require('promise.prototype.finally').shim();
 const path = require('path');
 
-const getPool = require('../helpers/getPool');
+const getClient = require('../helpers/getClient');
 const floodsExists = require('./floodsExists');
 const initialize = require('./initialize');
 const migrate = require('./migrate');
@@ -18,11 +18,9 @@ let localServer, masterClient, floodsClient, errFlag = false, newInstance = fals
   Idempotent - can be run multiple times without contaminating data.
   Seed script only runs at first db initialization.
 **/
-getPool("masterAdmin").connect()
-.then((result) => {
-  masterClient = result;
-  return floodsExists(masterClient);
-})
+masterClient = getClient({clientType: "masterAdmin"});
+masterClient.connect()
+.then(() => floodsExists(masterClient))
 .then((result) => {
   if (!result) {
     newInstance = true;
@@ -33,11 +31,9 @@ getPool("masterAdmin").connect()
 .then(() => {
   if (newInstance) {
     console.log("Seeding data for new floods database");
-    return getPool("floodsAdmin").connect()
-    .then((result) => {
-      floodsClient = result;
-      return seed(floodsClient)
-    })
+    floodsClient = getClient({clientType: "floodsAdmin"});
+    return floodsClient.connect()
+    .then(() => seed(floodsClient))
   }
 })
 .then(() => {
@@ -48,8 +44,12 @@ getPool("masterAdmin").connect()
   errFlag = true;
 })
 .finally(() => {
-  if (masterClient) masterClient.release(true);
-  if (floodsClient) floodsClient.release(true);
+  if (floodsClient) return client.end()
+})
+.finally(() => {
+  if (masterClient) return client.end()
+})
+.finally(() => {
   console.log("Exiting Safely");
   if (errFlag) process.exit(1); //Must exit with error to propagate to TravisCI
   process.exit();

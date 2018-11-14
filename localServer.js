@@ -85,4 +85,9 @@ process.on('SIGINT', () => {
   server.close();
 });
 
+process.on('exit', () => {
+  console.log("Process Exiting - closing express server");
+  server.close();
+})
+
 module.exports = server;

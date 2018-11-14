@@ -43,6 +43,7 @@ functions:
           integration: lambda
           request:
             template:
+              # lokka authorization header must be lowercase
               application/json: |
                 {
                   "query" : "$util.escapeJavaScript($input.path('$.query'))",
@@ -54,6 +55,7 @@ functions:
                      #end
                   }
                 }
+              # lokka authorization header must be lowercase
               application/graphql: |
                 {
                   "query" : "$util.escapeJavaScript($input.body)",
@@ -77,6 +79,7 @@ functions:
               headers:
                 Authorization: false
             template:
+              # lokka authorization header must be lowercase
               application/json: |
                 {
                   "query" : "$util.escapeJavaScript($input.params('query'))",

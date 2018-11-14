@@ -59,8 +59,8 @@ function shouldWork(
             humanAddress: "In test land"
             description: "TEST LAND IS MAGIC!"
             communityId: $communityId
-            longitude: -97.755996
-            latitude: 30.30718
+            longitude: "-97.755996"
+            latitude: "30.30718"
           }) {
             crossing {
               id
@@ -124,7 +124,7 @@ function shouldWork(
       expect(response).not.toBeNull();
     });
 
-    it('the edited crossing should show up in the DB', async () => {
+    it('the edited crossing should show up in the DB', async (done) => {
       const response = await lokka.send(
         `
         query ($id: Int!) {
@@ -144,7 +144,7 @@ function shouldWork(
           id: newCrossingId,
         },
       );
-
+      done();
       expect(response).toMatchSnapshot();
     });
   });

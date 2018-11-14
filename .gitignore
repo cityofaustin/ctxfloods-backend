@@ -4,3 +4,4 @@ pgCatalog/pgCatalog.json
 yarn-error.log
 *.tmp
 local
+pgCatalog/postgraphile.cache

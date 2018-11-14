@@ -27,27 +27,6 @@ async function getToken(email, password) {
   return response.authenticate.jwtToken;
 }
 
-function userInDatabase(userId) {
-  it('should see the user in the database', async () => {
-    const response = await anonLokka.send(
-      `
-      query($userId:Int!){
-        userById(id:$userId) {
-          firstName
-          lastName
-          active
-        }
-      }
-    `,
-      {
-        userId: userId,
-      },
-    );
-
-    expect(response).toMatchSnapshot();
-  });
-}
-
 describe('When registering, deactivating, and reactivating a user as a super admin', () => {
   var newUserEmail = uuidv4() + '@flo.ods';
   var newUserId;
@@ -96,10 +75,6 @@ describe('When registering, deactivating, and reactivating a user as a super adm
       newUserId = response.registerUser.user.id;
       expect(response).not.toBeNull();
       expect(response.registerUser.user.active).toBeTruthy();
-    });
-
-    it('after registering', () => {
-      userInDatabase(newUserId);
     });
   });
 
@@ -166,10 +141,6 @@ describe('When registering, deactivating, and reactivating a user as a super adm
 
       expect(response).not.toBeNull();
     });
-
-    it('after deactivating', () => {
-      userInDatabase(newUserId);
-    });
   });
 
   describe('As a super admin once more', async () => {
@@ -209,17 +180,13 @@ describe('When registering, deactivating, and reactivating a user as a super adm
 
       expect(response).toMatchSnapshot();
     });
-
-    it('after reactivating', () => {
-      userInDatabase(newUserId);
-    });
   });
 
   describe('As a password resetter', async () => {
     var lokka;
 
     beforeAll(async done => {
-      const token = jwt.sign({ user_id: newUserId, role: 'floods_password_resetter' }, process.env.JWT_SECRET, {expiresIn: '30m', audience: 'postgraphql'});
+      const token = jwt.sign({ user_id: newUserId, role: 'floods_password_resetter' }, process.env.JWT_SECRET, {expiresIn: '30m', audience: 'postgraphile'});
       const headers = {
         Authorization: 'Bearer ' + token,
       };
@@ -228,7 +195,6 @@ describe('When registering, deactivating, and reactivating a user as a super adm
       });
       done();
     })
-    
 
     it('should reset the password', async () => {
       const response = await lokka.send(
