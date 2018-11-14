@@ -10,6 +10,7 @@ export JWT_SECRET=insecure
 export BACKEND_PORT=5000
 # ENABLE_SYNC_LEGACY not required for local testing
 export GRAPHQL_ENDPOINT=http://localhost:$BACKEND_PORT/graphql
+# ENABLE_PUSH_NOTIFICATIONS not required for local testing
 
 # Postgres
 export PGUSERNAME=postgres
