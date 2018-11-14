@@ -151,7 +151,7 @@ functions:
     timeout: 60
     events:
       - schedule:
-          rate: cron(0 12 * * * *)
+          rate: cron(0 12 * * ? *)
           enabled: ${env:ENABLE_PUSH_NOTIFICATIONS, self:custom.false}
 
 # For a pgDB inside a VPC look e.g. here:
