@@ -58,6 +58,7 @@ function newPushLog(lokka, pushLog){
     mutation (
       $date: Date
       $userId: Int
+      $communityId: Int
       $statusUpdates: [Int]
       $success: Boolean
       $errorMessage: String
@@ -65,6 +66,7 @@ function newPushLog(lokka, pushLog){
       newPushLogFunction(input:{
         date: $date,
         userId: $userId
+        communityId: $communityId
         statusUpdates: $statusUpdates,
         success: $success,
         errorMessage: $errorMessage
@@ -73,6 +75,7 @@ function newPushLog(lokka, pushLog){
           id,
           date,
           userId,
+          communityId,
           statusUpdates,
           success,
           errorMessage
@@ -130,7 +133,20 @@ module.exports.handle = (event, context, cb) => {
         const users = data[0].rows;
         const crossings = data[1].rows;
 
-        if (!users.length) return;
+        if (!users.length) {
+          return newPushLog(lokka,{
+            date: today,
+            userId: null,
+            communityId: communityId,
+            statusUpdates: crossings.map((cr)=>cr.status_update_id),
+            success: false,
+            errorMessage: "No users for community"
+          })
+          .catch((err)=>{
+            jobErrors.push(err);
+            logError(err);
+          })
+        }
         // Step 3: Send an email to each user about all crossings in their jurisdiction that need to be managed.
         emailJobs = users.map((user)=>{
           const templateData = {
@@ -148,7 +164,8 @@ module.exports.handle = (event, context, cb) => {
             successCount++;
             return newPushLog(lokka,{
               date: today,
-              user: user.id,
+              userId: user.id,
+              communityId: communityId,
               statusUpdates: crossings.map((cr)=>cr.status_update_id),
               success: true,
               errorMessage: null
@@ -163,6 +180,8 @@ module.exports.handle = (event, context, cb) => {
             logError(err);
             return newPushLog(lokka,{
               date: today,
+              userId: user.id,
+              communityId: communityId,
               statusUpdates: crossings.map((cr)=>cr.status_update_id),
               success: false,
               errorMessage: err.message
