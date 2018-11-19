@@ -3,7 +3,15 @@ export AWS_STAGE='dev'
 # Others not required for local testing
 
 # Gmail
-# Not required for local testing
+# [Local Only] Add a address/password combination to your own bash_profile if you want your local instance to send emails.
+export GMAIL_ADDRESS=$CTXFLOODS_GMAIL_ADDRESS
+export GMAIL_PASSWORD=$CTXFLOODS_GMAIL_PASSWORD
+# Or, you can add your own OAuth2 credentials
+export GMAIL_CLIENT_ID=$CTXFLOODS_GMAIL_CLIENT_ID
+export GMAIL_CLIENT_SECRET=$CTXFLOODS_GMAIL_CLIENT_SECRET
+export GMAIL_REFRESH_TOKEN=$CTXFLOODS_GMAIL_REFRESH_TOKEN
+export GMAIL_ACCESS_TOKEN=$CTXFLOODS_GMAIL_ACCESS_TOKEN
+# Or, don't do anything. An etheral test email will be mocked.
 
 # App
 export JWT_SECRET=insecure
