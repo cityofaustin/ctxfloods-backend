@@ -14,6 +14,15 @@ then
 fi
 source $CURRENT_DIR/vars/$DEPLOY_ENV.sh
 
+# Check if push notifications will be required
+node $CURRENT_DIR/writePushNotificationFlag.js
+if [ $? != 0 ]; then
+  echo "write push notification flag script failed"
+  exit 1
+fi
+# Source ENABLE_PUSH_NOTIFICATIONS if it exists
+[ -f $CURRENT_DIR/push_notification_flag.tmp ] && source $CURRENT_DIR/push_notification_flag.tmp
+
 # Install "serverless" module and plugins
 yarn global add serverless@1.32.0
 yarn

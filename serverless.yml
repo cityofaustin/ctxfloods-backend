@@ -146,7 +146,15 @@ functions:
           enabled: ${env:ENABLE_SYNC_LEGACY, self:custom.false}
     environment:
       GRAPHQL_ENDPOINT: ${self:custom.GRAPHQL_ENDPOINT}
-
+  pushNotifications:
+    handler: handlers/pushNotificationHandler.handle
+    timeout: 60
+    events:
+      - schedule:
+          rate: cron(0 12 * * ? *)
+          enabled: ${env:ENABLE_PUSH_NOTIFICATIONS, self:custom.false}
+    environment:
+      GRAPHQL_ENDPOINT: ${self:custom.GRAPHQL_ENDPOINT}
 
 # For a pgDB inside a VPC look e.g. here:
 # http://www.stojanveselinovski.com/blog/2016/01/12/simple-postgresql-rds-cloudformation-template/

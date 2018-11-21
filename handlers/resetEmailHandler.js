@@ -1,6 +1,4 @@
-require('promise.prototype.finally').shim();
-const nodemailer = require('nodemailer');
-const Client = require('pg').Client;
+require('promise.prototype.finally').shim();const Client = require('pg').Client;
 const jwt = require('jsonwebtoken');
 
 const { sendEmail } = require('./emailer');
@@ -24,7 +22,14 @@ async function sendResetEmail(firstname, lastname, email, token, frontendURL, cb
     cb(null, response);
   } catch (err) {
     logError(err);
-    return process.exit(1);
+    const response = {
+      statusCode: 500,
+      headers: { 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json' },
+      body: {
+        errorMessage: err.message
+      }
+    };
+    cb(null, response);
   }
 }
 

@@ -26,6 +26,7 @@
     "jsonwebtoken": "^8.2.0",
     "lokka": "^1.7.0",
     "lokka-transport-http": "^1.6.1",
+    "moment": "^2.22.2",
     "nodemailer": "^4.6.3",
     "pg-minify": "^0.4.2",
     "postgraphile": "^4.0.1",

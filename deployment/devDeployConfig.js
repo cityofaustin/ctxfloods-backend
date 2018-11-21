@@ -6,6 +6,7 @@
   [branch-name]: {
       deploy: Boolean (indicate whether to deploy or not),
       seed: Boolean (indicate whether to seed data into new deployment or not)
+      pushNotifications: Boolean, toggle sending emails to community admins when crossings need updating
   }
 **/
 
@@ -14,24 +15,13 @@ module.exports = {
     deploy: true,
     seed: true
   },
-  "dev-deployment-fix": {
-    deploy: true,
-    seed: true
-  },
-  "338-reset-cors": {
-    deploy: true,
-    seed: true
-  },
-  "355-cors": {
-    deploy: true,
-    seed: true
-  },
-  "392-duration": {
-    deploy: true,
-    seed: true
-  },
   "379-graphile": {
     deploy: true,
     seed: true
+  },
+  "390-push-notify": {
+    deploy: true,
+    seed: true,
+    pushNotifications: true
   }
 };

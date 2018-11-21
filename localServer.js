@@ -7,6 +7,7 @@ const incidentReportHandler = require('./handlers/incidentReportHandler');
 const graphqlHandler = require('./handlers/graphqlHandler');
 const resetEmailHandler = require('./handlers/resetEmailHandler');
 const syncLegacyHandler = require('./handlers/syncLegacyHandler');
+const pushNotificationHandler = require('./handlers/pushNotificationHandler');
 
 const app = express();
 app.use(cors());
@@ -65,6 +66,17 @@ app.get('/sync_legacy', (req, res) => {
   req.body = JSON.stringify(req.body);
 
   syncLegacyHandler.handle(req, null, (error, response) => {
+    res.statusCode = response.statusCode;
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.send(response);
+  });
+});
+
+app.get('/send_push_notifications', (req, res) => {
+  // AWS gets body as stringified json
+  req.body = JSON.stringify(req.body);
+
+  pushNotificationHandler.handle(req, null, (error, response) => {
     res.statusCode = response.statusCode;
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.send(response);
