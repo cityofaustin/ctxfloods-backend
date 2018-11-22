@@ -47,11 +47,7 @@ module.exports.handle = (event, context, cb) => {
       })
   })
   .then((response)=> {
-    const errors = response.errors;
     response.statusCode = 200;
-    if (errors) {
-      response.statusCode = 400;
-    }
     response.headers = { 'Access-Control-Allow-Origin': '*' };
     cb(null, response);
   })
