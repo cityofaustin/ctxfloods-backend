@@ -15,11 +15,7 @@ module.exports = {
     deploy: true,
     seed: true
   },
-  "379-graphile": {
-    deploy: true,
-    seed: true
-  },
-  "390-push-notify": {
+  "402-community": {
     deploy: true,
     seed: true,
     pushNotifications: true
