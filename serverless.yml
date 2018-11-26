@@ -159,6 +159,8 @@ functions:
           enabled: ${env:ENABLE_PUSH_NOTIFICATIONS, self:custom.false}
     environment:
       GRAPHQL_ENDPOINT: ${self:custom.GRAPHQL_ENDPOINT}
+      PGENDPOINT: ${self:custom.PGENDPOINT}
+      AWS_SERVICE_NAME: ${env:AWS_SERVICE_NAME}
       GMAIL_ADDRESS: ${env:GMAIL_ADDRESS}
       GMAIL_CLIENT_ID: ${env:GMAIL_CLIENT_ID}
       GMAIL_CLIENT_SECRET: ${env:GMAIL_CLIENT_SECRET}
