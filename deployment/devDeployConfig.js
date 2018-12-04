@@ -32,5 +32,10 @@ module.exports = {
     deploy: true,
     seed: true,
     customServiceName: "sandbox-2"
+  },
+  "382-history": {
+    deploy: true,
+    seed: true,
+    customServiceName: "sandbox-1"
   }
 };
