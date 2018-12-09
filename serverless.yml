@@ -173,9 +173,10 @@ functions:
     events:
       - schedule:
           rate: rate(5 minutes)
-          enabled: false
+          enabled: true
     environment:
       GRAPHQL_ENDPOINT: ${self:custom.GRAPHQL_ENDPOINT}
+      DATA_APP_TOKEN: ${env:DATA_APP_TOKEN}
 
 # For a pgDB inside a VPC look e.g. here:
 # http://www.stojanveselinovski.com/blog/2016/01/12/simple-postgresql-rds-cloudformation-template/

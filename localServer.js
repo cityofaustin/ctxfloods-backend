@@ -12,8 +12,8 @@ const cameraScrapeHandler = require('./handlers/cameraScrapeHandler');
 
 const app = express();
 app.use(cors());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json({ limit: '500kb', extended: true})); // High Limit is required for scrape_cameras
+app.use(express.urlencoded({ limit: '500kb', extended: true }));
 
 app.get('/xml', (req, res) => {
   xmlHandler.handle(null, null, (error, response) => {
