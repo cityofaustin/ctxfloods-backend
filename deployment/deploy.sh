@@ -14,6 +14,24 @@ then
 fi
 source $CURRENT_DIR/vars/$DEPLOY_ENV.sh
 
+# Check if push notifications will be required
+node $CURRENT_DIR/writePushNotificationFlag.js
+if [ $? != 0 ]; then
+  echo "write push notification flag script failed"
+  exit 1
+fi
+# Source ENABLE_PUSH_NOTIFICATIONS if it exists
+[ -f $CURRENT_DIR/push_notification_flag.tmp ] && source $CURRENT_DIR/push_notification_flag.tmp
+
+# Check if push notifications will be required
+node $CURRENT_DIR/writeCustomServiceName.js
+if [ $? != 0 ]; then
+  echo "writeCustomServiceName script failed"
+  exit 1
+fi
+# Source custom AWS_SERVICE_NAME if it exists
+[ -f $CURRENT_DIR/custom_aws_service_name.tmp ] && source $CURRENT_DIR/custom_aws_service_name.tmp
+
 # Install "serverless" module and plugins
 yarn global add serverless@1.32.0
 yarn

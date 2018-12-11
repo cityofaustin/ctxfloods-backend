@@ -43,6 +43,7 @@ functions:
           integration: lambda
           request:
             template:
+              # lokka authorization header must be lowercase
               application/json: |
                 {
                   "query" : "$util.escapeJavaScript($input.path('$.query'))",
@@ -54,6 +55,7 @@ functions:
                      #end
                   }
                 }
+              # lokka authorization header must be lowercase
               application/graphql: |
                 {
                   "query" : "$util.escapeJavaScript($input.body)",
@@ -77,6 +79,7 @@ functions:
               headers:
                 Authorization: false
             template:
+              # lokka authorization header must be lowercase
               application/json: |
                 {
                   "query" : "$util.escapeJavaScript($input.params('query'))",
@@ -120,7 +123,9 @@ functions:
     environment:
       GRAPHQL_ENDPOINT: ${self:custom.GRAPHQL_ENDPOINT}
       GMAIL_ADDRESS: ${env:GMAIL_ADDRESS}
-      GMAIL_PASSWORD: ${env:GMAIL_PASSWORD}
+      GMAIL_CLIENT_ID: ${env:GMAIL_CLIENT_ID}
+      GMAIL_CLIENT_SECRET: ${env:GMAIL_CLIENT_SECRET}
+      GMAIL_REFRESH_TOKEN: ${env:GMAIL_REFRESH_TOKEN}
   emailreset:
     handler: handlers/resetEmailHandler.handle
     events:
@@ -133,7 +138,9 @@ functions:
       PGENDPOINT: ${self:custom.PGENDPOINT}
       JWT_SECRET: ${env:JWT_SECRET}
       GMAIL_ADDRESS: ${env:GMAIL_ADDRESS}
-      GMAIL_PASSWORD: ${env:GMAIL_PASSWORD}
+      GMAIL_CLIENT_ID: ${env:GMAIL_CLIENT_ID}
+      GMAIL_CLIENT_SECRET: ${env:GMAIL_CLIENT_SECRET}
+      GMAIL_REFRESH_TOKEN: ${env:GMAIL_REFRESH_TOKEN}
   synclegacy:
     handler: handlers/syncLegacyHandler.handle
     timeout: 60
@@ -143,7 +150,21 @@ functions:
           enabled: ${env:ENABLE_SYNC_LEGACY, self:custom.false}
     environment:
       GRAPHQL_ENDPOINT: ${self:custom.GRAPHQL_ENDPOINT}
-
+  pushNotifications:
+    handler: handlers/pushNotificationHandler.handle
+    timeout: 60
+    events:
+      - schedule:
+          rate: cron(0 12 * * ? *)
+          enabled: ${env:ENABLE_PUSH_NOTIFICATIONS, self:custom.false}
+    environment:
+      GRAPHQL_ENDPOINT: ${self:custom.GRAPHQL_ENDPOINT}
+      PGENDPOINT: ${self:custom.PGENDPOINT}
+      AWS_SERVICE_NAME: ${env:AWS_SERVICE_NAME}
+      GMAIL_ADDRESS: ${env:GMAIL_ADDRESS}
+      GMAIL_CLIENT_ID: ${env:GMAIL_CLIENT_ID}
+      GMAIL_CLIENT_SECRET: ${env:GMAIL_CLIENT_SECRET}
+      GMAIL_REFRESH_TOKEN: ${env:GMAIL_REFRESH_TOKEN}
 
 # For a pgDB inside a VPC look e.g. here:
 # http://www.stojanveselinovski.com/blog/2016/01/12/simple-postgresql-rds-cloudformation-template/

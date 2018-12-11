@@ -10,7 +10,7 @@ const everyPassword = 'texasfloods';
 const longitude = -97.755996;
 const latitude = 30.30718;
 const newCrossingMutation = `
-  mutation($communityId:Int!, $longitude:Float!, $latitude:Float!) {
+  mutation($communityId:Int!, $longitude:BigFloat!, $latitude:BigFloat!) {
     newCrossing(input: {
       name: "New Crossing"
       humanAddress: "In test land"
@@ -131,7 +131,7 @@ function shouldFail(
       });
     });
 
-    it('should fail to add the crossing', async () => {
+    it('should fail to add the crossing', async (done) => {
       try {
         const response = await lokka.send(newCrossingMutation, {
           communityId: communityId,
@@ -141,6 +141,7 @@ function shouldFail(
       } catch (e) {
         expect(e).not.toBeNull();
       }
+      done();
     });
   });
 }

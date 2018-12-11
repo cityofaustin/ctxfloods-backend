@@ -11,8 +11,8 @@ async function newIncidentReport(lokka, incidentReport) {
     mutation (
       $notes: String,
       $locationDescription: String,
-      $longitude: Float,
-      $latitude: Float,
+      $longitude: BigFloat,
+      $latitude: BigFloat,
       $communityIds: [Int],
     ) {
       newIncidentReport(input:{

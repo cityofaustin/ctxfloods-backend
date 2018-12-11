@@ -188,7 +188,7 @@ describe('When registering, deactivating, and reactivating a user', () => {
     var lokka;
 
     beforeAll(async done => {
-      const token = jwt.sign({ user_id: newUserId, role: 'floods_password_resetter' }, process.env.JWT_SECRET, {expiresIn: '30m', audience: 'postgraphql'});
+      const token = jwt.sign({ user_id: newUserId, role: 'floods_password_resetter' }, process.env.JWT_SECRET, {expiresIn: '30m', audience: 'postgraphile'});
       const headers = {
         Authorization: 'Bearer ' + token,
       };
@@ -197,7 +197,7 @@ describe('When registering, deactivating, and reactivating a user', () => {
       });
       done();
     })
-    
+
 
     it('should reset the password', async () => {
       const response = await lokka.send(

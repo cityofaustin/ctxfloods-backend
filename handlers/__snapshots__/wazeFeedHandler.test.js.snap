@@ -1,0 +1,47 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`wazeFeedHandler getPgResAsIncidentJson should transform pg incident rows into the waze cifs json shape 1`] = `
+Object {
+  "incidents": Array [
+    Object {
+      "description": undefined,
+      "id": undefined,
+      "location": Object {
+        "direction": undefined,
+        "polyline": undefined,
+        "street": undefined,
+      },
+      "reference": undefined,
+      "starttime": undefined,
+      "subtype": undefined,
+      "type": undefined,
+    },
+    Object {
+      "description": undefined,
+      "id": undefined,
+      "location": Object {
+        "direction": undefined,
+        "polyline": undefined,
+        "street": undefined,
+      },
+      "reference": undefined,
+      "starttime": undefined,
+      "subtype": undefined,
+      "type": undefined,
+    },
+    Object {
+      "description": undefined,
+      "id": undefined,
+      "location": Object {
+        "direction": undefined,
+        "polyline": undefined,
+        "street": undefined,
+      },
+      "reference": undefined,
+      "starttime": undefined,
+      "subtype": undefined,
+      "type": undefined,
+    },
+  ],
+}
+`;

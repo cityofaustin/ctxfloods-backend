@@ -2,10 +2,8 @@ require('promise.prototype.finally').shim();
 const fs = require('fs');
 const path = require('path');
 
-const getPool = require('../helpers/getPool');
+const getClient = require('../helpers/getClient');
 const floodsExists = require('./floodsExists');
-
-let floodsClient, masterClient, errFlag = false;
 
 /**
   Drops all data in floods database.
@@ -15,22 +13,22 @@ let floodsClient, masterClient, errFlag = false;
   @param destroy: Boolean, default=false - if triggered, will destroy floods database in addition to deleting its data
 **/
 const dropFloodsData = (destroy=false) => {
+  let floodsClient, masterClient, errFlag = false;
   console.log("Begin Dropping Floods Data");
-  getPool("masterAdmin").connect()
-  .then((result) => {
-    masterClient = result;
-    return floodsExists(masterClient);
-  })
+
+  masterClient = getClient({clientType: "masterAdmin"});
+  return masterClient.connect()
+  .then(() => floodsExists(masterClient))
   .then((result) => {
     if (!result) {
       console.log("Nothing to drop - floods already doesn't exist");
-      masterClient.release(true);
-      process.exit();
+      return masterClient.end()
+      .finally(() => process.exit());
     }
-    return getPool("floodsAdmin").connect()
+    floodsClient = getClient({clientType: "floodsAdmin"})
+    return floodsClient.connect()
   })
-  .then((result) => {
-    floodsClient = result;
+  .then(() => {
     const dropScript1 = fs.readFileSync(path.join(__dirname, '/../sql/drop1.sql'), 'utf8');
     return floodsClient.query(dropScript1);
   })
@@ -53,18 +51,10 @@ const dropFloodsData = (destroy=false) => {
     errFlag = true;
   })
   .finally(() => {
-    try {
-      if (floodsClient && !floodsClient._ending && floodsClient._connected) floodsClient.release(true);
-    } catch(err) {
-      console.log("Problem disconnecting floodsAdmin pool", err);
-      errFlag = true;
-    }
-    try {
-      if (masterClient) masterClient.release(true);
-    } catch(err) {
-      console.log("Problem disconnecting masterAdmin pool", err);
-      errFlag = true;
-    }
+    if (floodsClient) return client.end()
+  })
+  .finally(() => {
+    if (masterClient) return client.end()
   })
   .finally(() => {
     if (errFlag) process.exit(1);

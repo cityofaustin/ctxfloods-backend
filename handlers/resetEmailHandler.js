@@ -1,5 +1,4 @@
-const nodemailer = require('nodemailer');
-const Client = require('pg').Client;
+require('promise.prototype.finally').shim();const Client = require('pg').Client;
 const jwt = require('jsonwebtoken');
 
 const { sendEmail } = require('./emailer');
@@ -23,7 +22,14 @@ async function sendResetEmail(firstname, lastname, email, token, frontendURL, cb
     cb(null, response);
   } catch (err) {
     logError(err);
-    return process.exit(1);
+    const response = {
+      statusCode: 500,
+      headers: { 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json' },
+      body: {
+        errorMessage: err.message
+      }
+    };
+    cb(null, response);
   }
 }
 
@@ -58,11 +64,11 @@ module.exports.handle = (event, context, cb) => {
       const token = jwt.sign(
         { user_id: pgres.rows[0].id, role: 'floods_password_resetter' },
         process.env.JWT_SECRET,
-        { expiresIn: '30m', audience: 'postgraphql' },
+        { expiresIn: '30m', audience: 'postgraphile' },
       );
 
       return sendResetEmail(firstname, lastname, email, token, frontendURL, cb);
     })
     .catch(err => logError(err))
-    .then(() => pgClient.end());
+    .finally(() => pgClient.end());
 };

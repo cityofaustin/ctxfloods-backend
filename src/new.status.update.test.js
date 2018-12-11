@@ -65,8 +65,8 @@ function shouldWork(
               humanAddress: "Near the barn"
               description: "Describe!"
               communityId: 1
-              longitude: -97.755996
-              latitude: 30.30718
+              longitude: "-97.755996"
+              latitude: "30.30718"
             }) {
               crossing {
                 id
@@ -110,8 +110,8 @@ function shouldWork(
               humanAddress: "Near the barn"
               description: "Describe!"
               communityId: 1
-              longitude: -97.755996
-              latitude: 30.30718
+              longitude: "-97.755996"
+              latitude: "30.30718"
             }) {
               crossing {
                 id
@@ -306,7 +306,7 @@ function shouldFail(
       });
     });
 
-    it('should fail to update the status', async () => {
+    it('should fail to update the status', async (done) => {
       try {
         const response = await lokka.send(
           `
@@ -338,6 +338,7 @@ function shouldFail(
       } catch (e) {
         expect(e).not.toBeNull();
       }
+      done();
     });
   });
 }

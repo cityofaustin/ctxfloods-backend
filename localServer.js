@@ -7,6 +7,7 @@ const incidentReportHandler = require('./handlers/incidentReportHandler');
 const graphqlHandler = require('./handlers/graphqlHandler');
 const resetEmailHandler = require('./handlers/resetEmailHandler');
 const syncLegacyHandler = require('./handlers/syncLegacyHandler');
+const pushNotificationHandler = require('./handlers/pushNotificationHandler');
 
 const app = express();
 app.use(cors());
@@ -71,6 +72,17 @@ app.get('/sync_legacy', (req, res) => {
   });
 });
 
+app.get('/send_push_notifications', (req, res) => {
+  // AWS gets body as stringified json
+  req.body = JSON.stringify(req.body);
+
+  pushNotificationHandler.handle(req, null, (error, response) => {
+    res.statusCode = response.statusCode;
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.send(response);
+  });
+});
+
 const server = app.listen(process.env.BACKEND_PORT, () => {
   console.log("Local Server started");
 });
@@ -84,5 +96,10 @@ process.on('SIGINT', () => {
   console.log("Signal Interrupted - closing express server");
   server.close();
 });
+
+process.on('exit', () => {
+  console.log("Process Exiting - closing express server");
+  server.close();
+})
 
 module.exports = server;
