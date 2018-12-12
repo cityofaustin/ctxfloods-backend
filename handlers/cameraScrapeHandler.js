@@ -28,8 +28,8 @@ const getCamerasBySource = (lokka, source) => {
 const addCameraImage = (lokka, params) => {
   return lokka.send(
     `
-    mutation ($cameraId: Int!, $base64Image: String!, $uploadedAt: Datetime) {
-      addCameraImage(input:{cameraId:$cameraId, base64Image:$base64Image, uploadedAt: $uploadedAt}) {
+    mutation ($cameraId: Int!, $url: String!, $uploadedAt: Datetime) {
+      addCameraImage(input:{cameraId:$cameraId, url:$url, uploadedAt:$uploadedAt}) {
     		integer
       }
     }
@@ -67,21 +67,24 @@ const handleAtdImages = (lokka) => {
     // 3. For each camera, download the most current image
     const saveImageJobs = cameras.map(c => {
       const url = _.find(cameraMetaData, {camera_id: c.sourceId}).screenshot_address;
-      return downloadImage(url)
-      .then((image) => {
-        // 4. Add image to our database
+      // 4. Save image url to database
+      if (url) {
         return addCameraImage(lokka, {
-          base64Image: image,
+          url: url,
           cameraId: c.id,
         })
-      })
-      .catch((err) => {
-        logError(`Failed to get image for camera ${c.id}`);
-        logError(err);
-      })
-    });
+        .catch((err) => {
+          logError(`Failed to add atd image for camera ${c.id}`);
+          logError(err);
+        });
+      }
+    })
     return Promise.all(saveImageJobs)
   })
+  .catch((err) => {
+    logError(`Failed to fetch atd images`);
+    logError(err);
+  });
 }
 
 const handleBeholderImages = (lokka) => {
@@ -94,19 +97,17 @@ const handleBeholderImages = (lokka) => {
       return axios.get(`https://map.beholderhq.com/api/v1/beholderhq/cameras/${c.sourceId}`)
       .then((res) => {
         const latestPhotoId = res.data.data.attributes['latest-photo-id'];
-        const url = `https://assets.beholderhq.com/v3/photos/${latestPhotoId}-original.jpg`;
-        // 3. Download the most current image
-        return downloadImage(url)
-      })
-      .then((image)=> {
-        // 4. Add image to our database
-        return addCameraImage(lokka, {
-          base64Image: image,
-          cameraId: c.id,
-        })
+        if (latestPhotoId) {
+          const url = `https://assets.beholderhq.com/v3/photos/${latestPhotoId}-original.jpg`;
+          // 3. Save image url to database
+          return addCameraImage(lokka, {
+            url,
+            cameraId: c.id,
+          })
+        }
       })
       .catch((err) => {
-        logError(`Failed to get image for camera ${c.id}`);
+        logError(`Failed to get beholder image for camera ${c.id}`);
         logError(err);
       })
     });
