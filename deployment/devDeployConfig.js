@@ -40,7 +40,6 @@ module.exports = {
   },
   "195-camera": {
     deploy: true,
-    seed: true,
-    customServiceName: "sandbox-2"
+    seed: true
   }
 };

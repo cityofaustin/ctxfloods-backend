@@ -57,8 +57,8 @@ const handleAtdImages = (lokka) => {
       $select: "camera_id,screenshot_address",
       $where: `camera_id in (${cameraIds.map(i=>`"${i}"`).join(', ')})`,
     }
-    if (process.env.DATA_APP_TOKEN) {
-      params.$$app_token = process.env.DATA_APP_TOKEN;
+    if (process.env.AUSTIN_DATA_APP_TOKEN) {
+      params.$$app_token = process.env.AUSTIN_DATA_APP_TOKEN;
     }
     return axios.get("https://data.austintexas.gov/resource/fs3c-45ge.json", {params})
   })

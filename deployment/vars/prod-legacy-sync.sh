@@ -16,7 +16,7 @@ export BACKEND_PORT=5000
 export ENABLE_SYNC_LEGACY=true # Interpretted as truthy by serverless.yml when any string is passed.
 # GRAPHQL_ENDPOINT defined in serverless.yml
 # ENABLE_PUSH_NOTIFICATIONS disabled. Interpretted as truthy by serverless.yml when any string is passed.
-export DATA_APP_TOKEN=$TRAVIS_DATA_APP_TOKEN_DEV
+export AUSTIN_DATA_APP_TOKEN=$TRAVIS_AUSTIN_DATA_APP_TOKEN_DEV
 
 # Postgres
 export PGUSERNAME=$TRAVIS_PGUSERNAME_DEV
