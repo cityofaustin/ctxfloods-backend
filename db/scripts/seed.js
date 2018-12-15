@@ -32,11 +32,6 @@ const seed = (client) => {
     await addLegacyCrossings(client);
   })
   .then(() => {
-    console.log('Adding Cameras');
-    const addCameras = fs.readFileSync(path.join(__dirname, '/../../populateDB/data/addCameras.sql'), 'utf8');
-    return client.query(addCameras)
-  })
-  .then(() => {
     console.log("Finished Seeding Data")
   })
 };

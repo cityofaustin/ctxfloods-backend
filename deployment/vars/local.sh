@@ -18,7 +18,6 @@ export BACKEND_PORT=5000
 # ENABLE_SYNC_LEGACY not required for local testing
 export GRAPHQL_ENDPOINT=http://localhost:$BACKEND_PORT/graphql
 # ENABLE_PUSH_NOTIFICATIONS not required for local testing
-# AUSTIN_DATA_APP_TOKEN not required locally. Don't worry about requests getting throttled.
 
 # Postgres
 export PGUSERNAME=postgres
