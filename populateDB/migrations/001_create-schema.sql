@@ -265,7 +265,7 @@ begin
     if current_setting('jwt.claims.role') = 'floods_community_editor' then
       -- and we're trying to edit a user other than ourselves
       if current_setting('jwt.claims.user_id')::integer != floods_user.id then
-        raise exception 'Community editors can only edit themselves';  
+        raise exception 'Community editors can only edit themselves';
       end if;
     end if;
   end if;
@@ -341,7 +341,7 @@ begin
   select * from floods.user where id = user_id into deactivated_user;
 
   -- Generate a random password
-  select array_to_string(array(select chr((48 + round(random() * 59)) :: integer) 
+  select array_to_string(array(select chr((48 + round(random() * 59)) :: integer)
     from generate_series(1,32)), '') into password;
 
   -- If we aren't a super admin
@@ -403,8 +403,8 @@ create function floods.search_crossings(
     (community_id is null) or
     (array_position(community_ids, community_id) >= 0)
   )
-  order by 
-    case 
+  order by
+    case
       when order_asc
         then latest_status_created_at end asc,
     case
@@ -1043,7 +1043,7 @@ begin
   -- Update the password
   update floods_private.user_account
     set password_hash = crypt(new_password, gen_salt('bf'))
-    where user_id = current_setting('jwt.claims.user_id')::integer; 
+    where user_id = current_setting('jwt.claims.user_id')::integer;
 
   -- Get the account
   select a.* into account

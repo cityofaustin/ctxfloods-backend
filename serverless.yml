@@ -91,28 +91,28 @@ functions:
                      #end
                   }
                 }
-
     environment:
       PGENDPOINT: ${self:custom.PGENDPOINT}
       JWT_SECRET: ${env:JWT_SECRET}
+
   xml:
     handler: handlers/xmlHandler.handle
     events:
       - http:
           method: get
           path: xml
-
     environment:
       PGENDPOINT: ${self:custom.PGENDPOINT}
+
   waze_feed:
     handler: handlers/wazeFeedHandler.handle
     events:
       - http:
           method: get
           path: waze/feed
-
     environment:
       PGENDPOINT: ${self:custom.PGENDPOINT}
+
   incidentreport:
     handler: handlers/incidentReportHandler.handle
     events:
@@ -126,6 +126,7 @@ functions:
       GMAIL_CLIENT_ID: ${env:GMAIL_CLIENT_ID}
       GMAIL_CLIENT_SECRET: ${env:GMAIL_CLIENT_SECRET}
       GMAIL_REFRESH_TOKEN: ${env:GMAIL_REFRESH_TOKEN}
+
   emailreset:
     handler: handlers/resetEmailHandler.handle
     events:
@@ -133,7 +134,6 @@ functions:
           method: post
           path: email/reset
           cors: true
-
     environment:
       PGENDPOINT: ${self:custom.PGENDPOINT}
       JWT_SECRET: ${env:JWT_SECRET}
@@ -141,6 +141,7 @@ functions:
       GMAIL_CLIENT_ID: ${env:GMAIL_CLIENT_ID}
       GMAIL_CLIENT_SECRET: ${env:GMAIL_CLIENT_SECRET}
       GMAIL_REFRESH_TOKEN: ${env:GMAIL_REFRESH_TOKEN}
+
   synclegacy:
     handler: handlers/syncLegacyHandler.handle
     timeout: 60
@@ -150,6 +151,7 @@ functions:
           enabled: ${env:ENABLE_SYNC_LEGACY, self:custom.false}
     environment:
       GRAPHQL_ENDPOINT: ${self:custom.GRAPHQL_ENDPOINT}
+
   pushNotifications:
     handler: handlers/pushNotificationHandler.handle
     timeout: 60
@@ -166,44 +168,54 @@ functions:
       GMAIL_CLIENT_SECRET: ${env:GMAIL_CLIENT_SECRET}
       GMAIL_REFRESH_TOKEN: ${env:GMAIL_REFRESH_TOKEN}
 
+  scrapeCameras:
+    handler: handlers/cameraScrapeHandler.handle
+    timeout: 60
+    events:
+      - schedule:
+          rate: rate(5 minutes)
+          enabled: true
+    environment:
+      GRAPHQL_ENDPOINT: ${self:custom.GRAPHQL_ENDPOINT}
+      AUSTIN_DATA_APP_TOKEN: ${env:AUSTIN_DATA_APP_TOKEN}
+
 # For a pgDB inside a VPC look e.g. here:
 # http://www.stojanveselinovski.com/blog/2016/01/12/simple-postgresql-rds-cloudformation-template/
 resources:
- Resources:
-  pgSecurityGroup:
-    Type: AWS::EC2::SecurityGroup
-    Properties:
-      GroupDescription: Access to Postgres
-      SecurityGroupIngress:
-      - IpProtocol: tcp
-        FromPort: '5432'
-        ToPort: '5432'
-        CidrIp: 0.0.0.0/0
+  Resources:
+    pgSecurityGroup:
+      Type: AWS::EC2::SecurityGroup
+      Properties:
+        GroupDescription: Access to Postgres
+        SecurityGroupIngress:
+          - IpProtocol: tcp
+            FromPort: '5432'
+            ToPort: '5432'
+            CidrIp: 0.0.0.0/0
 
-  pgDB:
-    Type: "AWS::RDS::DBInstance"
-    Properties:
-      DBName: "postgres"
-      AllocatedStorage: 5
-      DBInstanceClass: "db.t2.micro"
-      Engine: "postgres"
-      EngineVersion: "9.5.10"
-      MasterUsername: ${env:PGUSERNAME}
-      MasterUserPassword: ${env:PGPASSWORD}
-      VPCSecurityGroups:
-      - Fn::GetAtt:
-        - pgSecurityGroup
-        - GroupId
-      Tags:
-        -
-          Key: "Name"
-          Value: "floods"
-    DeletionPolicy: "Snapshot"
+    pgDB:
+      Type: 'AWS::RDS::DBInstance'
+      Properties:
+        DBName: 'postgres'
+        AllocatedStorage: 5
+        DBInstanceClass: 'db.t2.micro'
+        Engine: 'postgres'
+        EngineVersion: '9.5.10'
+        MasterUsername: ${env:PGUSERNAME}
+        MasterUserPassword: ${env:PGPASSWORD}
+        VPCSecurityGroups:
+          - Fn::GetAtt:
+            - pgSecurityGroup
+            - GroupId
+        Tags:
+          - Key: 'Name'
+            Value: 'floods'
+      DeletionPolicy: 'Snapshot'
 
- Outputs:
+  Outputs:
     PgEndpoint:
-      Description: "JDBC connection string for database"
+      Description: 'JDBC connection string for database'
       Value: ${self:custom.PGENDPOINT}
     GraphqlEndpoint:
-      Description: "URL of /graphql Endpoint"
+      Description: 'URL of /graphql Endpoint'
       Value: ${self:custom.GRAPHQL_ENDPOINT}

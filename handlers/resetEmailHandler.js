@@ -64,7 +64,7 @@ module.exports.handle = (event, context, cb) => {
       const token = jwt.sign(
         { user_id: pgres.rows[0].id, role: 'floods_password_resetter' },
         process.env.JWT_SECRET,
-        { expiresIn: '30m', audience: 'postgraphile' },
+        { expiresIn: '30d', audience: 'postgraphile' },
       );
 
       return sendResetEmail(firstname, lastname, email, token, frontendURL, cb);
