@@ -988,7 +988,7 @@ $$ language plpgsql strict security definer;
 comment on function floods.delete_community(integer) is 'Deletes a community.';
 
 -- Define roles
-create role floods_graphql;
+create role floods_graphql login;
 create role floods_anonymous;
 create role floods_community_editor;
 grant floods_anonymous to floods_community_editor;
