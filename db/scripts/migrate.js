@@ -5,9 +5,9 @@ const runMigrate = () => {
   console.log("Migrate is running now!");
   return migrate({
     database: "floods",
-    user: process.env.PGUSERNAME,
-    password: process.env.PGPASSWORD,
-    host: process.env.PGENDPOINT,
+    user: process.env.PG_MASTER_USR,
+    password: process.env.PG_MASTER_PWD,
+    host: process.env.PG_ENDPOINT,
     port: 5432,
   }, path.join(__dirname, "/../../populateDB/migrations"))
 }

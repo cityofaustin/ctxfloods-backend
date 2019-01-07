@@ -49,7 +49,7 @@ if [ "${PIPESTATUS[0]}" != "0" ]; then
   echo "sls deploy failed"
   exit 1
 fi
-export PGENDPOINT=$(grep "PgEndpoint" out.tmp | cut -f2- -d: | cut -c2-)
+export PG_ENDPOINT=$(grep "PgEndpoint" out.tmp | cut -f2- -d: | cut -c2-)
 export GRAPHQL_ENDPOINT=$(grep "GraphqlEndpoint" out.tmp | cut -f2- -d: | cut -c2-)
 
 # Check if seeding will be required

@@ -988,8 +988,7 @@ $$ language plpgsql strict security definer;
 comment on function floods.delete_community(integer) is 'Deletes a community.';
 
 -- Define roles
-create role floods_postgraphql login password 'xyz';
-
+create role floods_graphql;
 create role floods_anonymous;
 create role floods_community_editor;
 grant floods_anonymous to floods_community_editor;
@@ -999,10 +998,10 @@ grant floods_community_editor to floods_community_admin;
 
 create role floods_super_admin;
 grant floods_community_admin to floods_super_admin;
-grant floods_super_admin to floods_postgraphql;
+grant floods_super_admin to floods_graphql;
 
 create role floods_password_resetter;
-grant floods_password_resetter to floods_postgraphql;
+grant floods_password_resetter to floods_graphql;
 
 -- Create JWT token type for authentication
 create type floods.jwt_token as (

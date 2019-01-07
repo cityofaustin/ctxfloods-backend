@@ -2,10 +2,10 @@ module.exports.SENTRY_DSN =
   'https://2627dd87d0fd4249a65d160aef644f88@sentry.io/1191657';
 
 module.exports.PGCON =
-  `postgresql://floods_postgraphql:xyz@${process.env.PGENDPOINT}:5432/floods`;
+  `postgresql://${process.env.PG_API_USR}:${process.env.PG_API_PW}@${process.env.PG_ENDPOINT}:5432/floods`;
 
 module.exports.PGCON_BUILD_SCHEMA =
-  `postgresql://${process.env.PGUSERNAME}:${process.env.PGPASSWORD}@${process.env.PGENDPOINT}:5432/floods`
+  `postgresql://${process.env.PG_MASTER_USR}:${process.env.PG_MASTER_PW}@${process.env.PG_ENDPOINT}:5432/floods`
 
 // Only used in pushNotificationHandler, which is a cron job that does not receive a request from a frontend.
 // Otherwise, it's more accurate to use event.headers.origin to get frontendURL

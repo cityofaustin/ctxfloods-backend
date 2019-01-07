@@ -21,6 +21,9 @@ export GRAPHQL_ENDPOINT=http://localhost:$BACKEND_PORT/graphql
 # AUSTIN_DATA_APP_TOKEN not required locally. Don't worry about requests getting throttled.
 
 # Postgres
-export PGUSERNAME=postgres
-export PGPASSWORD=password
-export PGENDPOINT=localhost
+# [Local Only] Plug in your own Postgres Credential environment variables into your .bash_profile
+export PG_MASTER_USR=$CTXFLOODS_PG_MASTER_USR
+export PG_MASTER_PWD=$CTXFLOODS_PG_MASTER_PW
+export PG_API_USR=floods_graphql
+export PG_API_PW=floods_graphql
+export PG_ENDPOINT=localhost

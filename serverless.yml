@@ -6,7 +6,7 @@ plugins:
 custom:
   contentEncoding:
     minimumCompressionSize: 0
-  PGENDPOINT:
+  PG_ENDPOINT:
     Fn::GetAtt:
       - pgDB
       - Endpoint.Address
@@ -92,7 +92,7 @@ functions:
                   }
                 }
     environment:
-      PGENDPOINT: ${self:custom.PGENDPOINT}
+      PG_ENDPOINT: ${self:custom.PG_ENDPOINT}
       JWT_SECRET: ${env:JWT_SECRET}
 
   xml:
@@ -102,7 +102,7 @@ functions:
           method: get
           path: xml
     environment:
-      PGENDPOINT: ${self:custom.PGENDPOINT}
+      PG_ENDPOINT: ${self:custom.PG_ENDPOINT}
 
   waze_feed:
     handler: handlers/wazeFeedHandler.handle
@@ -111,7 +111,7 @@ functions:
           method: get
           path: waze/feed
     environment:
-      PGENDPOINT: ${self:custom.PGENDPOINT}
+      PG_ENDPOINT: ${self:custom.PG_ENDPOINT}
 
   incidentreport:
     handler: handlers/incidentReportHandler.handle
@@ -135,7 +135,7 @@ functions:
           path: email/reset
           cors: true
     environment:
-      PGENDPOINT: ${self:custom.PGENDPOINT}
+      PG_ENDPOINT: ${self:custom.PG_ENDPOINT}
       JWT_SECRET: ${env:JWT_SECRET}
       GMAIL_ADDRESS: ${env:GMAIL_ADDRESS}
       GMAIL_CLIENT_ID: ${env:GMAIL_CLIENT_ID}
@@ -161,7 +161,7 @@ functions:
           enabled: ${env:ENABLE_PUSH_NOTIFICATIONS, self:custom.false}
     environment:
       GRAPHQL_ENDPOINT: ${self:custom.GRAPHQL_ENDPOINT}
-      PGENDPOINT: ${self:custom.PGENDPOINT}
+      PG_ENDPOINT: ${self:custom.PG_ENDPOINT}
       AWS_SERVICE_NAME: ${env:AWS_SERVICE_NAME}
       GMAIL_ADDRESS: ${env:GMAIL_ADDRESS}
       GMAIL_CLIENT_ID: ${env:GMAIL_CLIENT_ID}
@@ -201,8 +201,8 @@ resources:
         DBInstanceClass: 'db.t2.micro'
         Engine: 'postgres'
         EngineVersion: '9.5.10'
-        MasterUsername: ${env:PGUSERNAME}
-        MasterUserPassword: ${env:PGPASSWORD}
+        MasterUsername: ${env:PG_MASTER_USR}
+        MasterUserPassword: ${env:PG_MASTER_PW}
         VPCSecurityGroups:
           - Fn::GetAtt:
             - pgSecurityGroup
@@ -213,9 +213,9 @@ resources:
       DeletionPolicy: 'Snapshot'
 
   Outputs:
-    PgEndpoint:
+    PG_ENDPOINT:
       Description: 'JDBC connection string for database'
-      Value: ${self:custom.PGENDPOINT}
+      Value: ${self:custom.PG_ENDPOINT}
     GraphqlEndpoint:
       Description: 'URL of /graphql Endpoint'
       Value: ${self:custom.GRAPHQL_ENDPOINT}
