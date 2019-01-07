@@ -5,6 +5,7 @@ const getClient = require('../helpers/getClient');
 const floodsExists = require('./floodsExists');
 const initialize = require('./initialize');
 const migrate = require('./migrate');
+const addApiUser = require('./addApiUser');
 const seed = require('./seed');
 
 let localServer, masterClient, floodsClient, errFlag = false, newInstance = false;
@@ -33,6 +34,7 @@ masterClient.connect()
     console.log("Seeding data for new floods database");
     floodsClient = getClient({clientType: "floodsAdmin"});
     return floodsClient.connect()
+    .then(() => addApiUser(floodsClient))
     .then(() => seed(floodsClient))
   }
 })
