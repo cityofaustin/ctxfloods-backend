@@ -213,7 +213,7 @@ resources:
       DeletionPolicy: 'Snapshot'
 
   Outputs:
-    PG_ENDPOINT:
+    PgEndpoint:
       Description: 'JDBC connection string for database'
       Value: ${self:custom.PG_ENDPOINT}
     GraphqlEndpoint:

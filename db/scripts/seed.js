@@ -19,7 +19,7 @@ const seed = (client) => {
   console.log("Adding floods_graphql user")
   return client.query(format(
     `
-      create user floods_graphql login password %I;
+      create user floods_graphql login password %L;
       grant floods_super_admin to floods_graphql;
       grant floods_password_resetter to floods_graphql;
     `,
