@@ -21,7 +21,7 @@ const writeSeedFlag = (client) => {
     let shouldSeed;
     const branch = getBranch();
     if (branch !== "master") {
-      shouldSeed = (!exists && devDeployConfig[branch] && devDeployConfig[branch].seed)
+      shouldSeed = (!exists && !!devDeployConfig[branch] && !!devDeployConfig[branch].seed)
     } else {
       shouldSeed = !exists;
     }
