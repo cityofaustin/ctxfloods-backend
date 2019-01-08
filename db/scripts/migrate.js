@@ -6,7 +6,7 @@ const runMigrate = () => {
   return migrate({
     database: "floods",
     user: process.env.PG_MASTER_USR,
-    password: process.env.PG_MASTER_PWD,
+    password: process.env.PG_MASTER_PW,
     host: process.env.PG_ENDPOINT,
     port: 5432,
   }, path.join(__dirname, "/../../populateDB/migrations"))

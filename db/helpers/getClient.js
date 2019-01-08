@@ -22,7 +22,7 @@ const getClient = ({clientType, pool}) => {
   let user, password, database;
   if (clientType === "floodsAdmin") {
     user = process.env.PG_MASTER_USR;
-    password = process.env.PG_MASTER_PWD;
+    password = process.env.PG_MASTER_PW;
     database = "floods";
   } else if (clientType === "floodsAPI") {
     user = process.env.PG_API_USR;
@@ -30,7 +30,7 @@ const getClient = ({clientType, pool}) => {
     database = "floods";
   } else if (clientType === "masterAdmin") {
     user = process.env.PG_MASTER_USR;
-    password = process.env.PG_MASTER_PWD;
+    password = process.env.PG_MASTER_PW;
     database = "postgres";
   } else {
     throw new error(`Please enter a valid client type; ex. "floodsAPI"`)
