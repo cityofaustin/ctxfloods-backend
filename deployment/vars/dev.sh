@@ -3,16 +3,19 @@ case $TRAVIS_EVENT_TYPE in
   push)
     # Set to branch name during push builds
     export AWS_SERVICE_NAME=ctxfloods-backend-$TRAVIS_BRANCH
+    export AWS_DB_INSTANCE_IDENTIFIER=ctxfloods-$TRAVIS_BRANCH
     ;;
   pull_request)
     # Set to origin branch name during pull requests
     export AWS_SERVICE_NAME=ctxfloods-backend-$TRAVIS_PULL_REQUEST_BRANCH
+    export AWS_DB_INSTANCE_IDENTIFIER=ctxfloods-$TRAVIS_PULL_REQUEST_BRANCH
     ;;
   api | cron)
     # The final 2 Travis Event Types.
     # We should not run across these cases with our script.
     # But just in case, set the suffix to the Travis job id.
     export AWS_SERVICE_NAME=ctxfloods-backend-$TRAVIS_EVENT_TYPE-$TRAVIS_JOB_ID
+    export AWS_DB_INSTANCE_IDENTIFIER=ctxfloods-$TRAVIS_EVENT_TYPE-$TRAVIS_JOB_ID
     ;;
 esac
 export AWS_ACCESS_KEY_ID=$TRAVIS_ACCESS_KEY_ID_DEV
