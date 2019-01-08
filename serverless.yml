@@ -29,6 +29,8 @@ provider:
     name: ${env:AWS_SERVICE_NAME}
   environment:
     BACKEND_PORT: ${env:BACKEND_PORT}
+    PG_API_USR: ${env:PG_API_USR}
+    PG_API_PW: ${env:PG_API_PW}
   region: us-east-1
   stage: ${env:AWS_STAGE}
 

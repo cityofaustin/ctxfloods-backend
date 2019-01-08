@@ -1,8 +1,9 @@
-require('promise.prototype.finally').shim();const Client = require('pg').Client;
+require('promise.prototype.finally').shim();
 const jwt = require('jsonwebtoken');
 
 const { sendEmail } = require('./emailer');
 const { logError } = require('./logger');
+const getClient = require('../db/helpers/getClient');
 
 async function sendResetEmail(firstname, lastname, email, token, frontendURL, cb) {
   try {
@@ -34,7 +35,7 @@ async function sendResetEmail(firstname, lastname, email, token, frontendURL, cb
 }
 
 module.exports.handle = (event, context, cb) => {
-  const pgClient = new Client(require('./constants').PGCON);
+  const pgClient = getClient({clientType: "floodsAPI"});
   const { email } = JSON.parse(event.body);
   const frontendURL = event.headers.origin;
   pgClient.connect();
