@@ -1,5 +1,6 @@
-const Client = require('pg').Client;
+require('promise.prototype.finally').shim();
 const { logError } = require('./logger');
+const getClient = require('../db/helpers/getClient');
 
 function getPgResAsIncidentJson(rows) {
   return {
@@ -21,7 +22,7 @@ function getPgResAsIncidentJson(rows) {
 module.exports.getPgResAsIncidentJson = getPgResAsIncidentJson;
 
 module.exports.handle = (event, context, cb) => {
-  const pgClient = new Client(require('./constants').PGCON);
+  const pgClient = getClient({clientType: "floodsAPI"});
   pgClient.connect();
 
   pgClient
@@ -44,5 +45,5 @@ module.exports.handle = (event, context, cb) => {
       // TODO: Actually send back a response error
       return cb(null, { errors: [err] });
     })
-    .then(() => pgClient.end());
+    .finally(() => pgClient.end());
 };

@@ -3,16 +3,19 @@ case $TRAVIS_EVENT_TYPE in
   push)
     # Set to branch name during push builds
     export AWS_SERVICE_NAME=ctxfloods-backend-$TRAVIS_BRANCH
+    export AWS_DB_INSTANCE_IDENTIFIER=ctxfloods-$TRAVIS_BRANCH
     ;;
   pull_request)
     # Set to origin branch name during pull requests
     export AWS_SERVICE_NAME=ctxfloods-backend-$TRAVIS_PULL_REQUEST_BRANCH
+    export AWS_DB_INSTANCE_IDENTIFIER=ctxfloods-$TRAVIS_PULL_REQUEST_BRANCH
     ;;
   api | cron)
     # The final 2 Travis Event Types.
     # We should not run across these cases with our script.
     # But just in case, set the suffix to the Travis job id.
     export AWS_SERVICE_NAME=ctxfloods-backend-$TRAVIS_EVENT_TYPE-$TRAVIS_JOB_ID
+    export AWS_DB_INSTANCE_IDENTIFIER=ctxfloods-$TRAVIS_EVENT_TYPE-$TRAVIS_JOB_ID
     ;;
 esac
 export AWS_ACCESS_KEY_ID=$TRAVIS_ACCESS_KEY_ID_DEV
@@ -34,6 +37,8 @@ export BACKEND_PORT=5000
 export AUSTIN_DATA_APP_TOKEN=$TRAVIS_AUSTIN_DATA_APP_TOKEN_DEV
 
 # Postgres
-export PGUSERNAME=$TRAVIS_PGUSERNAME_DEV
-export PGPASSWORD=$TRAVIS_PGPASSWORD_DEV
-# PGENDPOINT assigned in serverless.yml
+export PG_MASTER_USR=$TRAVIS_PG_MASTER_USR_DEV
+export PG_MASTER_PW=$TRAVIS_PG_MASTER_PW_DEV
+export PG_API_USR=floods_graphql
+export PG_API_PW=$TRAVIS_PG_API_PW_DEV
+# PG_ENDPOINT assigned in serverless.yml
