@@ -201,7 +201,6 @@ resources:
         DBName: 'postgres'
         AllocatedStorage: 5
         DBInstanceClass: 'db.t2.micro'
-        DBInstanceIdentifier: ${env:AWS_DB_INSTANCE_IDENTIFIER}
         DeletionProtection: true
         Engine: 'postgres'
         EngineVersion: '9.5.10'
