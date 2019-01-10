@@ -12,7 +12,9 @@ const getBranch = require('./getBranch.js');
 const writeCustomServiceName = () => {
   const branch = getBranch();
   if (devDeployConfig[branch] && devDeployConfig[branch].customServiceName) {
-    fs.writeFileSync(`${__dirname}/custom_aws_service_name.tmp`, `export AWS_SERVICE_NAME=ctxfloods-backend-${devDeployConfig[branch].customServiceName}`);
+    fs.writeFileSync(`${__dirname}/custom_aws_service_name.tmp`,
+      `export AWS_SERVICE_NAME=ctxfloods-backend-${devDeployConfig[branch].customServiceName}\nexport AWS_DB_INSTANCE_IDENTIFIER=ctxfloods-${devDeployConfig[branch].customServiceName}`
+    );
   }
 }
 

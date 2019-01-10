@@ -1,5 +1,6 @@
 # AWS
 export AWS_SERVICE_NAME=ctxfloods-backend-prod-legacy-sync
+export AWS_DB_INSTANCE_IDENTIFIER=ctxfloods-prod-legacy-sync
 export AWS_ACCESS_KEY_ID=$TRAVIS_ACCESS_KEY_ID_DEV
 export AWS_SECRET_ACCESS_KEY=$TRAVIS_SECRET_ACCESS_KEY_DEV
 export AWS_STAGE=prod # TODO - check if "prod"" triggers anything different
@@ -19,6 +20,8 @@ export ENABLE_SYNC_LEGACY=true # Interpretted as truthy by serverless.yml when a
 export AUSTIN_DATA_APP_TOKEN=$TRAVIS_AUSTIN_DATA_APP_TOKEN_DEV
 
 # Postgres
-export PGUSERNAME=$TRAVIS_PGUSERNAME_DEV
-export PGPASSWORD=$TRAVIS_PGPASSWORD_DEV
-# PGENDPOINT assigned in serverless.yml
+export PG_MASTER_USR=$TRAVIS_PG_MASTER_USR_DEV
+export PG_MASTER_PW=$TRAVIS_PG_MASTER_PW_DEV
+export PG_API_USR=floods_graphql
+export PG_API_PW=$TRAVIS_PG_API_PW_DEV
+# PG_ENDPOINT assigned in serverless.yml

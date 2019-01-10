@@ -6,6 +6,7 @@ const { sendEmail } = require('./emailer');
 const { logError } = require('./logger');
 const { frontendURL } = require('./constants');
 const { getAuthorizedLokka } = require('./graphql');
+const getClient = require('../db/helpers/getClient');
 
 const EmailTextTemplate = _.template(`
 Action is required for <%= crossings.length %> crossing<% if (crossings.length !== 1) { %>s<% } %>. Please make sure that their statuses are up to date.
@@ -88,7 +89,7 @@ function newPushLog(lokka, pushLog){
 }
 
 module.exports.handle = (event, context, cb) => {
-  const pgClient = new Client(require('./constants').PGCON);
+  const pgClient = getClient({clientType: "floodsAPI"});
   const today = moment(new Date()).format('YYYY-MM-DD');
   let emailJobs, lokka, jobErrors=[], successCount=0;
 

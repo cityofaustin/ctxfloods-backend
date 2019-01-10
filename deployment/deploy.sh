@@ -49,7 +49,7 @@ if [ "${PIPESTATUS[0]}" != "0" ]; then
   echo "sls deploy failed"
   exit 1
 fi
-export PGENDPOINT=$(grep "PgEndpoint" out.tmp | cut -f2- -d: | cut -c2-)
+export PG_ENDPOINT=$(grep "PgEndpoint" out.tmp | cut -f2- -d: | cut -c2-)
 export GRAPHQL_ENDPOINT=$(grep "GraphqlEndpoint" out.tmp | cut -f2- -d: | cut -c2-)
 
 # Check if seeding will be required
@@ -73,6 +73,22 @@ if [ $? != 0 ]; then
   exit 1
 fi
 
+# If its a new deployment (as indicated by createS3Bucket.js), then seed data
+source $CURRENT_DIR/seed_flag.tmp
+if [ $SEED_FLAG = "true" ]; then
+  node $CURRENT_DIR/../db/scripts/addApiUser.js
+  if [ $? != 0 ]; then
+    echo "add API user script failed"
+    exit 1
+  fi
+
+  node $CURRENT_DIR/../db/scripts/seed.js
+  if [ $? != 0 ]; then
+    echo "seed script failed"
+    exit 1
+  fi
+fi
+
 # Build Graphql Schema
 echo Building Schema
 node $CURRENT_DIR/../pgCatalog/buildPgCatalog.js
@@ -86,16 +102,6 @@ sls deploy -f graphql
 if [ $? != 0 ]; then
   echo "sls deploy -f graphql failed"
   exit 1
-fi
-
-# If its a new deployment (as indicated by createS3Bucket.js), then seed data
-source $CURRENT_DIR/seed_flag.tmp
-if [ $SEED_FLAG = "true" ]; then
-  node $CURRENT_DIR/../db/scripts/seed.js
-  if [ $? != 0 ]; then
-    echo "seed script failed"
-    exit 1
-  fi
 fi
 
 rm $CURRENT_DIR/seed_flag.tmp
