@@ -76,12 +76,6 @@ fi
 # If its a new deployment (as indicated by createS3Bucket.js), then seed data
 source $CURRENT_DIR/seed_flag.tmp
 if [ $SEED_FLAG = "true" ]; then
-  node $CURRENT_DIR/../db/scripts/addUsers.js
-  if [ $? != 0 ]; then
-    echo "add API user script failed"
-    exit 1
-  fi
-
   node $CURRENT_DIR/../db/scripts/seed.js
   if [ $? != 0 ]; then
     echo "seed script failed"
