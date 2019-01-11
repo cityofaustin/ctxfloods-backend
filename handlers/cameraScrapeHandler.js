@@ -116,7 +116,7 @@ const handleBeholderImages = (lokka) => {
 }
 
 module.exports.handle = (event, context, cb) => {
-  return getAuthorizedLokka('superadmin@flo.ods', 'texasfloods')
+  return getAuthorizedLokka(process.env.PG_API_USR, process.env.PG_API_PW)
   .then((result) => {
     lokka = result;
     return Promise.all([

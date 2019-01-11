@@ -102,7 +102,7 @@ module.exports.handle = (event, context, cb) => {
 
   // Step 1: Find all communities that contain crossings requiring push notifications
   pgClient.connect();
-  return getAuthorizedLokka('superadmin@flo.ods', 'texasfloods')
+  return getAuthorizedLokka(process.env.PG_API_USR, process.env.PG_API_PW)
   .then((result) => {
     lokka = result;
     return pgClient.query(`\
