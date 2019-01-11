@@ -19,6 +19,8 @@ export BACKEND_PORT=5000
 export GRAPHQL_ENDPOINT=http://localhost:$BACKEND_PORT/graphql
 # ENABLE_PUSH_NOTIFICATIONS not required for local testing
 # AUSTIN_DATA_APP_TOKEN not required locally. Don't worry about requests getting throttled.
+export GRAPHQL_API_USR=graphql@flo.ods
+export GRAPHQL_API_PW=floods_graphql
 
 # Postgres
 # [Local Only] Plug in your own Postgres Credential environment variables into your .bash_profile

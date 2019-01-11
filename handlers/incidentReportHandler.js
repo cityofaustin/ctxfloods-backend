@@ -115,7 +115,7 @@ module.exports.handle = async (event, context, cb) => {
 
     await verifyCaptcha(incidentReport.recaptchaResponse);
 
-    const lokka = await getAuthorizedLokka('graphql@flo.ods', process.env.PG_API_PW);
+    const lokka = await getAuthorizedLokka(process.env.GRAPHQL_API_USR, process.env.GRAPHQL_API_PW);
 
     const createdReport = await newIncidentReport(lokka, incidentReport);
 

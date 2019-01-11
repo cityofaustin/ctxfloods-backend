@@ -18,6 +18,8 @@ export BACKEND_PORT=5000
 # GRAPHQL_ENDPOINT defined in serverless.yml
 # ENABLE_PUSH_NOTIFICATIONS disabled. Interpretted as truthy by serverless.yml when any string is passed.
 export AUSTIN_DATA_APP_TOKEN=$TRAVIS_AUSTIN_DATA_APP_TOKEN_DEV
+export GRAPHQL_API_USR=$TRAVIS_GRAPHQL_API_USR_PROD
+export GRAPHQL_API_PW=$TRAVIS_GRAPHQL_API_PW_PROD
 
 # Postgres
 # Changing PG_MASTER_USR and PG_MASTER_PW here will apply changes to both the database and the application.

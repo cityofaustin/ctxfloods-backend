@@ -102,7 +102,7 @@ module.exports.handle = (event, context, cb) => {
 
   // Step 1: Find all communities that contain crossings requiring push notifications
   pgClient.connect();
-  return getAuthorizedLokka('graphql@flo.ods', process.env.PG_API_PW)
+  return getAuthorizedLokka(process.env.GRAPHQL_API_USR, process.env.GRAPHQL_API_PW)
   .then((result) => {
     lokka = result;
     return pgClient.query(`\

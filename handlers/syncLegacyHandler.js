@@ -80,7 +80,7 @@ function getCrossingsToUpdate(dbCrossings, legacyCrossings) {
 async function processLegacyCrossings(legacyCrossings) {
   const dbCrossings = await getCrossings();
   const crossingsToUpdate = getCrossingsToUpdate(dbCrossings, legacyCrossings);
-  const lokka = await getAuthorizedLokka('graphql@flo.ods', process.env.PG_API_PW);
+  const lokka = await getAuthorizedLokka(process.env.GRAPHQL_API_USR, process.env.GRAPHQL_API_PW);
 
   for (crossing of crossingsToUpdate) {
     const updated = await newStatusUpdate(crossing, lokka);

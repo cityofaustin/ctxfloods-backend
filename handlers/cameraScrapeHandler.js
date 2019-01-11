@@ -116,7 +116,7 @@ const handleBeholderImages = (lokka) => {
 }
 
 module.exports.handle = (event, context, cb) => {
-  return getAuthorizedLokka('graphql@flo.ods', process.env.PG_API_PW)
+  return getAuthorizedLokka(process.env.GRAPHQL_API_USR, process.env.GRAPHQL_API_PW)
   .then((result) => {
     lokka = result;
     return Promise.all([
