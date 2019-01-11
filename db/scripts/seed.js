@@ -3,7 +3,7 @@ const path = require('path');
 const commandLineRun = require("../helpers/commandLineRun")
 
 const addApiUser = require('./addApiUser');
-const addSuperAdminUser = require('./addSuperAdminUser');
+const addSuperAdminUsers = require('./addSuperAdminUsers');
 const addWazeStreets = require('../../populateDB/data/addWazeStreets');
 const addLegacyCrossings = require('../../populateDB/data/addLegacyCrossings');
 /**
@@ -21,7 +21,7 @@ const seed = (client) => {
   const addSetupData = fs.readFileSync(path.join(__dirname, '/../../populateDB/data/addSetupData.sql'), 'utf8');
   return client.query(addSetupData)
   .then(() => addApiUser(client))
-  .then(() => addSuperAdminUser(client))
+  .then(() => addSuperAdminUsers(client))
   .then(() => {
     console.log("Adding Communities");
     const addCommunities = fs.readFileSync(path.join(__dirname, '/../../populateDB/data/addCommunities.sql'), 'utf8');

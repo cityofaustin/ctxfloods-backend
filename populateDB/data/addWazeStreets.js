@@ -3,8 +3,6 @@ const util = require('util');
 
 const dsv = require('d3-dsv');
 
-const { getAuthorizedLokka } = require('../../handlers/graphql');
-
 const readFile = util.promisify(fs.readFile);
 
 const WazeStreetsCsvPath = `${__dirname}/wazeStreets.csv`;

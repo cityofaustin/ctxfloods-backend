@@ -23,6 +23,8 @@ alter sequence floods.user_id_seq restart with 5;
 select floods.register_user(text 'Community', text 'Editor Too', text 'Community Editor Too', integer '1', text '867-5309', text 'editortoo@community.floods', text 'texasfloods', text 'floods_community_editor');
 alter sequence floods.user_id_seq restart with 6;
 select floods.register_user(text 'Inactive', text 'User', text 'Retired', integer '1', text '867-5309', text 'inactive@flo.ods', text 'texasfloods', text 'floods_community_editor');
+alter sequence floods.user_id_seq restart with 7;
+select floods.register_user(text 'Floods', text 'Graphql', text 'API', integer '1', text '000-0000', text 'graphql@flo.ods', text 'floods_graphql', text 'floods_super_admin');
 
 -- Add crossings
 insert into floods.crossing (id, name, human_address, description, coordinates, geojson, community_ids) values

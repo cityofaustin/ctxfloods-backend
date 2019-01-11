@@ -26,5 +26,5 @@ export PG_MASTER_USR=$CTXFLOODS_PG_MASTER_USR
 export PG_MASTER_PW=$CTXFLOODS_PG_MASTER_PW
 export PG_API_USR=floods_graphql
 export PG_API_PW=floods_graphql
-export PG_SUPER_ADMIN_PW=texasfloodsly # only used during initialization
+export PG_SUPER_ADMIN_PW=texasfloods # only used during initialization
 export PG_ENDPOINT=localhost
