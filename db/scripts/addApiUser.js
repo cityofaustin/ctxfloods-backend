@@ -9,8 +9,8 @@ const addApiUser = (client) => {
       grant floods_super_admin to floods_graphql;
       grant floods_password_resetter to floods_graphql;
     `,
-    process.env.PG_API_PW)
-  )
+    process.env.PG_API_PW
+  ))
 }
 
 module.exports = addApiUser;

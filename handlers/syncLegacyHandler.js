@@ -80,9 +80,7 @@ function getCrossingsToUpdate(dbCrossings, legacyCrossings) {
 async function processLegacyCrossings(legacyCrossings) {
   const dbCrossings = await getCrossings();
   const crossingsToUpdate = getCrossingsToUpdate(dbCrossings, legacyCrossings);
-
-  // FIXME: Make a new user and put in ENV
-  const lokka = await getAuthorizedLokka('superadmin@flo.ods', 'texasfloods');
+  const lokka = await getAuthorizedLokka(process.env.GRAPHQL_API_USR, process.env.GRAPHQL_API_PW);
 
   for (crossing of crossingsToUpdate) {
     const updated = await newStatusUpdate(crossing, lokka);

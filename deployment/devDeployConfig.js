@@ -42,7 +42,7 @@ module.exports = {
     deploy: true,
     seed: true
   },
-  "427-passwords": {
+  "427-superadmin": {
     deploy: true,
     seed: true,
   }

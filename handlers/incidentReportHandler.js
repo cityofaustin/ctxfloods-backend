@@ -115,9 +115,7 @@ module.exports.handle = async (event, context, cb) => {
 
     await verifyCaptcha(incidentReport.recaptchaResponse);
 
-    // TODO: Make a new user and store it in encrypted travis env variable
-    // https://github.com/cityofaustin/ctxfloods/issues/200
-    const lokka = await getAuthorizedLokka('superadmin@flo.ods', 'texasfloods');
+    const lokka = await getAuthorizedLokka(process.env.GRAPHQL_API_USR, process.env.GRAPHQL_API_PW);
 
     const createdReport = await newIncidentReport(lokka, incidentReport);
 
