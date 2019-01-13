@@ -3,8 +3,6 @@ const util = require('util');
 const dsv = require('d3-dsv');
 const readFile = util.promisify(fs.readFile);
 
-const { getAuthorizedLokka } = require('../../handlers/graphql');
-
 const LegacyCrossingsCsvPath = `${__dirname}/legacyCrossings.csv`;
 
 async function loadCsv(path) {
