@@ -3,8 +3,8 @@ const parseString = require('xml2js').parseString;
 const HttpTransport = require('lokka-transport-http').Transport;
 const Lokka = require('lokka').Lokka;
 
-const { getAuthorizedLokka } = require('./graphql');
-const { logError } = require('./logger');
+const { getAuthorizedLokka } = require('../helpers/graphql');
+const { logError } = require('../helpers/logger');
 
 const url = 'https://www.atxfloods.com/dashboard/phpsqlajax_genxml.php';
 const statuses = {

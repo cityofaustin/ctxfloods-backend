@@ -1,6 +1,6 @@
 require('promise.prototype.finally').shim();
 const Client = require('pg').Client;
-const { logError } = require('./logger');
+const { logError } = require('../helpers/logger');
 const getClient = require('../db/helpers/getClient');
 
 module.exports.handle = (event, context, cb) => {

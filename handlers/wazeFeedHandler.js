@@ -1,5 +1,5 @@
 require('promise.prototype.finally').shim();
-const { logError } = require('./logger');
+const { logError } = require('../helpers/logger');
 const getClient = require('../db/helpers/getClient');
 
 function getPgResAsIncidentJson(rows) {

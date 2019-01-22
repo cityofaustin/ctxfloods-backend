@@ -43,21 +43,37 @@ if [ $? != 0 ]; then
   exit 1
 fi
 
-# Deploy with serverless
-sls deploy -v | tee out.tmp
+# Check if deployed db already exists
+node $CURRENT_DIR/writeDbFlags.js
+if [ $? != 0 ]; then
+  echo "db flag script failed"
+  exit 1
+fi
+source $CURRENT_DIR/db_flags.tmp
+
+# Create Serverless Bundle
+sls package -v
+if [ $? != 0 ]; then
+  echo "sls package failed"
+  exit 1
+fi
+
+# Add postgraphile.cache to bundle if DB exists
+if [ $DB_EXISTS_FLAG = "true" ]; then
+  bash ./bundleGraphqlHandler
+  if [ $? != 0 ]; then
+    exit 1
+  fi
+fi
+
+# Deploy bundled serverless package
+sls deploy -p $CURRENT_DIR/../.serverless -v | tee out.tmp
 if [ "${PIPESTATUS[0]}" != "0" ]; then
   echo "sls deploy failed"
   exit 1
 fi
 export PG_ENDPOINT=$(grep "PgEndpoint" out.tmp | cut -f2- -d: | cut -c2-)
 export GRAPHQL_ENDPOINT=$(grep "GraphqlEndpoint" out.tmp | cut -f2- -d: | cut -c2-)
-
-# Check if seeding will be required
-node $CURRENT_DIR/writeSeedFlag.js
-if [ $? != 0 ]; then
-  echo "seed flag script failed"
-  exit 1
-fi
 
 # Initialize floods database
 node $CURRENT_DIR/../db/scripts/initialize.js
@@ -73,8 +89,7 @@ if [ $? != 0 ]; then
   exit 1
 fi
 
-# If its a new deployment (as indicated by createS3Bucket.js), then seed data
-source $CURRENT_DIR/seed_flag.tmp
+# If its a new deployment (as indicated by writeDbFlags.js), then seed data
 if [ $SEED_FLAG = "true" ]; then
   node $CURRENT_DIR/../db/scripts/seed.js
   if [ $? != 0 ]; then
@@ -83,20 +98,25 @@ if [ $SEED_FLAG = "true" ]; then
   fi
 fi
 
-# Build Graphql Schema
-echo Building Schema
-node $CURRENT_DIR/../pgCatalog/buildPgCatalog.js
-if [ $? != 0 ]; then
-  echo "buildPgCatalog failed"
-  exit 1
+# If DB instance is new, re-deploy graphql Lambda function with postgraphile schema
+if [ $DB_EXISTS_FLAG = "false" ]; the
+  sls package -v
+  if [ $? != 0 ]; then
+    echo "sls package failed"
+    exit 1
+  fi
+
+  bash ./bundleGraphqlHandler
+  if [ $? != 0 ]; then
+    exit 1
+  fi
+
+  sls deploy -p $CURRENT_DIR/../.serverless -f graphql
+  if [ $? != 0 ]; then
+    echo "sls deploy -f graphql failed"
+    exit 1
+  fi
 fi
 
-# Deploy graphql Lambda function with schema
-sls deploy -f graphql
-if [ $? != 0 ]; then
-  echo "sls deploy -f graphql failed"
-  exit 1
-fi
-
-rm $CURRENT_DIR/seed_flag.tmp
+rm $CURRENT_DIR/db_flags.tmp
 rm out.tmp

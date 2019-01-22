@@ -3,7 +3,7 @@ require('promise.prototype.finally').shim();
 const {createPostGraphileSchema, withPostGraphileContext} = require("postgraphile");
 const {graphql} = require('graphql');
 
-const { logError } = require('./logger');
+const { logError } = require('../helpers/logger');
 
 const extractToken = (event) => {
   // lokka lowercases its headers
