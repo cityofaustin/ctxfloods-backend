@@ -44,12 +44,12 @@ if [ $? != 0 ]; then
 fi
 
 # Check if deployed db already exists
-node $CURRENT_DIR/writeDbFlags.js
+node $CURRENT_DIR/getStackOutputs.js
 if [ $? != 0 ]; then
   echo "db flag script failed"
   exit 1
 fi
-source $CURRENT_DIR/db_flags.tmp
+source $CURRENT_DIR/stack_outputs.tmp
 
 # Create Serverless Bundle
 sls package -v
@@ -58,8 +58,8 @@ if [ $? != 0 ]; then
   exit 1
 fi
 
-# Add postgraphile.cache to bundle if DB exists
-if [ $DB_EXISTS_FLAG = "true" ]; then
+# Add postgraphile.cache to bundle if Stack already exists
+if [ $STACK_EXISTS = "true" ]; then
   bash ./bundleGraphqlHandler
   if [ $? != 0 ]; then
     exit 1
@@ -67,13 +67,28 @@ if [ $DB_EXISTS_FLAG = "true" ]; then
 fi
 
 # Deploy bundled serverless package
-sls deploy -p $CURRENT_DIR/../.serverless -v | tee out.tmp
-if [ "${PIPESTATUS[0]}" != "0" ]; then
+sls deploy -p $CURRENT_DIR/../.serverless -v
+if [ $? != 0 ]; then
   echo "sls deploy failed"
   exit 1
 fi
-export PG_ENDPOINT=$(grep "PgEndpoint" out.tmp | cut -f2- -d: | cut -c2-)
-export GRAPHQL_ENDPOINT=$(grep "GraphqlEndpoint" out.tmp | cut -f2- -d: | cut -c2-)
+
+# Source variables if Stack is new
+if [ $STACK_EXISTS = "false" ]; then
+  node $CURRENT_DIR/getStackOutputsStrict.js
+  if [ $? != 0 ]; then
+    echo "stack output sourcing failed"
+    exit 1
+  fi
+  source $CURRENT_DIR/stack_outputs.tmp
+fi
+
+# Check if seeding will be required
+node $CURRENT_DIR/writeSeedFlag.js
+if [ $? != 0 ]; then
+  echo "seed flag script failed"
+  exit 1
+fi
 
 # Initialize floods database
 node $CURRENT_DIR/../db/scripts/initialize.js
@@ -98,8 +113,8 @@ if [ $SEED_FLAG = "true" ]; then
   fi
 fi
 
-# If DB instance is new, re-deploy graphql Lambda function with postgraphile schema
-if [ $DB_EXISTS_FLAG = "false" ]; the
+# If CloudFormation Stack is new, then re-deploy graphql Lambda function with postgraphile schema
+if [ $STACK_EXISTS != "true" ]; the
   sls package -v
   if [ $? != 0 ]; then
     echo "sls package failed"
@@ -118,5 +133,6 @@ if [ $DB_EXISTS_FLAG = "false" ]; the
   fi
 fi
 
-rm $CURRENT_DIR/db_flags.tmp
+rm $CURRENT_DIR/seed_flag.tmp
+rm $CURRENT_DIR/stack_outputs.tmp
 rm out.tmp

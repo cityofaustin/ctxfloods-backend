@@ -14,12 +14,8 @@ let masterClient;
 
   Seeding will if the floods database does not exist and the devDeployConfig permits it.
   Seeding will always occur for master deployments where the floods database does not exist.
-
-  Write a DB_EXISTS_FLAG to a file.
-  This lets us know if we can introspect an existing database for postgraphile.
-  Otherwise we must introspect after deployment and re-deploy the graphqlHandler a second time.
 **/
-const writeDbFlags = (client) => {
+const writeSeedFlag = (client) => {
   return floodsExists(client)
   .then((exists) => {
     let shouldSeed;
@@ -29,12 +25,12 @@ const writeDbFlags = (client) => {
     } else {
       shouldSeed = !exists;
     }
-    fs.writeFileSync(`${__dirname}/db_flags.tmp`, `export SEED_FLAG=${shouldSeed}\nexport DB_EXISTS_FLAG=${exists}`);
+    fs.writeFileSync(`${__dirname}/seed_flag.tmp`, `export SEED_FLAG=${shouldSeed}`);
   })
 }
 
-module.exports = writeDbFlags
+module.exports = writeSeedFlag
 
 if (require.main === module) {
-  commandLineRun(writeDbFlags, "masterAdmin");
+  commandLineRun(writeSeedFlag, "masterAdmin");
 }
