@@ -2,10 +2,15 @@ service: ${env:AWS_SERVICE_NAME}
 
 plugins:
   - serverless-content-encoding
-
+  - serverless-webpack
+  
 custom:
   contentEncoding:
     minimumCompressionSize: 0
+  webpack:
+    webpackConfig: 'webpack.config.js'
+    packager: 'yarn'
+    keepOutputDirectory: true
   PG_ENDPOINT:
     Fn::GetAtt:
       - pgDB
@@ -21,6 +26,9 @@ custom:
         - ${self:provider.stage}
         - /graphql
   false: false
+
+package:
+  individually: true
 
 provider:
   name: aws
@@ -63,32 +71,6 @@ functions:
               application/graphql: |
                 {
                   "query" : "$util.escapeJavaScript($input.body)",
-                  "headers" : {
-                     #if( $input.params().header.get('Authorization').toString() != "" )
-                        "authorization" : "$input.params().header.get('Authorization')"
-                     #end
-                  }
-                }
-      - http:
-          method: get
-          path: graphql
-          integration: lambda
-          cors: true
-          request:
-            parameters:
-              querystrings:
-                query: true
-                variables: false
-                operationName: false
-              headers:
-                Authorization: false
-            template:
-              # lokka authorization header must be lowercase
-              application/json: |
-                {
-                  "query" : "$util.escapeJavaScript($input.params('query'))",
-                  "variables" : "$util.escapeJavaScript($input.params('variables'))",
-                  "operationName" : "$util.escapeJavaScript($input.params('operationName'))",
                   "headers" : {
                      #if( $input.params().header.get('Authorization').toString() != "" )
                         "authorization" : "$input.params().header.get('Authorization')"

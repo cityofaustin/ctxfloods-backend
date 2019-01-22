@@ -1,7 +1,7 @@
 const pg = require('pg');
 const {Pool, Client} = pg;
 const _ = require('lodash');
-const logError = require('../../handlers/logger');
+const logError = require('../../helpers/logger');
 
 /**
   Creates and returns a pg client.
