@@ -71,8 +71,8 @@ if [ $? != 0 ]; then
 fi
 
 # Add postgraphile.cache to bundle if deployed migrations are up to date
-if [ $MIGRATIONS_UP_TO_DATE = "true" ]; then
-  bash ./bundleGraphqlHandler
+if [[ $MIGRATIONS_UP_TO_DATE = "true" ]]; then
+  bash $CURRENT_DIR/bundleGraphqlHandler.sh
   if [ $? != 0 ]; then
     exit 1
   fi
@@ -86,7 +86,7 @@ if [ $? != 0 ]; then
 fi
 
 # Source variables if Stack is new
-if [ $STACK_EXISTS = "false" ]; then
+if [[ $STACK_EXISTS = "false" ]]; then
   node $CURRENT_DIR/getStackOutputsStrict.js
   if [ $? != 0 ]; then
     echo "stack output sourcing failed"
@@ -117,7 +117,7 @@ if [ $? != 0 ]; then
 fi
 
 # If its a new deployment (as indicated by writeDbFlags.js), then seed data
-if [ $SEED_FLAG = "true" ]; then
+if [[ $SEED_FLAG = "true" ]]; then
   node $CURRENT_DIR/../db/scripts/seed.js
   if [ $? != 0 ]; then
     echo "seed script failed"
@@ -133,7 +133,7 @@ if [[ $STACK_EXISTS = "false" ]] || [[ $MIGRATIONS_UP_TO_DATE = "false" ]]; then
     exit 1
   fi
 
-  bash ./bundleGraphqlHandler
+  bash $CURRENT_DIR/bundleGraphqlHandler.sh
   if [ $? != 0 ]; then
     exit 1
   fi
