@@ -116,7 +116,8 @@ if [ $? != 0 ]; then
   exit 1
 fi
 
-# If its a new deployment (as indicated by writeDbFlags.js), then seed data
+# If its a new deployment (as indicated by writeSeedFlag.js), then seed data
+source $CURRENT_DIR/seed_flag.tmp
 if [[ $SEED_FLAG = "true" ]]; then
   node $CURRENT_DIR/../db/scripts/seed.js
   if [ $? != 0 ]; then
