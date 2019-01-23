@@ -16,6 +16,7 @@ zip -9Xr $CURRENT_DIR/../.serverless/graphql.zip pgCatalog/postgraphile.cache
 
 # Update SHA hash for modified function zip file
 export SHA=$(openssl dgst -sha256 -binary $CURRENT_DIR/../.serverless/graphql.zip | openssl enc -base64)
+export NORMALIZED_SHA=$(echo $SHA | sed -e "s/[^0-9A-Za-z]//g")
 if [ -z "$SHA" ]; then
   exit 1
 fi
