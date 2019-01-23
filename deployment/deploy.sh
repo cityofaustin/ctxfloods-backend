@@ -43,13 +43,25 @@ if [ $? != 0 ]; then
   exit 1
 fi
 
-# Check if deployed db already exists
+# Get Stack output variables if Stack already exists
 node $CURRENT_DIR/getStackOutputs.js
 if [ $? != 0 ]; then
   echo "db flag script failed"
   exit 1
 fi
 source $CURRENT_DIR/stack_outputs.tmp
+
+if [ ! -z $PG_ENDPOINT ]; then
+  # If Stack and Database exist, check if our migrations are up to date
+  node $CURRENT_DIR/checkMigrations.js
+  if [ $? != 0 ]; then
+    echo "migration check failed"
+    exit 1
+  fi
+  source $CURRENT_DIR/migrations_flag.tmp
+else
+  MIGRATIONS_UP_TO_DATE=false
+fi
 
 # Create Serverless Bundle
 sls package -v
@@ -58,8 +70,8 @@ if [ $? != 0 ]; then
   exit 1
 fi
 
-# Add postgraphile.cache to bundle if Stack already exists
-if [ $STACK_EXISTS = "true" ]; then
+# Add postgraphile.cache to bundle if deployed migrations are up to date
+if [ $MIGRATIONS_UP_TO_DATE = "true" ]; then
   bash ./bundleGraphqlHandler
   if [ $? != 0 ]; then
     exit 1
@@ -113,8 +125,8 @@ if [ $SEED_FLAG = "true" ]; then
   fi
 fi
 
-# If CloudFormation Stack is new, then re-deploy graphql Lambda function with postgraphile schema
-if [ $STACK_EXISTS != "true" ]; the
+# If CloudFormation Stack is new or if migrations were not up to date, then re-deploy graphql Lambda function with postgraphile schema
+if [[ $STACK_EXISTS = "false" ]] || [[ $MIGRATIONS_UP_TO_DATE = "false" ]]; then
   sls package -v
   if [ $? != 0 ]; then
     echo "sls package failed"
@@ -133,6 +145,9 @@ if [ $STACK_EXISTS != "true" ]; the
   fi
 fi
 
-rm $CURRENT_DIR/seed_flag.tmp
-rm $CURRENT_DIR/stack_outputs.tmp
-rm out.tmp
+# Clean up .tmp files
+[ -f $CURRENT_DIR/push_notification_flag.tmp ] && rm $CURRENT_DIR/push_notification_flag.tmp
+[ -f $CURRENT_DIR/custom_aws_service_name.tmp ] && rm $CURRENT_DIR/custom_aws_service_name.tmp
+[ -f $CURRENT_DIR/seed_flag.tmp ] && rm $CURRENT_DIR/seed_flag.tmp
+[ -f $CURRENT_DIR/stack_outputs.tmp ] && rm $CURRENT_DIR/stack_outputs.tmp
+[ -f $CURRENT_DIR/migrations_flag.tmp ] && rm $CURRENT_DIR/migrations_flag.tmp

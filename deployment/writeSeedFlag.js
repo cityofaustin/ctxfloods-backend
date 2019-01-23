@@ -5,8 +5,6 @@ const commandLineRun = require('../db/helpers/commandLineRun');
 const devDeployConfig = require('./devDeployConfig.js');
 const getBranch = require('./getBranch.js');
 
-let masterClient;
-
 /**
   Write a SEED_FLAG to a file.
   This allows you to propagate that environment variable to the surrounding bash script scope.
