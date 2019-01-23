@@ -15,8 +15,8 @@ const getStackOutputs = (strict=false) => {
     StackName: stackName
   }).promise()
   .then(data => {
-    const PG_ENDPOINT = data.Stacks.Outputs.find(o => o.OutputKey === "PgEndpoint").OutputValue;
-    const GRAPHQL_ENDPOINT = data.Stacks.Outputs.find(o => o.OutputKey === "GraphqlEndpoint").OutputValue;
+    const PG_ENDPOINT = data.Stacks[0].Outputs.find(o => o.OutputKey === "PgEndpoint").OutputValue;
+    const GRAPHQL_ENDPOINT = data.Stacks[0].Outputs.find(o => o.OutputKey === "GraphqlEndpoint").OutputValue;
     fs.writeFileSync(`${__dirname}/stack_outputs.tmp`, `export PG_ENDPOINT=${PG_ENDPOINT}\nexport GRAPHQL_ENDPOINT=${GRAPHQL_ENDPOINT}\nexport STACK_EXISTS=true`);
   })
   .catch(err => {
