@@ -8,6 +8,7 @@ const sha = process.env.SHA;
 
 const keys = Object.keys(updateFile.Resources);
 const oldGraphqlLambdaVersion = _.find(keys, k => (k.match(/GraphqlLambdaVersion*/) !== null));
+// Create new GraphqlLambdaVersion LogicalID, roughly following serverless' pattern
 const newGraphqlLambdaVersion = `GraphqlLambdaVersion${process.env.NORMALIZED_SHA}`;
 
 // Update graphQL Lambda's VersionID and CodeSha256 in cloudformation-template-update-stack.json

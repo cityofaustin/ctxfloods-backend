@@ -20,6 +20,7 @@
   "author": "Richard",
   "license": "MIT",
   "dependencies": {
+    "aws-serverless-express": "^3.3.5",
     "axios": "^0.18.0",
     "d3-dsv": "^1.0.8",
     "google-recaptcha": "^1.1.0",

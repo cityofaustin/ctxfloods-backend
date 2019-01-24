@@ -47,9 +47,11 @@ const getClient = ({clientType, pool}) => {
   let client;
 
   if (pool) {
-    // For closing connection pools in lambda
-    // source: https://github.com/graphile/postgraphile/issues/724
-    // options.idleTimeoutMillis = 0.001;
+    // Options for operating a pool within a lambda function
+    options.min = 0;
+    options.max = 1;
+    options.idleTimeoutMillis = 300000;
+    options.connectionTimeoutMillis = 1000;
     client = new Pool(options);
   } else {
     client = new Client(options);
