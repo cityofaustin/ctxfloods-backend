@@ -142,7 +142,7 @@ if [[ $STACK_EXISTS = "false" ]] || [[ $MIGRATIONS_UP_TO_DATE = "false" ]]; then
   # Note: "sls -f graphql" is incompatible with "sls -p ...", so we must redeploy everything during first deployment
   sls deploy -p $CURRENT_DIR/../.serverless
   if [ $? != 0 ]; then
-    echo "sls deploy -f graphql failed"
+    echo "sls deploy (with new graphql bundle) failed"
     exit 1
   fi
 fi

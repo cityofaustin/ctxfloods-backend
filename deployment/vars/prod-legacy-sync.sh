@@ -20,6 +20,7 @@ export ENABLE_SYNC_LEGACY=true # Interpretted as truthy by serverless.yml when a
 export AUSTIN_DATA_APP_TOKEN=$TRAVIS_AUSTIN_DATA_APP_TOKEN_DEV
 export GRAPHQL_API_USR=graphql@flo.ods
 export GRAPHQL_API_PW=$TRAVIS_GRAPHQL_API_PW_DEV
+export DISABLE_QUERY_LOG=true
 
 # Postgres
 # Changing PG_MASTER_USR and PG_MASTER_PW here will apply changes to both the database and the application.

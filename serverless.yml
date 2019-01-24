@@ -3,7 +3,7 @@ service: ${env:AWS_SERVICE_NAME}
 plugins:
   - serverless-content-encoding
   - serverless-webpack
-  
+
 custom:
   contentEncoding:
     minimumCompressionSize: 0
@@ -36,6 +36,7 @@ provider:
   deploymentBucket:
     name: ${env:AWS_SERVICE_NAME}
   environment:
+    NODE_ENV: ${env:NODE_ENV}
     BACKEND_PORT: ${env:BACKEND_PORT}
     PG_API_USR: ${env:PG_API_USR}
     PG_API_PW: ${env:PG_API_PW}
@@ -80,6 +81,7 @@ functions:
     environment:
       PG_ENDPOINT: ${self:custom.PG_ENDPOINT}
       JWT_SECRET: ${env:JWT_SECRET}
+      DISABLE_QUERY_LOG: ${env:DISABLE_QUERY_LOG}
 
   xml:
     handler: handlers/xmlHandler.handle

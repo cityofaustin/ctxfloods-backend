@@ -13,6 +13,7 @@ export GMAIL_REFRESH_TOKEN=$CTXFLOODS_GMAIL_REFRESH_TOKEN
 # Or, don't do anything. An etheral test email will be mocked.
 
 # App
+export NODE_ENV=local
 export JWT_SECRET=insecure
 export BACKEND_PORT=5000
 # ENABLE_SYNC_LEGACY not required for local testing
@@ -21,6 +22,7 @@ export GRAPHQL_ENDPOINT=http://localhost:$BACKEND_PORT/graphql
 # AUSTIN_DATA_APP_TOKEN not required locally. Don't worry about requests getting throttled.
 export GRAPHQL_API_USR=graphql@flo.ods
 export GRAPHQL_API_PW=floods_graphql
+export DISABLE_QUERY_LOG=false
 
 # Postgres
 # [Local Only] Plug in your own Postgres Credential environment variables into your .bash_profile
