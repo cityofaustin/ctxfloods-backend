@@ -34,23 +34,27 @@ function shouldWork(email, password, extra_description) {
 
 function shouldFail(email = '', password = '', extra_description) {
   describe('as ' + email + ' ' + (extra_description || ''), () => {
-    it('should not generate a valid jwtToken', async () => {
-      const response = await anonLokka.send(
-        `
-        mutation($email:String!, $password:String!) {
-          authenticate(input: {email: $email, password: $password}) {
-            jwtToken
+    it('should not generate a valid jwtToken', async (done) => {
+      let error={};
+      try {
+        const response = await anonLokka.send(
+          `
+          mutation($email:String!, $password:String!) {
+            authenticate(input: {email: $email, password: $password}) {
+              jwtToken
+            }
           }
-        }
-      `,
-        {
-          email: email,
-          password: password,
-        },
-      );
-
-      expect(response.authenticate.jwtToken).toBeNull();
-      expect(response).toMatchSnapshot();
+          `,
+          {
+            email: email,
+            password: password,
+          },
+        );
+      } catch(err) {
+        error = err;
+      }
+      expect(error.message).toEqual('GraphQL Error: Bad Authentication');
+      done();
     });
   });
 }

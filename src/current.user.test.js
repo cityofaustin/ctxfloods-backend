@@ -42,7 +42,7 @@ function shouldWork(email, password, extra_description) {
       });
     });
 
-    it('should get the correct current user', async () => {
+    it('should get the correct current user', async (done) => {
       const response = await lokka.send(`
         {
           currentUser {
@@ -52,6 +52,7 @@ function shouldWork(email, password, extra_description) {
       `);
 
       expect(response).toMatchSnapshot();
+      done();
     });
   });
 }
@@ -64,17 +65,17 @@ function shouldFail(email = '', password = '', extra_description) {
       if (!(email & password)) {
         lokka = anonLokka;
         done();
-      }
-
-      getToken(email, password).then(token => {
-        const headers = {
-          Authorization: 'Bearer ' + token,
-        };
-        lokka = new Lokka({
-          transport: new HttpTransport(endpoint, { headers }),
+      } else {
+        getToken(email, password).then(token => {
+          const headers = {
+            Authorization: 'Bearer ' + token,
+          };
+          lokka = new Lokka({
+            transport: new HttpTransport(endpoint, { headers }),
+          });
+          done();
         });
-        done();
-      });
+      }
     });
 
     it('should fail to get the current user', async () => {
