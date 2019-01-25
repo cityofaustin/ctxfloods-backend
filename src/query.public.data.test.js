@@ -34,21 +34,21 @@ async function shouldWork(email = '', password = '', extra_description) {
       if (!(email & password)) {
         lokka = anonLokka;
         done();
-      }
-
-      getToken(email, password).then(token => {
-        const headers = {
-          Authorization: 'Bearer ' + token,
-        };
-        lokka = new Lokka({
-          transport: new HttpTransport(endpoint, { headers }),
+      } else {
+        getToken(email, password).then(token => {
+          const headers = {
+            Authorization: 'Bearer ' + token,
+          };
+          lokka = new Lokka({
+            transport: new HttpTransport(endpoint, { headers }),
+          });
+          done();
         });
-        done();
-      });
+      }
     });
 
-    it('should get everything', async () => {
-      const response = await lokka.send(`
+    it('should get everything', async (done) => {
+      const response = await anonLokka.send(`
         {
           allUsers {
             nodes {
@@ -96,6 +96,7 @@ async function shouldWork(email = '', password = '', extra_description) {
       `);
 
       expect(response).not.toBeNull();
+      done();
     });
   });
 }

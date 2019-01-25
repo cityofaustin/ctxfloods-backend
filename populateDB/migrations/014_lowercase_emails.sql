@@ -1,5 +1,5 @@
 -- Create trigger to save all email addresses in lowercase
-create or replace function lowercase_emails_user_proc()
+create or replace function floods.lowercase_emails_user_proc()
   returns trigger as $$
 begin
   NEW.email_address := lower(NEW.email_address);
@@ -7,7 +7,7 @@ begin
 end;
 $$ language plpgsql;
 
-create function lowercase_emails_user_acc_proc()
+create or replace function floods_private.lowercase_emails_user_acc_proc()
   returns trigger as $$
 begin
   NEW.email := lower(NEW.email);
@@ -19,13 +19,13 @@ create trigger lowercase_emails_user_trg
   before insert or update of email_address
   on floods.user
   for each row
-  execute procedure lowercase_emails_user_proc();
+  execute procedure floods.lowercase_emails_user_proc();
 
 create trigger lowercase_emails_user_acc_trg
   before insert or update of email
   on floods_private.user_account
   for each row
-  execute procedure lowercase_emails_user_acc_proc();
+  execute procedure floods_private.lowercase_emails_user_acc_proc();
 
 -- Convert historical email addresses to lowercase
 update floods.user set email_address = lower(email_address);
