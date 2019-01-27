@@ -29,6 +29,7 @@ provider:
     name: ${env:AWS_SERVICE_NAME}
   environment:
     BACKEND_PORT: ${env:BACKEND_PORT}
+    PG_PORT: ${env:PG_PORT}
     PG_API_USR: ${env:PG_API_USR}
     PG_API_PW: ${env:PG_API_PW}
     GRAPHQL_API_USR: ${env:GRAPHQL_API_USR}
@@ -205,7 +206,7 @@ resources:
         DBInstanceClass: 'db.t2.micro'
         DeletionProtection: true
         Engine: 'postgres'
-        EngineVersion: '9.5.10'
+        EngineVersion: '10.6'
         MasterUsername: ${env:PG_MASTER_USR}
         MasterUserPassword: ${env:PG_MASTER_PW}
         VPCSecurityGroups:

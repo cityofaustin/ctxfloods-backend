@@ -2,17 +2,21 @@ language: node_js
 node_js:
 - 8
 addons:
-  postgresql: 9.5
+  postgresql: '10'
   apt:
     packages:
-    - postgresql-9.5-postgis-2.3
+    - postgresql-10-postgis-2.4
+    - postgresql-10-postgis-2.4-scripts
+    - postgresql-client-10
 services:
 - postgresql
 install:
   - yarn
   - pip install --user awscli
   - export PATH=$PATH:$HOME/.local/bin
-before_script: yarn init-local-db;
+before_script:
+  - psql -p 5433 -c "ALTER USER travis WITH PASSWORD 'travis';"
+  - yarn init-local-db;
 script: yarn test;
 deploy:
   - provider: script
