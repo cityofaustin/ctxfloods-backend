@@ -27,7 +27,6 @@ export GRAPHQL_API_PW=$TRAVIS_GRAPHQL_API_PW_DEV
 # Those values are only applied to the database on initialization, not Stack updates.
 # To change these values after creating the database, you must change them in the database manually as well in the Travis environment variable settings.
 export PG_PORT=5432
-export PG_MASTER_DB_NAME=postgres
 export PG_MASTER_USR=$TRAVIS_PG_MASTER_USR_DEV
 export PG_MASTER_PW=$TRAVIS_PG_MASTER_PW_DEV
 export PG_API_USR=floods_graphql

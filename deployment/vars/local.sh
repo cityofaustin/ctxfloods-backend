@@ -25,7 +25,6 @@ export GRAPHQL_API_PW=floods_graphql
 # Postgres
 # [Local Only] Plug in your own Postgres Credential environment variables into your .bash_profile
 export PG_PORT=5432
-export PG_MASTER_DB_NAME=postgres
 export PG_MASTER_USR=$CTXFLOODS_PG_MASTER_USR
 export PG_MASTER_PW=$CTXFLOODS_PG_MASTER_PW
 export PG_API_USR=floods_graphql
@@ -38,5 +37,4 @@ if [[ $TRAVIS = true ]];then
   export PG_PORT=5433
   export PG_MASTER_USR=travis
   export PG_MASTER_PW=travis
-  export PG_MASTER_DB_NAME=travis
 fi
