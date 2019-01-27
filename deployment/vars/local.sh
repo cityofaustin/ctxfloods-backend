@@ -37,6 +37,6 @@ export PG_ENDPOINT=localhost
 if [[ $TRAVIS = true ]];then
   export PG_PORT=5433
   export PG_MASTER_USR=travis
-  export PG_MASTER_PW=''
+  export PG_MASTER_PW=travis
   export PG_MASTER_DB_NAME=travis
 fi
