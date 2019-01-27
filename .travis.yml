@@ -10,6 +10,9 @@ addons:
     - postgresql-client-10
 services:
 - postgresql
+before install:
+  - sudo -u postgres psql -c "CREATE USER postgres WITH PASSWORD 'password'"
+  - sudo -u postgres psql -c "ALTER ROLE postgres SUPERUSER"
 install:
   - yarn
   - pip install --user awscli

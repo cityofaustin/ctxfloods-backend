@@ -35,4 +35,6 @@ export PG_ENDPOINT=localhost
 # Travis postgres v10 runs on port 5433
 if [[ $TRAVIS = true ]];then
   export PG_PORT=5433
+  export PG_MASTER_USR=postgres
+  export PG_MASTER_PW=password
 fi
