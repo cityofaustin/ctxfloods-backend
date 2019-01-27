@@ -6,5 +6,5 @@
 SCRIPT_PATH=$1
 CURRENT_DIR=`dirname $BASH_SOURCE`
 
-source $CURRENT_DIR/vars/local.sh
+source $CURRENT_DIR/vars/test.sh
 jest $( echo $1 || echo 'test' ) --detectOpenHandles

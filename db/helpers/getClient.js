@@ -38,7 +38,7 @@ const getClient = ({clientType, pool}) => {
 
   const options = {
     host: process.env.PG_ENDPOINT,
-    port: 5432,
+    port: process.env.PG_PORT,
     user: user,
     password: password,
     database: database
