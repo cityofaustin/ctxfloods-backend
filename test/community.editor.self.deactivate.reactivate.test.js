@@ -106,25 +106,6 @@ describe('When registering, deactivating, and reactivating a user', () => {
       expect(response.currentUser.firstName).toMatchSnapshot();
     });
 
-    it('should deactivate itself', async () => {
-      const response = await lokka.send(
-        `
-        mutation($userID:Int!) {
-          deactivateUser(input: {userId: $userID}) {
-            user {
-              id
-            }
-          }
-        }
-      `,
-        {
-          userID: newUserId,
-        },
-      );
-
-      expect(response).not.toBeNull();
-    });
-
     it('should see the user in the database', async () => {
       const response = await anonLokka.send(
         `
@@ -142,6 +123,25 @@ describe('When registering, deactivating, and reactivating a user', () => {
       );
 
       expect(response).toMatchSnapshot();
+    });
+
+    it('should deactivate itself', async () => {
+      const response = await lokka.send(
+        `
+        mutation($userID:Int!) {
+          deactivateUser(input: {userId: $userID}) {
+            user {
+              id
+            }
+          }
+        }
+      `,
+        {
+          userID: newUserId,
+        },
+      );
+
+      expect(response).not.toBeNull();
     });
   });
 
@@ -234,7 +234,7 @@ describe('When registering, deactivating, and reactivating a user', () => {
       });
     });
 
-    it('should get the correct current user', async () => {
+    it('should get the correct current user', async done => {
       const response = await lokka.send(`
         {
           currentUser {
@@ -245,6 +245,7 @@ describe('When registering, deactivating, and reactivating a user', () => {
       `);
 
       expect(response).toMatchSnapshot();
+      done();
     });
   });
 });

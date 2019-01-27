@@ -3,6 +3,6 @@
 
 module.exports = {
   testEnvironment: "node",
-  globalSetup: './src/setup.js',
-  globalTeardown: './src/teardown.js'
+  globalSetup: './test/setup.js',
+  globalTeardown: './test/teardown.js'
 };
