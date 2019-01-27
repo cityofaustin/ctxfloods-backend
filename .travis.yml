@@ -14,7 +14,9 @@ install:
   - yarn
   - pip install --user awscli
   - export PATH=$PATH:$HOME/.local/bin
-before_script: yarn init-local-db;
+before_script:
+  - psql -c "ALTER USER travis WITH PASSWORD 'travis';"
+  - yarn init-local-db;
 script: yarn test;
 deploy:
   - provider: script
