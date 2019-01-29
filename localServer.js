@@ -31,11 +31,23 @@ app.get('/waze/feed', (req, res) => {
   });
 });
 
-app.post('/graphql', (req, res) => {
-  var event = req.body;
-  event.headers = req.headers;
-  graphqlHandler.handle(req, res);
-});
+app.use((req, res) => graphqlHandler.handle(req, res, err => {
+  console.log("~~Anything happening?")
+  if (err) {
+    logError(err);
+    res.writeHead(err.status || err.statusCode || 500);
+    res.setHeader("Access-Control-Allow-Origin", '*');
+    res.end(err.message);
+    return;
+  }
+}))
+
+//
+// app.post('/graphql', (req, res) => {
+//   var event = req.body;
+//   event.headers = req.headers;
+//   app.use(graphqlHandler.handle);
+// });
 
 app.post('/incident/report', (req, res) => {
   // AWS gets body as stringified json
