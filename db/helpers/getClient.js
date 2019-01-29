@@ -31,14 +31,14 @@ const getClient = ({clientType, pool}) => {
   } else if (clientType === "masterAdmin") {
     user = process.env.PG_MASTER_USR;
     password = process.env.PG_MASTER_PW;
-    database = "postgres";
+    database = 'postgres';
   } else {
     throw new error(`Please enter a valid client type; ex. "floodsAPI"`)
   }
 
   const options = {
     host: process.env.PG_ENDPOINT,
-    port: 5432,
+    port: process.env.PG_PORT,
     user: user,
     password: password,
     database: database

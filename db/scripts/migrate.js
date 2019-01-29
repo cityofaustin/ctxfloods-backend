@@ -8,7 +8,7 @@ const runMigrate = () => {
     user: process.env.PG_MASTER_USR,
     password: process.env.PG_MASTER_PW,
     host: process.env.PG_ENDPOINT,
-    port: 5432,
+    port: Number(process.env.PG_PORT),
   }, path.join(__dirname, "/../../populateDB/migrations"))
 }
 
