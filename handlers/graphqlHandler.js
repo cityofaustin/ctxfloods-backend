@@ -8,49 +8,30 @@ const floodsPool = require('../db/helpers/getClient')({
   pool: true
 });
 
-// Following the pattern of https://github.com/graphile/postgraphile-lambda-example
-const handler = (req, res) => {
-  postgraphile(
-    floodsPool,
-    'floods',
-    {
-      jwtSecret: process.env.JWT_SECRET,
-      jwtPgTypeIdentifier: 'floods.jwt_token',
-      pgDefaultRole: 'floods_anonymous',
-      disableDefaultMutations: true,
-      cors: true,
-      graphqlRoute: '/graphql',
-      disableQueryLog: (process.env.DISABLE_QUERY_LOG && JSON.parse(process.env.DISABLE_QUERY_LOG)),
-      readCache: `${__dirname}/../pgCatalog/postgraphile.cache`,
+const postgraphileAPI = postgraphile(
+  floodsPool,
+  'floods',
+  {
+    jwtSecret: process.env.JWT_SECRET,
+    jwtPgTypeIdentifier: 'floods.jwt_token',
+    pgDefaultRole: 'floods_anonymous',
+    disableDefaultMutations: true,
+    cors: true,
+    graphqlRoute: '/graphql',
+    disableQueryLog: (process.env.DISABLE_QUERY_LOG && JSON.parse(process.env.DISABLE_QUERY_LOG)),
+    readCache: `${__dirname}/../pgCatalog/postgraphile.cache`,
+    handleErrors: (errors, req, res) => {
+      errors.forEach(err => {
+        logError(err)
+      })
+      return errors
     }
-  )(req, res, err => {
-    console.log("Anything happening?")
-    if (err) {
-      logError(err);
-      res.writeHead(err.status || err.statusCode || 500);
-      res.setHeader("Access-Control-Allow-Origin", '*');
-      res.end(err.message);
-      return;
-    }
-  })
-};
+  }
+)
 
 if (process.env.NODE_ENV === "local") {
-  module.exports.handle = postgraphile(
-    floodsPool,
-    'floods',
-    {
-      jwtSecret: process.env.JWT_SECRET,
-      jwtPgTypeIdentifier: 'floods.jwt_token',
-      pgDefaultRole: 'floods_anonymous',
-      disableDefaultMutations: true,
-      cors: true,
-      graphqlRoute: '/graphql',
-      disableQueryLog: (process.env.DISABLE_QUERY_LOG && JSON.parse(process.env.DISABLE_QUERY_LOG)),
-      readCache: `${__dirname}/../pgCatalog/postgraphile.cache`,
-    }
-  )
+  module.exports.handle = postgraphileAPI
 } else {
-  const server = awsServerlessExpress.createServer(handler);
+  const server = awsServerlessExpress.createServer(postgraphileAPI);
   module.exports.handle = (event, context) => awsServerlessExpress.proxy(server, event, context);
 }
