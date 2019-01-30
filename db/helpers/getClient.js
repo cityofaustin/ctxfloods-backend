@@ -62,6 +62,21 @@ const getClient = ({clientType, pool}) => {
     return client.end();
   })
 
+  process.on('SIGTERM', () => {
+    console.log('Signal Terminated - closing postgres client');
+    client.end();
+  });
+
+  process.on('SIGINT', () => {
+    console.log('Signal Interrupted - closing postgres client');
+    client.end();
+  });
+
+  process.on('exit', () => {
+    console.log('Process Exiting - closing postgres client');
+    client.end();
+  });
+
   return client
 }
 
