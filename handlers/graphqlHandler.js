@@ -19,13 +19,7 @@ const postgraphileAPI = postgraphile(
     cors: true,
     graphqlRoute: '/graphql',
     disableQueryLog: (process.env.DISABLE_QUERY_LOG && JSON.parse(process.env.DISABLE_QUERY_LOG)),
-    readCache: `${__dirname}/../pgCatalog/postgraphile.cache`,
-    handleErrors: (errors, req, res) => {
-      errors.forEach(err => {
-        logError(err)
-      })
-      return errors
-    }
+    readCache: `${__dirname}/../pgCatalog/postgraphile.cache`
   }
 )
 
