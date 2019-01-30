@@ -1,9 +1,10 @@
 const Raven = require('raven');
 const { SENTRY_DSN } = require('./constants');
 
-if (process.env.NODE_ENV === 'production') {
-  Raven.config(SENTRY_DSN).install();
-}
+// TODO
+// if (process.env.NODE_ENV === 'production') {
+//   Raven.config(SENTRY_DSN).install();
+// }
 
 module.exports.logErrorMessage = (message, err, options = {}) => {
   console.error(message, err);
