@@ -34,7 +34,7 @@ fi
 
 # Install "serverless" module and plugins
 yarn global add serverless@1.32.0
-yarn
+yarn --production=false
 
 # Create s3 bucket
 node $CURRENT_DIR/createS3Bucket.js
