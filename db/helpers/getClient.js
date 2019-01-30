@@ -1,7 +1,7 @@
 const pg = require('pg');
 const {Pool, Client} = pg;
 const _ = require('lodash');
-const logError = require('../../helpers/logger');
+const { logError } = require('../../helpers/logger');
 
 /**
   Creates and returns a pg client.
@@ -53,6 +53,12 @@ const getClient = ({clientType, pool}) => {
     options.idleTimeoutMillis = 300000;
     options.connectionTimeoutMillis = 1000;
     client = new Pool(options);
+
+    process.on('exit', () => {
+      console.log('Process Exiting - closing postgres pool');
+      client.end();
+    });
+
   } else {
     client = new Client(options);
   }
@@ -61,21 +67,6 @@ const getClient = ({clientType, pool}) => {
     logError("Pool Error", err);
     return client.end();
   })
-
-  process.on('SIGTERM', () => {
-    console.log('Signal Terminated - closing postgres client');
-    client.end();
-  });
-
-  process.on('SIGINT', () => {
-    console.log('Signal Interrupted - closing postgres client');
-    client.end();
-  });
-
-  process.on('exit', () => {
-    console.log('Process Exiting - closing postgres client');
-    client.end();
-  });
 
   return client
 }
