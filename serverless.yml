@@ -54,31 +54,7 @@ functions:
           method: post
           path: graphql
           cors: true
-          integration: lambda
-          request:
-            template:
-              # lokka authorization header must be lowercase
-              application/json: |
-                {
-                  "query" : "$util.escapeJavaScript($input.path('$.query'))",
-                  "variables" : $input.json('$.variables'),
-                  "operationName" : "$util.escapeJavaScript($input.path('$.operationName'))",
-                  "headers" : {
-                     #if( $input.params().header.get('Authorization').toString() != "" )
-                        "authorization" : "$input.params().header.get('Authorization')"
-                     #end
-                  }
-                }
-              # lokka authorization header must be lowercase
-              application/graphql: |
-                {
-                  "query" : "$util.escapeJavaScript($input.body)",
-                  "headers" : {
-                     #if( $input.params().header.get('Authorization').toString() != "" )
-                        "authorization" : "$input.params().header.get('Authorization')"
-                     #end
-                  }
-                }
+          integration: lambda-proxy
     environment:
       PG_ENDPOINT: ${self:custom.PG_ENDPOINT}
       JWT_SECRET: ${env:JWT_SECRET}
