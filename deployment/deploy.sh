@@ -51,14 +51,6 @@ if [ $? != 0 ]; then
 fi
 source $CURRENT_DIR/stack_outputs.tmp
 
-#
-echo "What did I get out of stack outputs?"
-cat $CURRENT_DIR/stack_outputs.tmp
-echo "PG_ENDPOINT is $PG_ENDPOINT"
-echo "GRAPHQL_ENDPOINT is $GRAPHQL_ENDPOINT"
-echo "STACK_EXISTS is $STACK_EXISTS"
-#
-
 if [ ! -z $PG_ENDPOINT ]; then
   # If Stack and Database exist, check if our migrations are up to date
   node $CURRENT_DIR/checkMigrations.js
@@ -70,10 +62,6 @@ if [ ! -z $PG_ENDPOINT ]; then
 else
   MIGRATIONS_UP_TO_DATE=false
 fi
-
-#
-echo "MIGRATIONS_UP_TO_DATE is $MIGRATIONS_UP_TO_DATE"
-#
 
 # Create Serverless Bundle
 sls package -v
@@ -108,13 +96,6 @@ if [[ $STACK_EXISTS = "false" ]]; then
   source $CURRENT_DIR/stack_outputs.tmp
 fi
 
-#
-echo "What did I get out of new stricter stack outputs?"
-echo "PG_ENDPOINT is $PG_ENDPOINT"
-echo "GRAPHQL_ENDPOINT is $GRAPHQL_ENDPOINT"
-echo "STACK_EXISTS is $STACK_EXISTS"
-#
-
 # Check if seeding will be required
 node $CURRENT_DIR/writeSeedFlag.js
 if [ $? != 0 ]; then
@@ -148,12 +129,6 @@ fi
 
 # If CloudFormation Stack is new or if migrations were not up to date, then re-deploy graphql Lambda function with postgraphile schema
 if [[ $STACK_EXISTS = "false" ]] || [[ $MIGRATIONS_UP_TO_DATE = "false" ]]; then
-  #
-  echo "Why am I here why did this happen?"
-  echo "MIGRATIONS_UP_TO_DATE is $MIGRATIONS_UP_TO_DATE"
-  echo "STACK_EXISTS is $STACK_EXISTS"
-  #
-
   sls package -v
   if [ $? != 0 ]; then
     echo "sls package failed"
