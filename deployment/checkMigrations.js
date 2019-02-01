@@ -28,6 +28,8 @@ const checkMigrations = () => {
         const maxDeployedMigration = Number(result.rows[0].max);
         const migrationFiles = fs.readdirSync(`${__dirname}/../populateDB/migrations`);
         const maxLocalMigration = _.max(migrationFiles.map(fileName => Number(fileName.slice(0,3))));
+        console.log("What is maxLocalMigration", maxLocalMigration)
+        console.log("What is maxDeployedMigration", maxDeployedMigration)
         if (maxLocalMigration === maxDeployedMigration) {
           migrationsUpToDate = true;
         }
@@ -37,6 +39,8 @@ const checkMigrations = () => {
   .then(() => fs.writeFileSync(`${__dirname}/migrations_flag.tmp`, `export MIGRATIONS_UP_TO_DATE=${migrationsUpToDate}`))
   .catch((err)=>{
     if (err.code === "42P01"){
+      console.log("What was my pg conn?", process.env.PG_ENDPOINT)
+      console.log("Does it not exist?", err)
       // error thrown if "migrations" table not created yet
       fs.writeFileSync(`${__dirname}/migrations_flag.tmp`, `export MIGRATIONS_UP_TO_DATE=false`)
     } else {
