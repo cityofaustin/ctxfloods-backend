@@ -9,7 +9,17 @@ const floodsPool = require('../db/helpers/getClient')({
 });
 
 const postgraphileAPI = postgraphile(
-  floodsPool, //`postgres://${process.env.PG_API_USR}:${process.env.PG_API_PW}@${process.env.PG_ENDPOINT}:${process.env.PG_PORT}/floods`,
+  {
+    host: process.env.PG_ENDPOINT,
+    port: process.env.PG_PORT,
+    user: process.env.PG_API_USR,
+    password: process.env.PG_API_PW,
+    database: 'floods',
+    min: 0,
+    max: 1,
+    idleTimeoutMillis: 300000,
+    connectionTimeoutMilli: 1000,
+  }, //`postgres://${process.env.PG_API_USR}:${process.env.PG_API_PW}@${process.env.PG_ENDPOINT}:${process.env.PG_PORT}/floods`,
   'floods',
   {
     jwtSecret: process.env.JWT_SECRET,

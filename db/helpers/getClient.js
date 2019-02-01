@@ -48,10 +48,10 @@ const getClient = ({clientType, pool}) => {
 
   if (pool) {
     // Options for operating a pool within a lambda function
-    // options.min = 0;
-    // options.max = 1;
-    // options.idleTimeoutMillis = 300000;
-    // options.connectionTimeoutMillis = 1000;
+    options.min = 0;
+    options.max = 1;
+    options.idleTimeoutMillis = 300000;
+    options.connectionTimeoutMillis = 1000;
     client = new Pool(options);
 
     process.on('exit', () => {
