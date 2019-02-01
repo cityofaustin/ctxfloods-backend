@@ -27,5 +27,10 @@ if (process.env.NODE_ENV === "local") {
   module.exports.handle = postgraphileAPI
 } else {
   const server = awsServerlessExpress.createServer(postgraphileAPI);
-  module.exports.handle = (event, context) => awsServerlessExpress.proxy(server, event, context);
+  module.exports.handle = (event, context) => {
+    console.log("~~~ What is", process.env.PG_ENDPOINT)
+    console.log("~~~ And whats", process.env.PG_PORT)
+    console.log("~~~ And is?", floodsPool)
+    return awsServerlessExpress.proxy(server, event, context);
+  }
 }
