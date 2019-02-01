@@ -22,7 +22,7 @@ const checkMigrations = () => {
       floodsClient = getClient({clientType: "floodsAdmin"})
       return floodsClient.connect()
       .then(() => {
-        return floodsClient.query("select max(id) from migratiions");
+        return floodsClient.query("select max(id) from migrations");
       })
       .then((result) => {
         const maxDeployedMigration = Number(result.rows[0].max);
