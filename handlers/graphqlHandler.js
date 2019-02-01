@@ -9,7 +9,7 @@ const floodsPool = require('../db/helpers/getClient')({
 });
 
 const postgraphileAPI = postgraphile(
-  floodsPool,
+  `postgres://${process.env.PG_API_USR}:${process.env.PG_API_PW}@${process.env.PG_ENDPOINT}:${process.env.PG_PORT}/floods`,
   'floods',
   {
     jwtSecret: process.env.JWT_SECRET,
@@ -28,9 +28,6 @@ if (process.env.NODE_ENV === "local") {
 } else {
   const server = awsServerlessExpress.createServer(postgraphileAPI);
   module.exports.handle = (event, context) => {
-    console.log("~~~ What is", process.env.PG_ENDPOINT)
-    console.log("~~~ And whats", process.env.PG_PORT)
-    console.log("~~~ And is?", floodsPool)
     return awsServerlessExpress.proxy(server, event, context);
   }
 }
