@@ -12,6 +12,7 @@ export GMAIL_CLIENT_SECRET=$TRAVIS_GMAIL_CLIENT_SECRET
 export GMAIL_REFRESH_TOKEN=$TRAVIS_GMAIL_REFRESH_TOKEN
 
 # App
+export NODE_ENV=production
 export JWT_SECRET=$TRAVIS_JWT_SECRET_DEV
 export BACKEND_PORT=5000
 export ENABLE_SYNC_LEGACY=true # Interpretted as truthy by serverless.yml when any string is passed.
