@@ -20,6 +20,7 @@ export BACKEND_PORT=5000
 export AUSTIN_DATA_APP_TOKEN=$TRAVIS_AUSTIN_DATA_APP_TOKEN_DEV
 export GRAPHQL_API_USR=$TRAVIS_GRAPHQL_API_USR_PROD
 export GRAPHQL_API_PW=$TRAVIS_GRAPHQL_API_PW_PROD
+export DISABLE_QUERY_LOG=true
 
 # Postgres
 # Changing PG_MASTER_USR and PG_MASTER_PW here will apply changes to both the database and the application.

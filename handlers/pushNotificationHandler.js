@@ -2,10 +2,10 @@ const Client = require('pg').Client;
 const _ = require('lodash');
 const moment = require('moment');
 
-const { sendEmail } = require('./emailer');
-const { logError } = require('./logger');
-const { frontendURL } = require('./constants');
-const { getAuthorizedLokka } = require('./graphql');
+const { sendEmail } = require('../helpers/emailer');
+const { logError } = require('../helpers/logger');
+const { frontendURL } = require('../helpers/constants');
+const { getAuthorizedLokka } = require('../helpers/graphql');
 const getClient = require('../db/helpers/getClient');
 
 const EmailTextTemplate = _.template(`

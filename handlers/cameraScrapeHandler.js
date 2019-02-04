@@ -1,8 +1,8 @@
 const axios = require('axios');
 const _ = require('lodash');
 
-const { getAuthorizedLokka } = require('./graphql');
-const { logError } = require('./logger');
+const { getAuthorizedLokka } = require('../helpers/graphql');
+const { logError } = require('../helpers/logger');
 
 const getCamerasBySource = (lokka, source) => {
   return lokka.send(

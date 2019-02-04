@@ -1,6 +1,6 @@
 const Client = require('pg').Client;
 
-const { getPgResAsIncidentJson } = require('./wazeFeedHandler');
+const { getPgResAsIncidentJson } = require('../handlers/wazeFeedHandler');
 
 describe('wazeFeedHandler', () => {
   describe('getPgResAsIncidentJson', () => {
