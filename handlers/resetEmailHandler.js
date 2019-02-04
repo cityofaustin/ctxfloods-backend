@@ -1,8 +1,8 @@
 require('promise.prototype.finally').shim();
 const jwt = require('jsonwebtoken');
 
-const { sendEmail } = require('./emailer');
-const { logError } = require('./logger');
+const { sendEmail } = require('../helpers/emailer');
+const { logError } = require('../helpers/logger');
 const getClient = require('../db/helpers/getClient');
 
 async function sendResetEmail(firstname, lastname, email, token, frontendURL, cb) {

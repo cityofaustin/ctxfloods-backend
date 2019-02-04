@@ -2,10 +2,15 @@ service: ${env:AWS_SERVICE_NAME}
 
 plugins:
   - serverless-content-encoding
+  - serverless-webpack
 
 custom:
   contentEncoding:
     minimumCompressionSize: 0
+  webpack:
+    webpackConfig: 'webpack.config.js'
+    packager: 'yarn'
+    keepOutputDirectory: true
   PG_ENDPOINT:
     Fn::GetAtt:
       - pgDB
@@ -22,12 +27,16 @@ custom:
         - /graphql
   false: false
 
+package:
+  individually: true
+
 provider:
   name: aws
   runtime: nodejs8.10
   deploymentBucket:
     name: ${env:AWS_SERVICE_NAME}
   environment:
+    NODE_ENV: ${env:NODE_ENV}
     BACKEND_PORT: ${env:BACKEND_PORT}
     PG_PORT: ${env:PG_PORT}
     PG_API_USR: ${env:PG_API_USR}
@@ -45,60 +54,11 @@ functions:
           method: post
           path: graphql
           cors: true
-          integration: lambda
-          request:
-            template:
-              # lokka authorization header must be lowercase
-              application/json: |
-                {
-                  "query" : "$util.escapeJavaScript($input.path('$.query'))",
-                  "variables" : $input.json('$.variables'),
-                  "operationName" : "$util.escapeJavaScript($input.path('$.operationName'))",
-                  "headers" : {
-                     #if( $input.params().header.get('Authorization').toString() != "" )
-                        "authorization" : "$input.params().header.get('Authorization')"
-                     #end
-                  }
-                }
-              # lokka authorization header must be lowercase
-              application/graphql: |
-                {
-                  "query" : "$util.escapeJavaScript($input.body)",
-                  "headers" : {
-                     #if( $input.params().header.get('Authorization').toString() != "" )
-                        "authorization" : "$input.params().header.get('Authorization')"
-                     #end
-                  }
-                }
-      - http:
-          method: get
-          path: graphql
-          integration: lambda
-          cors: true
-          request:
-            parameters:
-              querystrings:
-                query: true
-                variables: false
-                operationName: false
-              headers:
-                Authorization: false
-            template:
-              # lokka authorization header must be lowercase
-              application/json: |
-                {
-                  "query" : "$util.escapeJavaScript($input.params('query'))",
-                  "variables" : "$util.escapeJavaScript($input.params('variables'))",
-                  "operationName" : "$util.escapeJavaScript($input.params('operationName'))",
-                  "headers" : {
-                     #if( $input.params().header.get('Authorization').toString() != "" )
-                        "authorization" : "$input.params().header.get('Authorization')"
-                     #end
-                  }
-                }
+          integration: lambda-proxy
     environment:
       PG_ENDPOINT: ${self:custom.PG_ENDPOINT}
       JWT_SECRET: ${env:JWT_SECRET}
+      DISABLE_QUERY_LOG: ${env:DISABLE_QUERY_LOG}
 
   xml:
     handler: handlers/xmlHandler.handle

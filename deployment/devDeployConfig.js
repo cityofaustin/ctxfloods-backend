@@ -23,26 +23,7 @@ module.exports = {
     deploy: true,
     seed: true
   },
-  "402-community": {
-    deploy: true,
-    seed: true,
-    pushNotifications: true
-  },
-  "custom-service-name": {
-    deploy: true,
-    seed: true,
-    customServiceName: "sandbox-2"
-  },
-  "382-history": {
-    deploy: true,
-    seed: true,
-    customServiceName: "sandbox-1"
-  },
-  "195-camera": {
-    deploy: true,
-    seed: true
-  },
-  "427-superadmin": {
+  "444-postgraphile": {
     deploy: true,
     seed: true,
   }

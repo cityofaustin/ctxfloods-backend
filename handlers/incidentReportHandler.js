@@ -1,9 +1,9 @@
 const handlebars = require('handlebars');
 
-const { getAuthorizedLokka } = require('./graphql');
-const { sendEmail } = require('./emailer');
-const { logError } = require('./logger');
-const { verifyCaptcha } = require('./captcha');
+const { getAuthorizedLokka } = require('../helpers/graphql');
+const { sendEmail } = require('../helpers/emailer');
+const { logError } = require('../helpers/logger');
+const { verifyCaptcha } = require('../helpers/captcha');
 
 async function newIncidentReport(lokka, incidentReport) {
   const response = await lokka.send(
