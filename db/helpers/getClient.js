@@ -60,7 +60,7 @@ const getClient = ({clientType, pool, configOnly}) => {
       client = new Pool(options);
       process.on('exit', () => {
         console.log('Process Exiting - closing postgres pool');
-        client.end();
+        return client.end();
       });
     }
   } else {
