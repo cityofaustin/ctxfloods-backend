@@ -26,7 +26,7 @@ async function getToken(email, password) {
 async function getAuthorizedLokka(username, password) {
   const token = await getToken(username, password);
   const headers = {
-    Authorization: 'Bearer ' + token,
+    authorization: 'Bearer ' + token,
   };
   const lokka = new Lokka({
     transport: new HttpTransport(process.env.GRAPHQL_ENDPOINT, { headers }),

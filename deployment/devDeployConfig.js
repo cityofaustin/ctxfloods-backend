@@ -26,5 +26,9 @@ module.exports = {
   "444-postgraphile": {
     deploy: true,
     seed: true,
+  },
+  "461-lokka": {
+    deploy: true,
+    seed: true
   }
 };
