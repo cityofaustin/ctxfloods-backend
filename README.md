@@ -41,7 +41,7 @@ yarn start-local
 
 💾 Clone and install [CTXfloods-frontend](https://github.com/cityofaustin/ctxfloods)
 
-🍻 Cheers! The CTXFloods should now be up and running!
+🍻 Cheers! The backend should now be up and running!
 
 ## Run Tests
 
