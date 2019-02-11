@@ -70,4 +70,4 @@ CTXFloods uses TravisCI for continuous integration. Whenever you push to github,
 Specify `seed: true` if you would like the seed data to be loaded into your deployed backend.
 
 ## Development Tips
-+ If you have made changes to the backend, regenerate the frontend's graphql schema file by running `yarn get-schema`
++ If you added a new postgres migration file to the backend, regenerate the frontend's graphql schema file by running `yarn get-schema`
