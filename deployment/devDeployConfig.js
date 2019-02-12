@@ -26,7 +26,7 @@ module.exports = {
   "444-postgraphile": {
     deploy: true,
     seed: true,
-  }
+  },
   "386-pw-reset": {
     deploy: true,
     seed: true
