@@ -27,4 +27,8 @@ module.exports = {
     deploy: true,
     seed: true,
   }
+  "386-pw-reset": {
+    deploy: true,
+    seed: true
+  }
 };
