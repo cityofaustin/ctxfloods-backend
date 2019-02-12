@@ -23,7 +23,7 @@ fi
 # Source ENABLE_PUSH_NOTIFICATIONS if it exists
 [ -f $CURRENT_DIR/push_notification_flag.tmp ] && source $CURRENT_DIR/push_notification_flag.tmp
 
-# Check if push notifications will be required
+# Check if custom AWS service name will be required
 node $CURRENT_DIR/writeCustomServiceName.js
 if [ $? != 0 ]; then
   echo "writeCustomServiceName script failed"
@@ -87,7 +87,6 @@ fi
 
 # Source variables if Stack is new
 if [[ $STACK_EXISTS = "false" ]]; then
-  echo "Inside stricter STACK_EXISTS clause"
   node $CURRENT_DIR/getStackOutputsStrict.js
   if [ $? != 0 ]; then
     echo "stack output sourcing failed"

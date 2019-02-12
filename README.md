@@ -48,9 +48,9 @@ yarn start-local
 ```
 yarn test
 ```
-_Warning: Running "yarn test" will drop your local floods data and load in test data. You will need to re-run "yarn setup-local" to reload the correct seed data._
+Warning: Running "yarn test" will drop your local floods data and load in test data. You will need to re-run "yarn setup-local" to reload the correct seed data.
 
-_It might be necessary to install Watchman if you see errors running the `yarn test` command. See this Github Issue for more details:_ https://github.com/facebookincubator/create-react-app/issues/871
+It might be necessary to install Watchman if you see errors running the `yarn test` command. See this Github Issue for more details: https://github.com/facebookincubator/create-react-app/issues/871
 
 <img src="/README/backendtestspassed.png" align="middle" height="93" >
 
@@ -60,7 +60,7 @@ feature -> dev -> master
 
 Create your feature branch as a branch off "dev". That feature branch will be merged into "dev", which will then be merged into "master."
 
-CTXFloods uses TravisCI for continuous integration. Whenever you push to github, a TravisCI build will be triggered. By default this will only run the tests. If you want to deploy your feature branch on a git push, add the name of your feature branch to `deployment/devDeployConfig` with the option `deploy: true`. This will build a new CloudFormation stack for your feature branch backend (database, lambda functions are built automatically). Subsequent pushes from the same branch will update this same stack. Ex:
+CTXFloods uses TravisCI for continuous integration. Whenever you push to github, a TravisCI build will be triggered. By default this will only run the tests. If you want to deploy your feature branch on a git push, add the name of your feature branch to `deployment/devDeployConfig` with the option `deploy: true`. (Look at `travis.yml` and `deployment/shouldDeploy.js` to see exactly how this logic works.) Subsequent pushes from the same branch will update this same stack. Ex:
 ```
 "195-camera": {
   deploy: true,
@@ -69,5 +69,12 @@ CTXFloods uses TravisCI for continuous integration. Whenever you push to github,
 ```
 Specify `seed: true` if you would like the seed data to be loaded into your deployed backend.
 
+A deployed backend CloudFormation stack consists of a Postgres database and 8 lambda function endpoints (located in the `handlers/` directory). All of this will be created automatically when TravisCI's build phase runs `serverless.yml` from `deployment/deploy.sh`.
+
+Environment variables are sourced from `deployment/vars` depending on your branch. (All feature branches share the same environment variables as `dev.sh`. Any feature branch specific configs should be handled in `deployment/devDeployConfig.js`.) Any environment variable prefixed with `TRAVIS_` is a secret environment variable that is stored in TravisCI. It will get loaded in during the build phase of a TravisCI/github deployment.
+
+It would be possible to deploy ctxfloods without continuous integration by running `deployment/deploy.sh`. However, you would have to provide your own substitutes for the `TRAVIS_` environment variables.
+
 ## Development Tips
 + If you added a new postgres migration file to the backend, regenerate the frontend's graphql schema file by running `yarn get-schema`
++ Environment variables prefixed by `TRAVIS_` are secret variables stored in TravisCI. They get loaded in during the build phase of a TravisCI/github deployment.
