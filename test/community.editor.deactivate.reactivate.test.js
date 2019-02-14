@@ -3,51 +3,22 @@ import Lokka from 'lokka';
 import uuidv4 from 'uuid';
 import { endpoint } from './endpoints';
 
-const anonLokka = new Lokka({ transport: new HttpTransport(endpoint) });
-const superAdminEmail = 'superadmin@flo.ods';
-const communityEditorEmail = 'editor@community.floods';
-const superAdminPassword = 'texasfloods';
-const newUserPassword = 'texasfloods';
-
-async function getToken(email, password) {
-  const response = await anonLokka.send(
-    `
-    mutation($email:String!, $password:String!) {
-      authenticate(input: {email: $email, password: $password}) {
-        jwtToken
-      }
-    }
-  `,
-    {
-      email: email,
-      password: password,
-    },
-  );
-
-  return response.authenticate.jwtToken;
-}
+import { getToken, anonLokka, getCommunityEditorLokka, getSuperAdminLokka } from './helpers';
 
 describe('When deactivating, and reactivating a user as a community editor', () => {
   var newUserEmail = uuidv4() + '@flo.ods';
   var newUserId;
 
+  var superAdminLokka, communityEditorLokka;
+  beforeAll(async done => {
+    superAdminLokka = await getSuperAdminLokka();
+    communityEditorLokka = await getCommunityEditorLokka();
+    done();
+  })
+
   describe('As a super admin', async () => {
-    var lokka;
-
-    beforeAll(async done => {
-      getToken(superAdminEmail, superAdminPassword).then(token => {
-        const headers = {
-          Authorization: 'Bearer ' + token,
-        };
-        lokka = new Lokka({
-          transport: new HttpTransport(endpoint, { headers }),
-        });
-        done();
-      });
-    });
-
     it('should register a new community editor', async () => {
-      const response = await lokka.send(
+      const response = await superAdminLokka.send(
         `
         mutation($email:String!) {
           registerUser(input: {
@@ -77,23 +48,9 @@ describe('When deactivating, and reactivating a user as a community editor', () 
   });
 
   describe('As a community editor', async () => {
-    var lokka;
-
-    beforeAll(async done => {
-      getToken(communityEditorEmail, superAdminPassword).then(token => {
-        const headers = {
-          Authorization: 'Bearer ' + token,
-        };
-        lokka = new Lokka({
-          transport: new HttpTransport(endpoint, { headers }),
-        });
-        done();
-      });
-    });
-
     it('should fail to deactivate the new community editor', async () => {
       try {
-        const response = await lokka.send(
+        const response = await communityEditorLokka.send(
           `
           mutation($userID:Int!) {
             deactivateUser(input: {userId: $userID}) {
@@ -114,22 +71,8 @@ describe('When deactivating, and reactivating a user as a community editor', () 
   });
 
   describe('As a super admin again', async () => {
-    var lokka;
-
-    beforeAll(async done => {
-      getToken(superAdminEmail, superAdminPassword).then(token => {
-        const headers = {
-          Authorization: 'Bearer ' + token,
-        };
-        lokka = new Lokka({
-          transport: new HttpTransport(endpoint, { headers }),
-        });
-        done();
-      });
-    });
-
     it('should deactivate the user', async () => {
-      const response = await lokka.send(
+      const response = await superAdminLokka.send(
         `
         mutation($userID:Int!) {
           deactivateUser(input: {userId: $userID}) {
@@ -149,23 +92,9 @@ describe('When deactivating, and reactivating a user as a community editor', () 
   });
 
   describe('As a community editor again', async () => {
-    var lokka;
-
-    beforeAll(async done => {
-      getToken(communityEditorEmail, superAdminPassword).then(token => {
-        const headers = {
-          Authorization: 'Bearer ' + token,
-        };
-        lokka = new Lokka({
-          transport: new HttpTransport(endpoint, { headers }),
-        });
-        done();
-      });
-    });
-
-    it('should fail to reactivate the new community editor', async () => {
+    it('should fail to reactivate the new community editor', async done => {
       try {
-        const response = await lokka.send(
+        const response = await communityEditorLokka.send(
           `
           mutation($userId:Int!) {
             reactivateUser(input: {
@@ -186,6 +115,7 @@ describe('When deactivating, and reactivating a user as a community editor', () 
       } catch (e) {
         expect(e).toMatchSnapshot();
       }
+      done()
     });
   });
 });

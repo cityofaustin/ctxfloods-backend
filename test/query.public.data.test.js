@@ -1,60 +1,10 @@
-import HttpTransport from 'lokka-transport-http';
-import Lokka from 'lokka';
-import { endpoint } from './endpoints';
+import { anonLokka, getCommunityAdminLokka, getCommunityEditorLokka, getSuperAdminLokka } from './helpers';
 
-const anonLokka = new Lokka({ transport: new HttpTransport(endpoint) });
-const superAdminEmail = 'superadmin@flo.ods';
-const communityAdminEmail = 'admin@community.floods';
-const communityEditorEmail = 'editor@community.floods';
-const everyPassword = 'texasfloods';
-
-async function getToken(email, password) {
-  const response = await anonLokka.send(
-    `
-    mutation($email:String!, $password:String!) {
-      authenticate(input: {email: $email, password: $password}) {
-        jwtToken
-      }
-    }
-  `,
-    {
-      email: email,
-      password: password,
-    },
-  );
-
-  return response.authenticate.jwtToken;
-}
-
-async function shouldWork(email = '', password = '', extra_description) {
-  describe('as ' + email + ' ' + (extra_description || ''), () => {
-    var lokka;
-
-    beforeAll(async done => {
-      if (!(email & password)) {
-        lokka = anonLokka;
-        done();
-      } else {
-        getToken(email, password).then(token => {
-          const headers = {
-            Authorization: 'Bearer ' + token,
-          };
-          lokka = new Lokka({
-            transport: new HttpTransport(endpoint, { headers }),
-          });
-          done();
-        });
-      }
-    });
-
+async function shouldWork(lokka, extra_description) {
+  describe('as ' + extra_description, () => {
     it('should get everything', async (done) => {
       const response = await anonLokka.send(`
         {
-          allUsers {
-            nodes {
-              id
-            }
-          }
           allCommunities {
             nodes {
               id
@@ -102,8 +52,16 @@ async function shouldWork(email = '', password = '', extra_description) {
 }
 
 describe('When querying public data', () => {
-  shouldWork();
-  shouldWork(superAdminEmail, everyPassword);
-  shouldWork(communityAdminEmail, everyPassword);
-  shouldWork(communityEditorEmail, everyPassword);
+  var superAdminLokka, communityEditorLokka, communityAdminLokka;
+  beforeAll(async done => {
+    superAdminLokka = await getSuperAdminLokka();
+    communityEditorLokka = await getCommunityEditorLokka();
+    communityAdminLokka = await getCommunityAdminLokka();
+    done();
+  });
+
+  shouldWork(anonLokka, 'anonymous user');
+  shouldWork(communityAdminLokka, 'community admin');
+  shouldWork(communityEditorLokka, 'community editor');
+  shouldWork(superAdminLokka, 'super admin');
 });

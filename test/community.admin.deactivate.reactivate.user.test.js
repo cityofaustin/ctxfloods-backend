@@ -4,53 +4,26 @@ import uuidv4 from 'uuid';
 import { endpoint } from './endpoints';
 import jwt from 'jsonwebtoken';
 
-const anonLokka = new Lokka({ transport: new HttpTransport(endpoint) });
-const superAdminEmail = 'superadmin@flo.ods';
-const communityAdminEmail = 'admin@community.floods';
-const superAdminPassword = 'texasfloods';
-const newUserPassword = 'texasfloods';
-
-async function getToken(email, password) {
-  const response = await anonLokka.send(
-    `
-    mutation($email:String!, $password:String!) {
-      authenticate(input: {email: $email, password: $password}) {
-        jwtToken
-      }
-    }
-  `,
-    {
-      email: email,
-      password: password,
-    },
-  );
-
-  return response.authenticate.jwtToken;
-}
+import { getToken, anonLokka, getCommunityAdminLokka, getSuperAdminLokka } from './helpers';
 
 describe('When registering, deactivating, and reactivating a user as a community admin', () => {
   var newUserEmail = uuidv4() + '@flo.ods';
+  var newUserPassword = 'texasfloods';
   var newOtherCommunityUserEmail = uuidv4() + '@flo.ods';
   var newUserId;
   var newOtherCommunityUserId;
 
-  describe('As a community admin', async () => {
-    var lokka;
+  var communityAdminLokka, superAdminLokka;
+  beforeAll(async done => {
+    communityAdminLokka = await getCommunityAdminLokka();
+    superAdminLokka = await getSuperAdminLokka();
+    done();
+  })
 
-    beforeAll(async done => {
-      getToken(communityAdminEmail, superAdminPassword).then(token => {
-        const headers = {
-          Authorization: 'Bearer ' + token,
-        };
-        lokka = new Lokka({
-          transport: new HttpTransport(endpoint, { headers }),
-        });
-        done();
-      });
-    });
+  describe('As a community admin', async () => {
 
     it('should register a new user', async () => {
-      const response = await lokka.send(
+      const response = await communityAdminLokka.send(
         `
         mutation($email:String!) {
           registerUser(input: {
@@ -81,22 +54,8 @@ describe('When registering, deactivating, and reactivating a user as a community
   });
 
   describe('As a super admin', async () => {
-    var lokka;
-
-    beforeAll(async done => {
-      getToken(superAdminEmail, superAdminPassword).then(token => {
-        const headers = {
-          Authorization: 'Bearer ' + token,
-        };
-        lokka = new Lokka({
-          transport: new HttpTransport(endpoint, { headers }),
-        });
-        done();
-      });
-    });
-
     it('should register a new other community user', async () => {
-      const response = await lokka.send(
+      const response = await superAdminLokka.send(
         `
         mutation($email:String!) {
           registerUser(input: {
@@ -127,14 +86,14 @@ describe('When registering, deactivating, and reactivating a user as a community
   });
 
   describe('As the new user', async () => {
-    var lokka;
+    var newUserLokka;
 
-    beforeEach(async done => {
+    beforeAll(async done => {
       getToken(newUserEmail, newUserPassword).then(token => {
         const headers = {
           Authorization: 'Bearer ' + token,
         };
-        lokka = new Lokka({
+        newUserLokka = new Lokka({
           transport: new HttpTransport(endpoint, { headers }),
         });
         done();
@@ -142,7 +101,7 @@ describe('When registering, deactivating, and reactivating a user as a community
     });
 
     it('should get the correct current user', async () => {
-      const response = await lokka.send(`
+      const response = await newUserLokka.send(`
         {
           currentUser {
             id
@@ -157,14 +116,13 @@ describe('When registering, deactivating, and reactivating a user as a community
   });
 
   describe('As the new other community user', async () => {
-    var lokka;
-
-    beforeEach(async done => {
+    var newUserOtherCommunityLokka;
+    beforeAll(async done => {
       getToken(newOtherCommunityUserEmail, newUserPassword).then(token => {
         const headers = {
           Authorization: 'Bearer ' + token,
         };
-        lokka = new Lokka({
+        newUserOtherCommunityLokka = new Lokka({
           transport: new HttpTransport(endpoint, { headers }),
         });
         done();
@@ -172,7 +130,7 @@ describe('When registering, deactivating, and reactivating a user as a community
     });
 
     it('should get the correct current user', async () => {
-      const response = await lokka.send(`
+      const response = await newUserOtherCommunityLokka.send(`
         {
           currentUser {
             id
@@ -187,22 +145,8 @@ describe('When registering, deactivating, and reactivating a user as a community
   });
 
   describe('As a community admin again', async () => {
-    var lokka;
-
-    beforeAll(async done => {
-      getToken(communityAdminEmail, superAdminPassword).then(token => {
-        const headers = {
-          Authorization: 'Bearer ' + token,
-        };
-        lokka = new Lokka({
-          transport: new HttpTransport(endpoint, { headers }),
-        });
-        done();
-      });
-    });
-
     it('should deactivate the user', async () => {
-      const response = await lokka.send(
+      const response = await communityAdminLokka.send(
         `
         mutation($userID:Int!) {
           deactivateUser(input: {userId: $userID}) {
@@ -222,7 +166,7 @@ describe('When registering, deactivating, and reactivating a user as a community
 
     it('should fail to deactivate the other community user', async () => {
       try {
-        const response = await lokka.send(
+        const response = await communityAdminLokka.send(
           `
           mutation($userID:Int!) {
             deactivateUser(input: {userId: $userID}) {
@@ -243,7 +187,7 @@ describe('When registering, deactivating, and reactivating a user as a community
   });
 
   it('should see the user is deactivated', async () => {
-    const response = await anonLokka.send(
+    const response = await superAdminLokka.send(
       `
       query($userId:Int!){
         userById(id:$userId) {
@@ -262,14 +206,13 @@ describe('When registering, deactivating, and reactivating a user as a community
   });
 
   describe('As the new other community user again', async () => {
-    var lokka;
-
-    beforeEach(async done => {
+    var newUserOtherCommunityLokka;
+    beforeAll(async done => {
       getToken(newOtherCommunityUserEmail, newUserPassword).then(token => {
         const headers = {
           Authorization: 'Bearer ' + token,
         };
-        lokka = new Lokka({
+        newUserOtherCommunityLokka = new Lokka({
           transport: new HttpTransport(endpoint, { headers }),
         });
         done();
@@ -277,7 +220,7 @@ describe('When registering, deactivating, and reactivating a user as a community
     });
 
     it('should get the correct current user', async () => {
-      const response = await lokka.send(`
+      const response = await newUserOtherCommunityLokka.send(`
         {
           currentUser {
             firstName
@@ -291,7 +234,7 @@ describe('When registering, deactivating, and reactivating a user as a community
   });
 
   it('should see the other community user is active', async () => {
-    const response = await anonLokka.send(
+    const response = await superAdminLokka.send(
       `
       query($userId:Int!){
         userById(id:$userId) {
@@ -310,22 +253,8 @@ describe('When registering, deactivating, and reactivating a user as a community
   });
 
   describe('As a community admin once more', async () => {
-    var lokka;
-
-    beforeAll(async done => {
-      getToken(communityAdminEmail, superAdminPassword).then(token => {
-        const headers = {
-          Authorization: 'Bearer ' + token,
-        };
-        lokka = new Lokka({
-          transport: new HttpTransport(endpoint, { headers }),
-        });
-        done();
-      });
-    });
-
     it('should reactivate the user', async () => {
-      const response = await lokka.send(
+      const response = await communityAdminLokka.send(
         `
         mutation($userId:Int!) {
           reactivateUser(input: {
@@ -349,22 +278,20 @@ describe('When registering, deactivating, and reactivating a user as a community
   });
 
   describe('As a password resetter', async () => {
-    var lokka;
-
+    var passwordResetterLokka;
     beforeAll(async done => {
       const token = jwt.sign({ user_id: newUserId, role: 'floods_password_resetter' }, process.env.JWT_SECRET, {expiresIn: '30m', audience: 'postgraphile'});
       const headers = {
         Authorization: 'Bearer ' + token,
       };
-      lokka = new Lokka({
+      passwordResetterLokka = new Lokka({
         transport: new HttpTransport(endpoint, { headers }),
       });
       done();
     })
 
-
     it('should reset the password', async () => {
-      const response = await lokka.send(
+      const response = await passwordResetterLokka.send(
         `
         mutation ($password:String!){
           resetPassword(input: {
@@ -385,7 +312,6 @@ describe('When registering, deactivating, and reactivating a user as a community
 
   describe('As the reactivated user', async () => {
     var lokka;
-
     beforeAll(async done => {
       getToken(newUserEmail, newUserPassword).then(token => {
         const headers = {
@@ -398,7 +324,7 @@ describe('When registering, deactivating, and reactivating a user as a community
       });
     });
 
-    it('should get the correct current user', async () => {
+    it('should get the correct current user', async done => {
       const response = await lokka.send(`
         {
           currentUser {
@@ -409,6 +335,7 @@ describe('When registering, deactivating, and reactivating a user as a community
       `);
 
       expect(response).toMatchSnapshot();
+      done();
     });
   });
 });
