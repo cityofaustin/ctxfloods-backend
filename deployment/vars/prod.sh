@@ -1,9 +1,9 @@
 # AWS
-export AWS_SERVICE_NAME=ctxfloods-backend-prod
-export AWS_DB_INSTANCE_IDENTIFIER=ctxfloods-prod
+export AWS_SERVICE_NAME=ctxfloods-backend-test-restore
+export AWS_DB_INSTANCE_IDENTIFIER=ctxfloods-test-restore
 export AWS_ACCESS_KEY_ID=$TRAVIS_ACCESS_KEY_ID_DEV
 export AWS_SECRET_ACCESS_KEY=$TRAVIS_SECRET_ACCESS_KEY_DEV
-export AWS_STAGE=prod # TODO - check if "prod"" triggers anything different
+export AWS_STAGE=dev # TODO - check if "prod"" triggers anything different
 
 # Gmail
 export GMAIL_ADDRESS=$TRAVIS_GMAIL_ADDRESS_DEV
@@ -34,5 +34,5 @@ export PG_MASTER_PW=$TRAVIS_PG_MASTER_PW_PROD
 export PG_API_USR=floods_graphql
 export PG_API_PW=$TRAVIS_PG_API_PW_PROD
 export PG_SUPER_ADMIN_PW=$TRAVIS_PG_SUPER_ADMIN_PW_PROD # only used during initialization
-export DB_DELETION_PROTECTION=true # Interpretted as truthy by serverless.yml when any string is passed.
+# Interpretted as truthy by serverless.yml when any string is passed.
 # PG_ENDPOINT assigned in serverless.yml

@@ -12,7 +12,7 @@ if \
 then
   DEPLOY_ENV=dev
 fi
-source $CURRENT_DIR/vars/$DEPLOY_ENV.sh
+source $CURRENT_DIR/vars/prod.sh
 
 # Source env variables for custom devDeployConfig options
 # (Seeding is handled by another script.)
