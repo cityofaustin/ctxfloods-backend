@@ -3,48 +3,20 @@ import Lokka from 'lokka';
 import uuidv4 from 'uuid';
 import { endpoint } from './endpoints';
 
-const anonLokka = new Lokka({ transport: new HttpTransport(endpoint) });
-const communityAdminEmail = 'admin@community.floods';
-const communityAdminPassword = 'texasfloods';
-const newUserPassword = 'texasfloods';
-
-async function getToken(email, password) {
-  const response = await anonLokka.send(
-    `
-    mutation($email:String!, $password:String!) {
-      authenticate(input: {email: $email, password: $password}) {
-        jwtToken
-      }
-    }
-  `,
-    {
-      email: email,
-      password: password,
-    },
-  );
-
-  return response.authenticate.jwtToken;
-}
+import { getToken, anonLokka, getCommunityAdminLokka, getSuperAdminLokka } from './helpers';
 
 describe('When registering a super admin', () => {
+  var communityAdminLokka, superAdminLokka;
+  beforeAll(async done => {
+    communityAdminLokka = await getCommunityAdminLokka();
+    superAdminLokka = await getSuperAdminLokka();
+    done();
+  })
+
   describe('As a community admin', async () => {
-    var lokka;
-
-    beforeAll(async done => {
-      getToken(communityAdminEmail, communityAdminPassword).then(token => {
-        const headers = {
-          Authorization: 'Bearer ' + token,
-        };
-        lokka = new Lokka({
-          transport: new HttpTransport(endpoint, { headers }),
-        });
-        done();
-      });
-    });
-
     it('should fail to register a new super admin', async () => {
       try {
-        const response = await lokka.send(`
+        const response = await communityAdminLokka.send(`
           mutation {
             registerUser(input: {
               firstName: "New",
@@ -70,24 +42,17 @@ describe('When registering a super admin', () => {
 });
 
 describe('When registering a community admin', () => {
+  var communityAdminLokka, superAdminLokka;
+  beforeAll(async done => {
+    communityAdminLokka = await getCommunityAdminLokka();
+    superAdminLokka = await getSuperAdminLokka();
+    done();
+  })
+
   describe('As a community admin', async () => {
-    var lokka;
-
-    beforeAll(async done => {
-      getToken(communityAdminEmail, communityAdminPassword).then(token => {
-        const headers = {
-          Authorization: 'Bearer ' + token,
-        };
-        lokka = new Lokka({
-          transport: new HttpTransport(endpoint, { headers }),
-        });
-        done();
-      });
-    });
-
     it('should fail to register a new community admin', async () => {
       try {
-        const response = await lokka.send(`
+        const response = await communityAdminLokka.send(`
           mutation {
             registerUser(input: {
               firstName: "New",
@@ -114,25 +79,19 @@ describe('When registering a community admin', () => {
 
 describe('When registering a community editor', () => {
   var newUserEmail = uuidv4() + '@flo.ods';
+  var newUserPassword = 'texasfloods';
   var newUserId;
 
+  var communityAdminLokka, superAdminLokka;
+  beforeAll(async done => {
+    communityAdminLokka = await getCommunityAdminLokka();
+    superAdminLokka = await getSuperAdminLokka();
+    done();
+  })
+
   describe('As a community admin', async () => {
-    var lokka;
-
-    beforeAll(async done => {
-      getToken(communityAdminEmail, communityAdminPassword).then(token => {
-        const headers = {
-          Authorization: 'Bearer ' + token,
-        };
-        lokka = new Lokka({
-          transport: new HttpTransport(endpoint, { headers }),
-        });
-        done();
-      });
-    });
-
     it('should register a new community editor in the same community', async () => {
-      const response = await lokka.send(
+      const response = await communityAdminLokka.send(
         `
         mutation($email:String!) {
           registerUser(input: {
@@ -162,7 +121,7 @@ describe('When registering a community editor', () => {
 
     it('should fail to register a new community editor in a different community', async () => {
       try {
-        const response = await lokka.send(`
+        const response = await communityAdminLokka.send(`
           mutation {
             registerUser(input: {
               firstName: "New",
@@ -187,7 +146,7 @@ describe('When registering a community editor', () => {
   });
 
   it('the new user should show up in the DB', async () => {
-    const response = await anonLokka.send(
+    const response = await superAdminLokka.send(
       `
       query ($id: Int!) {
         userById(id: $id) {
@@ -206,22 +165,22 @@ describe('When registering a community editor', () => {
   });
 
   describe('As the new community editor', async () => {
-    var lokka;
+    var newCommunityEditorLokka;
 
     beforeEach(async done => {
       getToken(newUserEmail, newUserPassword).then(token => {
         const headers = {
           Authorization: 'Bearer ' + token,
         };
-        lokka = new Lokka({
+        newCommunityEditorLokka = new Lokka({
           transport: new HttpTransport(endpoint, { headers }),
         });
         done();
       });
     });
 
-    it('should get the correct current user', async () => {
-      const response = await lokka.send(`
+    it('should get the correct current user', async done => {
+      const response = await newCommunityEditorLokka.send(`
         {
           currentUser {
             firstName
@@ -232,6 +191,7 @@ describe('When registering a community editor', () => {
       `);
 
       expect(response).toMatchSnapshot();
+      done();
     });
   });
 });

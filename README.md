@@ -1,10 +1,15 @@
-# ctxfloods
+# CTXfloods-backend
 
-Central Texas Floods
+Central Texas Floods Backend
 
-## Set up your development environment
+- [Set Up Development Environment](#Set-Up-Development-Environment)
+- [Run Tests](#Run-Tests)
+- [Development Tips](#development-tips)
 
-💾 Install [Postgres](https://www.postgresql.org/) 🐘
+
+## Set Up Development Environment
+
+💾 Install [Postgres](https://www.postgresql.org/) v10.6 🐘
 
 * If you're using macOS I strongly recommend using [Postgres.app](http://postgresapp.com/)
 
@@ -13,8 +18,8 @@ Central Texas Floods
 👯 Clone the repo
 
 ```
-git clone https://github.com/cityofaustin/ctxfloods
-cd ctxfloods
+git clone https://github.com/cityofaustin/ctxfloods-backend
+cd ctxfloods-backend
 yarn install
 ```
 
@@ -22,130 +27,54 @@ yarn install
 
 * Make sure [psql](https://postgresapp.com/documentation/cli-tools.html) works in your terminal
 
-⌨️ Run the local server
+🌱 Seed Data
 
 ```
-yarn start
+yarn setup-local
 ```
 
-🌱 Seeding Data
-
-```
-yarn init-local-db
-yarn drop-local-data
-yarn migrate-local
-yarn add-setup-data-local
-yarn add-communities-local
-
-# The next step needs the server running for GraphQL
-yarn start
-yarn add-waze-streets-local
-yarn add-crossings-local
-```
-
-<img src="/README/localserverrunning.png" align="middle" height="142" >
-
-✅ Run the tests
-
-```
-yarn test
-```
-
-_It might be necessary to install Watchman if you see errors running the `yarn test` command. See this Github Issue for more details: https://github.com/facebookincubator/create-react-app/issues/871_
-
-<img src="/README/backendtestspassed.png" align="middle" height="93" >
-
-🍻 Cheers! The backend should now be up and running!
-
-### Get the frontend running against the local backend
-
-💾 Install the frontend
-
-```
-cd frontend
-yarn install
-```
-
-🖋 Build the map style
-
-```
-yarn build-map-style
-```
-
-⌨️ Run the frontend against the local backend
+⌨️ Start the local server
 
 ```
 yarn start-local
 ```
 
-<img src="/README/localfrontendrunning.png" align="middle" height="93" >
+💾 Clone and install [CTXfloods-frontend](https://github.com/cityofaustin/ctxfloods)
 
-🥂 Cheers! The frontend should now be up and running! Have fun clicking around!
+🍻 Cheers! The backend should now be up and running!
 
-🔑 Some pages require a login:
-
-<img src="/README/logintofrontend.png" align="middle" height="76" >
-
-📧 In case of such a page, the following email addresses work:
-
-* superadmin@flo.ods
-* admin@community.floods
-* editor@community.floods
-
-🗝 By default all passwords are set to "texasfloods"
-
-### Get Storybook running
-
-⌨️ Generate the schema file
+## Run Tests
 
 ```
-cd frontend
-yarn get-schema
+yarn test
 ```
+Warning: Running "yarn test" will drop your local floods data and load in test data. You will need to re-run "yarn setup-local" to reload the correct seed data.
 
-⌨️ Run storybook from the frontend
+It might be necessary to install Watchman if you see errors running the `yarn test` command. See this Github Issue for more details: https://github.com/facebookincubator/create-react-app/issues/871
 
+<img src="/README/backendtestspassed.png" align="middle" height="93" >
+
+## Deployment Process
+Branch promotion works like this:<br>
+feature -> dev -> master
+
+Create your feature branch as a branch off "dev". That feature branch will be merged into "dev", which will then be merged into "master."
+
+CTXFloods uses TravisCI for continuous integration. Whenever you push to github, a TravisCI build will be triggered. By default this will only run the tests. If you want to deploy your feature branch on a git push, add the name of your feature branch to `deployment/devDeployConfig` with the option `deploy: true`. (Look at `travis.yml` and `deployment/shouldDeploy.js` to see exactly how this logic works.) Subsequent pushes from the same branch will update this same stack. Ex:
 ```
-yarn storybook
+"195-camera": {
+  deploy: true,
+  seed: true
+}
 ```
+Specify `seed: true` if you would like the seed data to be loaded into your deployed backend.
 
-<img src="/README/storybookrunning.png" align="middle" height="62" >
-<img src="/README/storybookscreeny.png" align="middle" height="299" >
+A deployed backend CloudFormation stack consists of a Postgres database and 8 lambda function endpoints (located in the `handlers/` directory). All of this will be created automatically when TravisCI's build phase runs `serverless.yml` from `deployment/deploy.sh`.
 
-## Using TravisCI to test and deploy
+Environment variables are sourced from `deployment/vars` depending on your branch. (All feature branches share the same environment variables as `dev.sh`. Any feature branch specific configs should be handled in `deployment/devDeployConfig.js`.) Any environment variable prefixed with `TRAVIS_` is a secret environment variable that is stored in TravisCI. It will get loaded in during the build phase of a TravisCI/github deployment.
 
-🔑 Generate a new AWS Key
+It would be possible to deploy ctxfloods without continuous integration by running `deployment/deploy.sh`. However, you would have to provide your own substitutes for the `TRAVIS_` environment variables.
 
-* Go to your user in [IAM](https://console.aws.amazon.com/iam/home#/users)
-* Go to security credentials and generate an access key
-  <img src="/README/securitycredentials.png" align="middle" height="106" >
-  <img src="/README/createaccesskey.png" align="middle" height="54" >
-
-❌ Delete any entries in the env section of [.travis.yml](.travis.yml)
-
-💾 Install [serverless](https://serverless.com/)
-
-```
-yarn global add serverless
-```
-
-⌨️ Run the set up deploy script
-
-```
-./setUpAWSDeploy.sh
-```
-
-Upon completion of the script, a new AWS CloudFormation should have been initialized for your branch. .travis.yml will also be updated to include branch specific environment variables.
-
-🏗 Your build should appear on [Travis](https://travis-ci.org/)
-
-### Test the deployed frontend
-
-//TODO Automate this
-
-* Go to [S3](https://console.aws.amazon.com/s3/) and find your bucket (it should be ctxfloods-frontend-**_your branch name_**)
-* Go to Properties -> Static Website Hosting
-  * Select **Use this bucket to host a website**
-    * Set **index.html** as both the Index and Error document (react-router will be doing our error handling)
-
-🍾 Cheers! You should now have a deployed instance up and running.
+## Development Tips
++ If you added a new postgres migration file to the backend, regenerate the frontend's graphql schema file by running `yarn get-schema`
++ Environment variables prefixed by `TRAVIS_` are secret variables stored in TravisCI. They get loaded in during the build phase of a TravisCI/github deployment.

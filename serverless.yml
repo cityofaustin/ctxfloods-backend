@@ -164,7 +164,7 @@ resources:
         DBName: 'postgres'
         AllocatedStorage: 5
         DBInstanceClass: 'db.t2.micro'
-        DeletionProtection: true
+        DeletionProtection: ${env:DB_DELETION_PROTECTION, self:custom.false}
         AllowMajorVersionUpgrade: true
         Engine: 'postgres'
         EngineVersion: '10.6'
