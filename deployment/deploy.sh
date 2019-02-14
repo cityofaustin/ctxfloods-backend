@@ -167,7 +167,7 @@ if [[ $STACK_EXISTS = "false" ]] || [[ $MIGRATIONS_UP_TO_DATE = "false" ]]; then
 
 
   # Note: "sls -f graphql" is incompatible with "sls -p ...", so we must redeploy everything during first deployment
-  echo ":: adding postgraphile.cache to graphqlHandler package"
+  echo ":: Re-deploying bundled serverless package"
   sls deploy -p $CURRENT_DIR/../.serverless
   if [ $? != 0 ]; then
     echo "sls deploy (with new graphql bundle) failed"
@@ -181,3 +181,5 @@ fi
 [ -f $CURRENT_DIR/seed_flag.tmp ] && rm $CURRENT_DIR/seed_flag.tmp
 [ -f $CURRENT_DIR/stack_outputs.tmp ] && rm $CURRENT_DIR/stack_outputs.tmp
 [ -f $CURRENT_DIR/migrations_flag.tmp ] && rm $CURRENT_DIR/migrations_flag.tmp
+
+exit 0
