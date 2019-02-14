@@ -14,24 +14,17 @@ then
 fi
 source $CURRENT_DIR/vars/$DEPLOY_ENV.sh
 
-# Check if push notifications will be required
-node $CURRENT_DIR/writePushNotificationFlag.js
-if [ $? != 0 ]; then
-  echo "write push notification flag script failed"
-  exit 1
+# Source env variables for custom devDeployConfig options
+# (Seeding is handled by another script.)
+if [[ $DEPLOY_ENV = "dev" ]]; then
+  node $CURRENT_DIR/checkDevOptions.js
+  if [ $? != 0 ]; then
+    echo "checking dev deployment options failed"
+    exit 1
+  fi
 fi
-# Source ENABLE_PUSH_NOTIFICATIONS if it exists
-[ -f $CURRENT_DIR/push_notification_flag.tmp ] && source $CURRENT_DIR/push_notification_flag.tmp
-
-# Check if custom AWS service name will be required
-echo ":: Checking for CustomServiceName"
-node $CURRENT_DIR/writeCustomServiceName.js
-if [ $? != 0 ]; then
-  echo ":: writeCustomServiceName script failed"
-  exit 1
-fi
-# Source custom AWS_SERVICE_NAME if it exists
-[ -f $CURRENT_DIR/custom_aws_service_name.tmp ] && source $CURRENT_DIR/custom_aws_service_name.tmp
+# Source dev_options.tmp if it exists
+[ -f $CURRENT_DIR/dev_options.tmp ] && source $CURRENT_DIR/dev_options.tmp
 
 # Install "serverless" module and plugins
 yarn global add serverless@1.32.0
@@ -176,8 +169,7 @@ if [[ $STACK_EXISTS = "false" ]] || [[ $MIGRATIONS_UP_TO_DATE = "false" ]]; then
 fi
 
 # Clean up .tmp files
-[ -f $CURRENT_DIR/push_notification_flag.tmp ] && rm $CURRENT_DIR/push_notification_flag.tmp
-[ -f $CURRENT_DIR/custom_aws_service_name.tmp ] && rm $CURRENT_DIR/custom_aws_service_name.tmp
+[ -f $CURRENT_DIR/dev_options.tmp ] && rm $CURRENT_DIR/dev_options.tmp
 [ -f $CURRENT_DIR/seed_flag.tmp ] && rm $CURRENT_DIR/seed_flag.tmp
 [ -f $CURRENT_DIR/stack_outputs.tmp ] && rm $CURRENT_DIR/stack_outputs.tmp
 [ -f $CURRENT_DIR/migrations_flag.tmp ] && rm $CURRENT_DIR/migrations_flag.tmp

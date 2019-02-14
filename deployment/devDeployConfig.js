@@ -15,13 +15,17 @@
         This can be used to push changes to an existing deployment that doesn't share the branch name.
         Can push to an environment like "sandbox-1" to save deployment time.
         If "customServiceName" is not an existing deployment, then no time will be saved because a new CloudFormation must still be created.
+      dbDeletionProtection: Boolean (default false)
+        Prevent CloudFormation RDS database from being automatically deleted (during certain updates or during Stack deletion)
+        Easier for maintaince to keep false for most feature branches
   }
 **/
 
 module.exports = {
   "dev": {
     deploy: true,
-    seed: true
+    seed: true,
+    dbDeletionProtection: true,
   },
   "444-postgraphile": {
     deploy: true,
@@ -30,5 +34,6 @@ module.exports = {
   "400-security": {
     deploy: true,
     seed: true,
+    customServiceName: "400-new-name"
   }
 };
