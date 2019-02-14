@@ -5,7 +5,7 @@ Central Texas Floods Backend
 - [Set Up Development Environment](#Set-Up-Development-Environment)
 - [Run Tests](#Run-Tests)
 - [Development Tips](#development-tips)
-
+- [Disaster Recovery](#disaster-recovery)
 
 ## Set Up Development Environment
 
@@ -78,3 +78,9 @@ It would be possible to deploy ctxfloods without continuous integration by runni
 ## Development Tips
 + If you added a new postgres migration file to the backend, regenerate the frontend's graphql schema file by running `yarn get-schema`
 + Environment variables prefixed by `TRAVIS_` are secret variables stored in TravisCI. They get loaded in during the build phase of a TravisCI/github deployment.
+
+## Disaster Recovery
++ The postgres database can be restored by using a snapshot backup. This requires a couple changes to your serverless.yml file.
+   1. Add `DBSnapshotIdentifier: '[rds snapshot identifier]'` to the pgDB Properties section of serverless.yml.
+      + Note - If the DBSnapshotIdentifier property is ever removed (or changed) for the same AWS Service, this would trigger a database delete. The `DeletionProtection` Property would prevent that deletion, but it would also prevent your stack from updating. More information can be found here: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-rds-database-instance.html
+  2. Remove the `DBName` Property. This Property is incompatible with `DBSnapshotIdentifier`.

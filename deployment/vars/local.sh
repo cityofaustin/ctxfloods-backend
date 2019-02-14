@@ -34,6 +34,7 @@ export PG_API_PW=floods_graphql
 export PG_SUPER_ADMIN_PW=texasfloods # only used during initialization
 export PG_ENDPOINT=localhost
 # DB_DELETION_PROTECTION not required locally
+# DB_BACKUP_RETENTION_PERIOD not required locally
 
 # Travis postgres v10 requires special configs
 if [[ $TRAVIS = true ]];then
