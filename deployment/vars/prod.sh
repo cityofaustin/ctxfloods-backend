@@ -35,4 +35,5 @@ export PG_API_USR=floods_graphql
 export PG_API_PW=$TRAVIS_PG_API_PW_PROD
 export PG_SUPER_ADMIN_PW=$TRAVIS_PG_SUPER_ADMIN_PW_PROD # only used during initialization
 export DB_DELETION_PROTECTION=true # Interpretted as truthy by serverless.yml when any string is passed.
+export DB_BACKUP_RETENTION_PERIOD=14
 # PG_ENDPOINT assigned in serverless.yml

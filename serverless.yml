@@ -162,6 +162,7 @@ resources:
       Type: 'AWS::RDS::DBInstance'
       Properties:
         DBName: 'postgres'
+        BackupRetentionPeriod: ${env:DB_BACKUP_RETENTION_PERIOD}
         AllocatedStorage: 5
         DBInstanceClass: 'db.t2.micro'
         DeletionProtection: ${env:DB_DELETION_PROTECTION, self:custom.false}
