@@ -161,6 +161,7 @@ resources:
     pgDB:
       Type: 'AWS::RDS::DBInstance'
       Properties:
+        DBSnapshotIdentifier: 'rds:cp1segifp8jnhet-2019-02-13-07-28'
         DBName: 'postgres'
         AllocatedStorage: 5
         DBInstanceClass: 'db.t2.micro'
