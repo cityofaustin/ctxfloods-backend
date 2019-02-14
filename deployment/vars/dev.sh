@@ -51,4 +51,5 @@ export PG_MASTER_PW=$TRAVIS_PG_MASTER_PW_DEV
 export PG_API_USR=floods_graphql
 export PG_API_PW=$TRAVIS_PG_API_PW_DEV
 export PG_SUPER_ADMIN_PW=$TRAVIS_PG_SUPER_ADMIN_PW_DEV # only used during initialization
+# DB_DELETION_PROTECTION assigned in devDeployConfig
 # PG_ENDPOINT assigned in serverless.yml

@@ -3,50 +3,22 @@ import Lokka from 'lokka';
 import uuidv4 from 'uuid';
 import { endpoint } from './endpoints';
 
-const anonLokka = new Lokka({ transport: new HttpTransport(endpoint) });
-const superAdminEmail = 'superadmin@flo.ods';
-const superAdminPassword = 'texasfloods';
-const newUserPassword = 'texasfloods';
-
-async function getToken(email, password) {
-  const response = await anonLokka.send(
-    `
-    mutation($email:String!, $password:String!) {
-      authenticate(input: {email: $email, password: $password}) {
-        jwtToken
-      }
-    }
-  `,
-    {
-      email: email,
-      password: password,
-    },
-  );
-
-  return response.authenticate.jwtToken;
-}
+import { getToken, anonLokka, getSuperAdminLokka } from './helpers';
 
 describe('When registering a super admin', () => {
   var newUserEmail = uuidv4() + '@flo.ods';
+  var newUserPassword = 'texasfloods';
   var newUserId;
 
+  var superAdminLokka;
+  beforeAll(async done => {
+    superAdminLokka = await getSuperAdminLokka();
+    done();
+  })
+
   describe('As a super admin', async () => {
-    var lokka;
-
-    beforeAll(async done => {
-      getToken(superAdminEmail, superAdminPassword).then(token => {
-        const headers = {
-          Authorization: 'Bearer ' + token,
-        };
-        lokka = new Lokka({
-          transport: new HttpTransport(endpoint, { headers }),
-        });
-        done();
-      });
-    });
-
     it('should register a new super admin', async () => {
-      const response = await lokka.send(
+      const response = await superAdminLokka.send(
         `
         mutation($email:String!) {
           registerUser(input: {
@@ -76,7 +48,7 @@ describe('When registering a super admin', () => {
   });
 
   it('the new user should show up in the DB', async () => {
-    const response = await anonLokka.send(
+    const response = await superAdminLokka.send(
       `
       query ($id: Int!) {
         userById(id: $id) {
@@ -95,14 +67,13 @@ describe('When registering a super admin', () => {
   });
 
   describe('As the new super admin', async () => {
-    var lokka;
-
+    var newSuperAdmin;
     beforeEach(async done => {
       getToken(newUserEmail, newUserPassword).then(token => {
         const headers = {
           Authorization: 'Bearer ' + token,
         };
-        lokka = new Lokka({
+        newSuperAdmin = new Lokka({
           transport: new HttpTransport(endpoint, { headers }),
         });
         done();
@@ -110,7 +81,7 @@ describe('When registering a super admin', () => {
     });
 
     it('should get the correct current user', async () => {
-      const response = await lokka.send(`
+      const response = await newSuperAdmin.send(`
         {
           currentUser {
             firstName
@@ -127,25 +98,18 @@ describe('When registering a super admin', () => {
 
 describe('When registering a community admin', () => {
   var newUserEmail = uuidv4() + '@flo.ods';
+  var newUserPassword = 'texasfloods';
   var newUserId;
 
+  var superAdminLokka;
+  beforeAll(async done => {
+    superAdminLokka = await getSuperAdminLokka();
+    done();
+  })
+
   describe('As a super admin', async () => {
-    var lokka;
-
-    beforeAll(async done => {
-      getToken(superAdminEmail, superAdminPassword).then(token => {
-        const headers = {
-          Authorization: 'Bearer ' + token,
-        };
-        lokka = new Lokka({
-          transport: new HttpTransport(endpoint, { headers }),
-        });
-        done();
-      });
-    });
-
     it('should register a new community admin', async () => {
-      const response = await lokka.send(
+      const response = await superAdminLokka.send(
         `
         mutation($email:String!) {
           registerUser(input: {
@@ -175,7 +139,7 @@ describe('When registering a community admin', () => {
   });
 
   it('the new user should show up in the DB', async () => {
-    const response = await anonLokka.send(
+    const response = await superAdminLokka.send(
       `
       query ($id: Int!) {
         userById(id: $id) {
@@ -194,14 +158,14 @@ describe('When registering a community admin', () => {
   });
 
   describe('As the new community admin', async () => {
-    var lokka;
+    var newCommunityAdminLokka;
 
     beforeEach(async done => {
       getToken(newUserEmail, newUserPassword).then(token => {
         const headers = {
           Authorization: 'Bearer ' + token,
         };
-        lokka = new Lokka({
+        newCommunityAdminLokka = new Lokka({
           transport: new HttpTransport(endpoint, { headers }),
         });
         done();
@@ -209,7 +173,7 @@ describe('When registering a community admin', () => {
     });
 
     it('should get the correct current user', async () => {
-      const response = await lokka.send(`
+      const response = await newCommunityAdminLokka.send(`
         {
           currentUser {
             firstName
@@ -226,25 +190,18 @@ describe('When registering a community admin', () => {
 
 describe('When registering a community editor', () => {
   var newUserEmail = uuidv4() + '@flo.ods';
+  var newUserPassword = 'texasfloods';
   var newUserId;
 
+  var superAdminLokka;
+  beforeAll(async done => {
+    superAdminLokka = await getSuperAdminLokka();
+    done();
+  })
+
   describe('As a super admin', async () => {
-    var lokka;
-
-    beforeAll(async done => {
-      getToken(superAdminEmail, superAdminPassword).then(token => {
-        const headers = {
-          Authorization: 'Bearer ' + token,
-        };
-        lokka = new Lokka({
-          transport: new HttpTransport(endpoint, { headers }),
-        });
-        done();
-      });
-    });
-
     it('should register a new community editor', async () => {
-      const response = await lokka.send(
+      const response = await superAdminLokka.send(
         `
         mutation($email:String!) {
           registerUser(input: {
@@ -274,7 +231,7 @@ describe('When registering a community editor', () => {
   });
 
   it('the new user should show up in the DB', async () => {
-    const response = await anonLokka.send(
+    const response = await superAdminLokka.send(
       `
       query ($id: Int!) {
         userById(id: $id) {
@@ -293,22 +250,22 @@ describe('When registering a community editor', () => {
   });
 
   describe('As the new community editor', async () => {
-    var lokka;
+    var newCommunityAdminLokka;
 
-    beforeEach(async done => {
+    beforeAll(async done => {
       getToken(newUserEmail, newUserPassword).then(token => {
         const headers = {
           Authorization: 'Bearer ' + token,
         };
-        lokka = new Lokka({
+        newCommunityAdminLokka = new Lokka({
           transport: new HttpTransport(endpoint, { headers }),
         });
         done();
       });
     });
 
-    it('should get the correct current user', async () => {
-      const response = await lokka.send(`
+    it('should get the correct current user', async done => {
+      const response = await newCommunityAdminLokka.send(`
         {
           currentUser {
             firstName
@@ -319,6 +276,7 @@ describe('When registering a community editor', () => {
       `);
 
       expect(response).toMatchSnapshot();
+      done();
     });
   });
 });
