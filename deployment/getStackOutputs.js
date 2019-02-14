@@ -3,7 +3,7 @@ const aws = require('aws-sdk');
 aws.config.update({region:'us-east-1'});
 const cloudformation = new aws.CloudFormation();
 
-const writeFalseyOutput() {
+const writeFalseyOutput = () => {
   return fs.writeFileSync(`${__dirname}/stack_outputs.tmp`,`export STACK_EXISTS=false`);
 }
 
