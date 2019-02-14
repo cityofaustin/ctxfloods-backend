@@ -3,6 +3,10 @@ const aws = require('aws-sdk');
 aws.config.update({region:'us-east-1'});
 const cloudformation = new aws.CloudFormation();
 
+const writeFalseyOutput() {
+  return fs.writeFileSync(`${__dirname}/stack_outputs.tmp`,`export STACK_EXISTS=false`);
+}
+
 /**
   Retrieves PG_ENDPOINT and GRAPHQL_ENDPOINT stack outputs from AWS.
   Also exports STACK_EXISTS flag to indicate whether the Stack already existed or not.
@@ -15,13 +19,19 @@ const getStackOutputs = (strict=false) => {
     StackName: stackName
   }).promise()
   .then(data => {
-    const PG_ENDPOINT = data.Stacks[0].Outputs.find(o => o.OutputKey === "PgEndpoint").OutputValue;
-    const GRAPHQL_ENDPOINT = data.Stacks[0].Outputs.find(o => o.OutputKey === "GraphqlEndpoint").OutputValue;
-    fs.writeFileSync(`${__dirname}/stack_outputs.tmp`, `export PG_ENDPOINT=${PG_ENDPOINT}\nexport GRAPHQL_ENDPOINT=${GRAPHQL_ENDPOINT}\nexport STACK_EXISTS=true`);
+    try {
+      const PG_ENDPOINT = data.Stacks[0].Outputs.find(o => o.OutputKey === "PgEndpoint").OutputValue;
+      const GRAPHQL_ENDPOINT = data.Stacks[0].Outputs.find(o => o.OutputKey === "GraphqlEndpoint").OutputValue;
+      fs.writeFileSync(`${__dirname}/stack_outputs.tmp`, `export PG_ENDPOINT=${PG_ENDPOINT}\nexport GRAPHQL_ENDPOINT=${GRAPHQL_ENDPOINT}\nexport STACK_EXISTS=true`);
+    } catch (err) {
+      // Stack was created, but deployment was halted for some reason. Stack Outputs were never generated.
+      // Treat this case as if STACK_EXISTS=false
+      writeFalseyOutput();
+    }
   })
   .catch(err => {
     if (err.code === "ValidationError" && !strict) {
-      fs.writeFileSync(`${__dirname}/stack_outputs.tmp`,`export STACK_EXISTS=false`);
+      writeFalseyOutput();
     } else {
       console.log(err)
       process.exit(1)
