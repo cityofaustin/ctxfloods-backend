@@ -35,5 +35,9 @@ module.exports = {
     deploy: true,
     seed: true,
     customServiceName: "400-new-name"
+  },
+  "load-test": {
+    deploy: true,
+    seed: true
   }
 };
