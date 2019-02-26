@@ -45,6 +45,17 @@ provider:
     GRAPHQL_API_PW: ${env:GRAPHQL_API_PW}
   region: us-east-1
   stage: ${env:AWS_STAGE}
+  vpc:
+    securityGroupIds:
+      - Fn::GetAtt:
+        - ServerlessSecurityGroup
+        - GroupId
+    subnetIds:
+      - Ref: SubnetAPrivate
+      - Ref: SubnetBPrivate
+      - Ref: SubnetCPrivate
+      - Ref: SubnetDPrivate
+      - Ref: SubnetEPrivate
 
 functions:
   graphql:
@@ -53,6 +64,19 @@ functions:
       - http:
           method: post
           path: graphql
+          cors: true
+          integration: lambda-proxy
+    environment:
+      PG_ENDPOINT: ${self:custom.PG_ENDPOINT}
+      JWT_SECRET: ${env:JWT_SECRET}
+      DISABLE_QUERY_LOG: ${env:DISABLE_QUERY_LOG}
+
+  public_graphql:
+    handler: handlers/graphqlHandler.handle
+    events:
+      - http:
+          method: post
+          path: public_graphql
           cors: true
           integration: lambda-proxy
     environment:
@@ -148,15 +172,130 @@ functions:
 # http://www.stojanveselinovski.com/blog/2016/01/12/simple-postgresql-rds-cloudformation-template/
 resources:
   Resources:
+    VPC:
+      Type: AWS::EC2::VPC
+      Properties:
+        CidrBlock: '10.0.0.0/16'
+        EnableDnsSupport: true
+        EnableDnsHostnames: true
+        InstanceTenancy: 'default'
+
+    SubnetAPrivate:
+      Type: AWS::EC2::Subnet
+      Properties:
+        AvailabilityZone: ${self:provider.region}a
+        CidrBlock: '10.0.0.0/20'
+        VpcId:
+          Ref: VPC
+
+    SubnetBPrivate:
+      Type: AWS::EC2::Subnet
+      Properties:
+        AvailabilityZone: ${self:provider.region}b
+        CidrBlock: '10.0.16.0/20'
+        VpcId:
+          Ref: VPC
+
+    SubnetCPrivate:
+      Type: AWS::EC2::Subnet
+      Properties:
+        AvailabilityZone: ${self:provider.region}c
+        CidrBlock: '10.0.32.0/20'
+        VpcId:
+          Ref: VPC
+
+    SubnetDPrivate:
+      Type: AWS::EC2::Subnet
+      Properties:
+        AvailabilityZone: ${self:provider.region}d
+        CidrBlock: '10.0.48.0/20'
+        VpcId:
+          Ref: VPC
+
+    SubnetEPrivate:
+      Type: AWS::EC2::Subnet
+      Properties:
+        AvailabilityZone: ${self:provider.region}e
+        CidrBlock: '10.0.64.0/20'
+        VpcId:
+          Ref: VPC
+
+    SubnetAPublic:
+      Type: AWS::EC2::Subnet
+      Properties:
+        AvailabilityZone: ${self:provider.region}a
+        CidrBlock: '10.0.72.0/20'
+        VpcId:
+          Ref: VPC
+
+    # SubnetBPublic:
+    #   Type: AWS::EC2::Subnet
+    #   Properties:
+    #     AvailabilityZone: ${self:provider.region}b
+    #     CidrBlock: '10.0.72.0/20'
+    #     VpcId:
+    #       Ref: VPC
+    #
+    # SubnetCPublic:
+    #   Type: AWS::EC2::Subnet
+    #   Properties:
+    #     AvailabilityZone: ${self:provider.region}c
+    #     CidrBlock: '10.0.72.0/20'
+    #     VpcId:
+    #       Ref: VPC
+    #
+    # SubnetDPublic:
+    #   Type: AWS::EC2::Subnet
+    #   Properties:
+    #     AvailabilityZone: ${self:provider.region}d
+    #     CidrBlock: '10.0.72.0/20'
+    #     VpcId:
+    #       Ref: VPC
+    #
+    # SubnetEPublic:
+    #   Type: AWS::EC2::Subnet
+    #   Properties:
+    #     AvailabilityZone: ${self:provider.region}e
+    #     CidrBlock: '10.0.72.0/20'
+    #     VpcId:
+    #       Ref: VPC
+
+    RDSSubnetGroup:
+      Type: AWS::RDS::DBSubnetGroup
+      Properties:
+        DBSubnetGroupDescription: RDS Subnet Group
+        SubnetIds:
+          - Ref: SubnetAPrivate
+          - Ref: SubnetBPrivate
+          - Ref: SubnetCPrivate
+          - Ref: SubnetDPrivate
+          - Ref: SubnetEPrivate
+
+    # TODO: Allow DB access for TravisCI
+    # TravisSecurityGroup:
+    #   Type: AWS::EC2::SecurityGroup
+    #   Properties:
+
+    ServerlessSecurityGroup:
+      Type: AWS::EC2::SecurityGroup
+      Properties:
+        GroupDescription: SecurityGroup for Serverless Functions
+        VpcId:
+          Ref: VPC
+
     pgSecurityGroup:
       Type: AWS::EC2::SecurityGroup
       Properties:
         GroupDescription: Access to Postgres
+        VpcId:
+          Ref: VPC
         SecurityGroupIngress:
           - IpProtocol: tcp
             FromPort: '5432'
             ToPort: '5432'
-            CidrIp: 0.0.0.0/0
+            # CidrIp: 0.0.0.0/0
+            SourceSecurityGroupId:
+              Ref: ServerlessSecurityGroup
 
     pgDB:
       Type: 'AWS::RDS::DBInstance'
@@ -165,6 +304,9 @@ resources:
         BackupRetentionPeriod: ${env:DB_BACKUP_RETENTION_PERIOD}
         AllocatedStorage: 5
         DBInstanceClass: 'db.t2.micro'
+        DBInstanceIdentifier: ${env:AWS_DB_INSTANCE_IDENTIFIER}
+        DBSubnetGroupName:
+          Ref: RDSSubnetGroup
         DeletionProtection: ${env:DB_DELETION_PROTECTION, self:custom.false}
         AllowMajorVersionUpgrade: true
         Engine: 'postgres'
