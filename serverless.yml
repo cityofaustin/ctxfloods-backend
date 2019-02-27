@@ -178,6 +178,9 @@ resources:
         EnableDnsSupport: true
         EnableDnsHostnames: true
         InstanceTenancy: 'default'
+        Tags:
+          - Key: Name
+            Value: ${env:AWS_SERVICE_NAME}-vpc
 
     ### Subnets
     SubnetAPrivate:
@@ -224,7 +227,7 @@ resources:
       Type: AWS::EC2::Subnet
       Properties:
         AvailabilityZone: ${self:provider.region}a
-        CidrBlock: '10.0.192.0/20'
+        CidrBlock: '10.0.240.0/20'
         VpcId:
           Ref: VPC
 
@@ -324,6 +327,10 @@ resources:
             # CidrIp: 0.0.0.0/0
             SourceSecurityGroupId:
               Ref: ServerlessSecurityGroup
+          - IpProtocol: tcp
+            CidrIp: '162.89.0.47/32'
+            ToPort: '5432'
+            Description: 'Faulk Library'
 
     RDSSubnetGroup:
       Type: AWS::RDS::DBSubnetGroup
