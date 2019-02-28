@@ -21,6 +21,7 @@ esac
 export AWS_ACCESS_KEY_ID=$TRAVIS_ACCESS_KEY_ID_DEV
 export AWS_SECRET_ACCESS_KEY=$TRAVIS_SECRET_ACCESS_KEY_DEV
 export AWS_STAGE=dev
+export SECURE_WITH_VPC=false #Can be overwritten in devDeployConfig
 
 # Gmail
 export GMAIL_ADDRESS=$TRAVIS_GMAIL_ADDRESS_DEV

@@ -169,6 +169,16 @@ functions:
 # For a pgDB inside a VPC look e.g. here:
 # http://www.stojanveselinovski.com/blog/2016/01/12/simple-postgresql-rds-cloudformation-template/
 resources:
+  Conditions:
+    Secure:
+      Fn::Equals:
+        - ${env:SECURE_WITH_VPC}
+        - "true"
+    InSecure:
+      Fn::Not:
+        - Fn::Equals:
+          - ${env:SECURE_WITH_VPC}
+          - "true"
   Resources:
     ### VPC
     VPC:
@@ -190,6 +200,9 @@ resources:
         CidrBlock: '10.0.0.0/18'
         VpcId:
           Ref: VPC
+        Tags:
+          - Key: Name
+            Value: ${env:AWS_SERVICE_NAME}-subnet-a-private
 
     SubnetBPrivate:
       Type: AWS::EC2::Subnet
@@ -198,6 +211,9 @@ resources:
         CidrBlock: '10.0.64.0/18'
         VpcId:
           Ref: VPC
+        Tags:
+          - Key: Name
+            Value: ${env:AWS_SERVICE_NAME}-subnet-b-private
 
     SubnetCPrivate:
       Type: AWS::EC2::Subnet
@@ -206,6 +222,9 @@ resources:
         CidrBlock: '10.0.128.0/18'
         VpcId:
           Ref: VPC
+        Tags:
+          - Key: Name
+            Value: ${env:AWS_SERVICE_NAME}-subnet-c-private
 
     # SubnetDPrivate:
     #   Type: AWS::EC2::Subnet
@@ -230,6 +249,9 @@ resources:
         CidrBlock: '10.0.240.0/20'
         VpcId:
           Ref: VPC
+        Tags:
+          - Key: Name
+            Value: ${env:AWS_SERVICE_NAME}-subnet-a-public
 
     # SubnetBPublic:
     #   Type: AWS::EC2::Subnet
@@ -263,10 +285,47 @@ resources:
     #     VpcId:
     #       Ref: VPC
 
+    ### Route Tables Private
+    RouteTablePrivate:
+      Type: AWS::EC2::RouteTable
+      Properties:
+        VpcId:
+          Ref: VPC
+        Tags:
+          - Key: Name
+            Value: ${env:AWS_SERVICE_NAME}-private
+
+    RouteTableAssociationAPrivate:
+      Type: AWS::EC2::SubnetRouteTableAssociation
+      Properties:
+        SubnetId:
+          Ref: SubnetAPrivate
+        RouteTableId:
+          Ref: RouteTablePrivate
+
+    RouteTableAssociationBPrivate:
+      Type: AWS::EC2::SubnetRouteTableAssociation
+      Properties:
+        SubnetId:
+          Ref: SubnetBPrivate
+        RouteTableId:
+          Ref: RouteTablePrivate
+
+    RouteTableAssociationCPrivate:
+      Type: AWS::EC2::SubnetRouteTableAssociation
+      Properties:
+        SubnetId:
+          Ref: SubnetCPrivate
+        RouteTableId:
+          Ref: RouteTablePrivate
 
     ### Internet Gateway Resources
     InternetGateway:
       Type: AWS::EC2::InternetGateway
+      Properties:
+        Tags:
+          - Key: Name
+            Value: ${env:AWS_SERVICE_NAME}-internet-gateway
 
     VPCGatewayAttachment:
       Type: AWS::EC2::VPCGatewayAttachment
@@ -281,6 +340,9 @@ resources:
       Properties:
         VpcId:
           Ref: VPC
+        Tags:
+          - Key: Name
+            Value: ${env:AWS_SERVICE_NAME}-public
 
     RouteTableAssociationAPublic:
       Type: AWS::EC2::SubnetRouteTableAssociation
@@ -324,12 +386,12 @@ resources:
           - IpProtocol: tcp
             FromPort: '5432'
             ToPort: '5432'
-            # CidrIp: 0.0.0.0/0
             SourceSecurityGroupId:
               Ref: ServerlessSecurityGroup
           - IpProtocol: tcp
-            CidrIp: '162.89.0.47/32'
+            FromPort: '5432'
             ToPort: '5432'
+            CidrIp: '162.89.0.47/32'
             Description: 'Faulk Library'
 
     RDSSubnetGroup:
@@ -358,6 +420,7 @@ resources:
         EngineVersion: '10.6'
         MasterUsername: ${env:PG_MASTER_USR}
         MasterUserPassword: ${env:PG_MASTER_PW}
+        PubliclyAccessible: true
         VPCSecurityGroups:
           - Fn::GetAtt:
             - pgSecurityGroup
