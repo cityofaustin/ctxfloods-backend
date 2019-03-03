@@ -51,9 +51,9 @@ provider:
         - ServerlessSecurityGroup
         - GroupId
     subnetIds:
-      - Ref: SubnetAPrivate
-      - Ref: SubnetBPrivate
-      - Ref: SubnetCPrivate
+      - Ref: SubnetAPublic
+      - Ref: SubnetBPublic
+      - Ref: SubnetCPublic
 
 functions:
   graphql:
@@ -197,7 +197,7 @@ resources:
       Type: AWS::EC2::Subnet
       Properties:
         AvailabilityZone: ${self:provider.region}a
-        CidrBlock: '10.0.0.0/18'
+        CidrBlock: '10.0.0.0/20'
         VpcId:
           Ref: VPC
         Tags:
@@ -208,7 +208,7 @@ resources:
       Type: AWS::EC2::Subnet
       Properties:
         AvailabilityZone: ${self:provider.region}b
-        CidrBlock: '10.0.64.0/18'
+        CidrBlock: '10.0.16.0/20'
         VpcId:
           Ref: VPC
         Tags:
@@ -219,7 +219,7 @@ resources:
       Type: AWS::EC2::Subnet
       Properties:
         AvailabilityZone: ${self:provider.region}c
-        CidrBlock: '10.0.128.0/18'
+        CidrBlock: '10.0.32.0/20'
         VpcId:
           Ref: VPC
         Tags:
@@ -246,12 +246,35 @@ resources:
       Type: AWS::EC2::Subnet
       Properties:
         AvailabilityZone: ${self:provider.region}a
-        CidrBlock: '10.0.240.0/20'
+        CidrBlock: '10.0.48.0/20'
         VpcId:
           Ref: VPC
         Tags:
           - Key: Name
             Value: ${env:AWS_SERVICE_NAME}-subnet-a-public
+
+    SubnetBPublic:
+      Type: AWS::EC2::Subnet
+      Properties:
+        AvailabilityZone: ${self:provider.region}b
+        CidrBlock: '10.0.64.0/20'
+        VpcId:
+          Ref: VPC
+        Tags:
+          - Key: Name
+            Value: ${env:AWS_SERVICE_NAME}-subnet-b-public
+
+    SubnetCPublic:
+      Type: AWS::EC2::Subnet
+      Properties:
+        AvailabilityZone: ${self:provider.region}c
+        CidrBlock: '10.0.80.0/20'
+        VpcId:
+          Ref: VPC
+        Tags:
+          - Key: Name
+            Value: ${env:AWS_SERVICE_NAME}-subnet-c-public
+
 
     # SubnetBPublic:
     #   Type: AWS::EC2::Subnet
@@ -352,6 +375,22 @@ resources:
         RouteTableId:
           Ref: RouteTablePublic
 
+    RouteTableAssociationBPublic:
+      Type: AWS::EC2::SubnetRouteTableAssociation
+      Properties:
+        SubnetId:
+          Ref: SubnetBPublic
+        RouteTableId:
+          Ref: RouteTablePublic
+
+    RouteTableAssociationCPublic:
+      Type: AWS::EC2::SubnetRouteTableAssociation
+      Properties:
+        SubnetId:
+          Ref: SubnetCPublic
+        RouteTableId:
+          Ref: RouteTablePublic
+
     RouteTablePublicInternetRoute:
       Type: AWS::EC2::Route
       DependsOn: VPCGatewayAttachment
@@ -391,22 +430,24 @@ resources:
           - IpProtocol: tcp
             FromPort: '5432'
             ToPort: '5432'
-            CidrIp: '162.89.0.47/32'
-            Description: 'Faulk Library'
+            CidrIp: '0.0.0.0/0'
+            Description: 'Open Insecure Access'
 
     RDSSubnetGroup:
       Type: AWS::RDS::DBSubnetGroup
       Properties:
         DBSubnetGroupDescription: RDS Subnet Group
         SubnetIds:
-          - Ref: SubnetAPrivate
-          - Ref: SubnetBPrivate
-          - Ref: SubnetCPrivate
+          # - Ref: SubnetAPrivate
+          # - Ref: SubnetBPrivate
+          # - Ref: SubnetCPrivate
           - Ref: SubnetAPublic
-
+          - Ref: SubnetBPublic
+          - Ref: SubnetCPublic
     pgDB:
       Type: 'AWS::RDS::DBInstance'
       Properties:
+        AvailabilityZone: ${self:provider.region}a
         DBName: 'postgres'
         BackupRetentionPeriod: ${env:DB_BACKUP_RETENTION_PERIOD}
         AllocatedStorage: 5

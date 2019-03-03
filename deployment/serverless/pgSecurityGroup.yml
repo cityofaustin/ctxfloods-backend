@@ -1,0 +1,41 @@
+Resources:
+  pgSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Access to Postgres
+      VpcId:
+        Ref: VPC
+
+  OpenIngress:
+    Type: AWS::EC2::SecurityGroupIngress
+    Condition: Insecure
+    Properties:
+      IpProtocol: tcp
+      FromPort: '5432'
+      ToPort: '5432'
+      CidrIp: 0.0.0.0/0
+      GroupId:
+        Ref: pgSecurityGroup
+
+  ServerlessIngress:
+    Type: AWS::EC2::SecurityGroupIngress
+    Condition: Secure
+    Properties:
+      IpProtocol: tcp
+      FromPort: '5432'
+      ToPort: '5432'
+      SourceSecurityGroupId:
+        Ref: ServerlessSecurityGroup
+      GroupId:
+        Ref: pgSecurityGroup
+
+  TravisIngress1:
+    Type: AWS::EC2::SecurityGroupIngress
+    Condition: Secure
+    Properties:
+      IpProtocol: tcp
+      FromPort: '5432'
+      ToPort: '5432'
+      CidrIp: '35.184.96.71/32'
+      GroupId:
+        Ref: pgSecurityGroup
