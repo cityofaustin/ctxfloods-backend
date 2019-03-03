@@ -1,0 +1,249 @@
+Resources:
+
+  ### VPC
+  VPC:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: '10.0.0.0/16'
+      EnableDnsSupport: true
+      EnableDnsHostnames: true
+      InstanceTenancy: 'default'
+      Tags:
+        - Key: Name
+          Value: ${env:AWS_SERVICE_NAME}-vpc
+
+  ### Public Route Table (with associations and related resources)
+  RouteTablePublic:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId:
+        Ref: VPC
+      Tags:
+        - Key: Name
+          Value: ${env:AWS_SERVICE_NAME}-public
+
+  InternetGateway:
+    Type: AWS::EC2::InternetGateway
+    Properties:
+      Tags:
+        - Key: Name
+          Value: ${env:AWS_SERVICE_NAME}-internet-gateway
+
+  VPCGatewayAttachment:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties:
+      VpcId:
+        Ref: VPC
+      InternetGatewayId:
+        Ref: InternetGateway
+
+  RouteTablePublicInternetRoute:
+    Type: AWS::EC2::Route
+    DependsOn: VPCGatewayAttachment
+    Properties:
+      RouteTableId:
+        Ref: RouteTablePublic
+      DestinationCidrBlock: '0.0.0.0/0'
+      GatewayId:
+        Ref: InternetGateway
+
+  RouteTableAssociationAPublic:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId:
+        Ref: SubnetAPublic
+      RouteTableId:
+        Ref: RouteTablePublic
+
+  RouteTableAssociationBPublic:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId:
+        Ref: SubnetBPublic
+      RouteTableId:
+        Ref: RouteTablePublic
+
+  RouteTableAssociationCPublic:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId:
+        Ref: SubnetCPublic
+      RouteTableId:
+        Ref: RouteTablePublic
+
+  ### Private Route Table (with associations and related resources)
+  RouteTablePrivate:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId:
+        Ref: VPC
+      Tags:
+        - Key: Name
+          Value: ${env:AWS_SERVICE_NAME}-private
+
+  RouteTableAssociationAPrivate:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId:
+        Ref: SubnetAPrivate
+      RouteTableId:
+        Ref: RouteTablePrivate
+
+  RouteTableAssociationBPrivate:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId:
+        Ref: SubnetBPrivate
+      RouteTableId:
+        Ref: RouteTablePrivate
+
+  RouteTableAssociationCPrivate:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId:
+        Ref: SubnetCPrivate
+      RouteTableId:
+        Ref: RouteTablePrivate
+
+  ### Subnets
+  SubnetAPrivate:
+    Type: AWS::EC2::Subnet
+    Properties:
+      AvailabilityZone: ${self:provider.region}a
+      CidrBlock: '10.0.0.0/20'
+      VpcId:
+        Ref: VPC
+      Tags:
+        - Key: Name
+          Value: ${env:AWS_SERVICE_NAME}-subnet-a-private
+
+  SubnetBPrivate:
+    Type: AWS::EC2::Subnet
+    Properties:
+      AvailabilityZone: ${self:provider.region}b
+      CidrBlock: '10.0.16.0/20'
+      VpcId:
+        Ref: VPC
+      Tags:
+        - Key: Name
+          Value: ${env:AWS_SERVICE_NAME}-subnet-b-private
+
+  SubnetCPrivate:
+    Type: AWS::EC2::Subnet
+    Properties:
+      AvailabilityZone: ${self:provider.region}c
+      CidrBlock: '10.0.32.0/20'
+      VpcId:
+        Ref: VPC
+      Tags:
+        - Key: Name
+          Value: ${env:AWS_SERVICE_NAME}-subnet-c-private
+
+  SubnetAPublic:
+    Type: AWS::EC2::Subnet
+    Properties:
+      AvailabilityZone: ${self:provider.region}a
+      CidrBlock: '10.0.48.0/20'
+      VpcId:
+        Ref: VPC
+      Tags:
+        - Key: Name
+          Value: ${env:AWS_SERVICE_NAME}-subnet-a-public
+
+  SubnetBPublic:
+    Type: AWS::EC2::Subnet
+    Properties:
+      AvailabilityZone: ${self:provider.region}b
+      CidrBlock: '10.0.64.0/20'
+      VpcId:
+        Ref: VPC
+      Tags:
+        - Key: Name
+          Value: ${env:AWS_SERVICE_NAME}-subnet-b-public
+
+  SubnetCPublic:
+    Type: AWS::EC2::Subnet
+    Properties:
+      AvailabilityZone: ${self:provider.region}c
+      CidrBlock: '10.0.80.0/20'
+      VpcId:
+        Ref: VPC
+      Tags:
+        - Key: Name
+          Value: ${env:AWS_SERVICE_NAME}-subnet-c-public
+
+  ### Security Groups
+
+  # WIP: If you ever want to have conditionally secure deployments
+  # Conditions:
+  #   Secure:
+  #     Fn::Equals:
+  #       - ${env:SECURE_WITH_VPC}
+  #       - "true"
+  #   InSecure:
+  #     Fn::Not:
+  #       - Fn::Equals:
+  #         - ${env:SECURE_WITH_VPC}
+  #         - "true"
+
+  ServerlessSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: SecurityGroup for Serverless Functions
+      VpcId:
+        Ref: VPC
+
+  pgSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Access to Postgres
+      VpcId:
+        Ref: VPC
+
+  ServerlessIngress:
+    Type: AWS::EC2::SecurityGroupIngress
+    Properties:
+      IpProtocol: tcp
+      FromPort: '5432'
+      ToPort: '5432'
+      SourceSecurityGroupId:
+        Ref: ServerlessSecurityGroup
+      GroupId:
+        Ref: pgSecurityGroup
+
+  ### Database Resources
+  RDSSubnetGroup:
+    Type: AWS::RDS::DBSubnetGroup
+    Properties:
+      DBSubnetGroupDescription: RDS Subnet Group
+      SubnetIds:
+        - Ref: SubnetAPrivate
+        - Ref: SubnetBPrivate
+        - Ref: SubnetCPrivate
+
+  pgDB:
+    Type: 'AWS::RDS::DBInstance'
+    Properties:
+      AvailabilityZone: ${self:provider.region}a
+      DBName: 'postgres'
+      BackupRetentionPeriod: ${env:DB_BACKUP_RETENTION_PERIOD}
+      AllocatedStorage: 5
+      DBInstanceClass: 'db.t2.micro'
+      DBInstanceIdentifier: ${env:AWS_DB_INSTANCE_IDENTIFIER}
+      DBSubnetGroupName:
+        Ref: RDSSubnetGroup
+      DeletionProtection: ${env:DB_DELETION_PROTECTION, self:custom.false}
+      AllowMajorVersionUpgrade: true
+      Engine: 'postgres'
+      EngineVersion: '10.6'
+      MasterUsername: ${env:PG_MASTER_USR}
+      MasterUserPassword: ${env:PG_MASTER_PW}
+      PubliclyAccessible: false
+      VPCSecurityGroups:
+        - Fn::GetAtt:
+          - pgSecurityGroup
+          - GroupId
+      Tags:
+        - Key: 'Name'
+          Value: 'floods'
+    DeletionPolicy: 'Snapshot'
