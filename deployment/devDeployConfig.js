@@ -35,9 +35,5 @@ module.exports = {
     deploy: true,
     seed: true,
     customServiceName: "400-new-name"
-  },
-  "466-secure-graphql": {
-    deploy: true,
-    seed: true
   }
 };
