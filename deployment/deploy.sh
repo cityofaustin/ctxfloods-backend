@@ -12,7 +12,7 @@ if \
 then
   DEPLOY_ENV=dev
 fi
-source $CURRENT_DIR/vars/$DEPLOY_ENV.sh
+# source $CURRENT_DIR/vars/$DEPLOY_ENV.sh
 
 # Source env variables for custom devDeployConfig options
 # (Seeding is handled by another script.)
@@ -27,8 +27,8 @@ fi
 [ -f $CURRENT_DIR/dev_options.tmp ] && source $CURRENT_DIR/dev_options.tmp
 
 # Install "serverless" module and plugins
-yarn global add serverless@1.32.0
-yarn --production=false
+# yarn global add serverless@1.32.0
+# yarn --production=false
 
 # Create s3 bucket
 echo ":: Building S3 Bucket"
@@ -49,19 +49,20 @@ source $CURRENT_DIR/stack_outputs.tmp
 echo ":: Stack Outputs check succeeded, STACK_EXISTS=${STACK_EXISTS}"
 
 # If Stack and Database exist, check if our migrations are up to date
-echo ":: Checking if migrations are up to date"
-if [ ! -z $PG_ENDPOINT ]; then
-  node $CURRENT_DIR/checkMigrations.js
-  if [ $? != 0 ]; then
-    echo ":: Migration check failed"
-    exit 1
-  else
-    source $CURRENT_DIR/migrations_flag.tmp
-  fi
-else
-  MIGRATIONS_UP_TO_DATE=false
-fi
-echo ":: Migration check succeeded, MIGRATIONS_UP_TO_DATE=${MIGRATIONS_UP_TO_DATE}"
+# echo ":: Checking if migrations are up to date"
+# if [ ! -z $PG_ENDPOINT ]; then
+#   echo "my god there is a PG_ENDPOINT: " $PG_ENDPOINT
+#   node $CURRENT_DIR/checkMigrations.js
+#   if [ $? != 0 ]; then
+#     echo ":: Migration check failed"
+#     exit 1
+#   else
+#     source $CURRENT_DIR/migrations_flag.tmp
+#   fi
+# else
+#   MIGRATIONS_UP_TO_DATE=false
+# fi
+# echo ":: Migration check succeeded, MIGRATIONS_UP_TO_DATE=${MIGRATIONS_UP_TO_DATE}"
 
 # Create Serverless Bundle
 echo ":: Creating serverless.js Bundle"
@@ -92,7 +93,7 @@ if [ $? != 0 ]; then
 fi
 
 # Source variables if Stack is new
-if [[ $STACK_EXISTS = "false" ]]; then
+# if [[ $STACK_EXISTS = "false" ]]; then
   echo ":: Sourcing new stack outputs"
   node $CURRENT_DIR/getStackOutputsStrict.js
   if [ $? != 0 ]; then
@@ -100,7 +101,7 @@ if [[ $STACK_EXISTS = "false" ]]; then
     exit 1
   fi
   source $CURRENT_DIR/stack_outputs.tmp
-fi
+# fi
 
 # Check if seeding will be required
 echo ":: Checking if seeding is required"
