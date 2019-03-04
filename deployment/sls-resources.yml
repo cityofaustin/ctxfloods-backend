@@ -1,5 +1,26 @@
 Resources:
 
+  # WIP: If you ever want to have conditionally secure deployments
+  # Conditions:
+  #   Secure:
+  #     Fn::Equals:
+  #       - ${env:SECURE_WITH_VPC}
+  #       - "true"
+  #   InSecure:
+  #     Fn::Not:
+  #       - Fn::Equals:
+  #         - ${env:SECURE_WITH_VPC}
+  #         - "true"
+
+  # Example usage:
+  # "QSS3Region": {
+  #     "Fn::If": [
+  #         "GovCloudCondition",
+  #         "s3-us-gov-west-1",
+  #         "s3"
+  #     ]
+  # }
+
   ### VPC
   VPC:
     Type: AWS::EC2::VPC
@@ -173,25 +194,13 @@ Resources:
           Value: ${env:AWS_SERVICE_NAME}-subnet-c-public
 
   ### Security Groups
-
-  # WIP: If you ever want to have conditionally secure deployments
-  # Conditions:
-  #   Secure:
-  #     Fn::Equals:
-  #       - ${env:SECURE_WITH_VPC}
-  #       - "true"
-  #   InSecure:
-  #     Fn::Not:
-  #       - Fn::Equals:
-  #         - ${env:SECURE_WITH_VPC}
-  #         - "true"
-
   ServerlessSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
-      GroupDescription: SecurityGroup for Serverless Functions
+      GroupDescription: Security Group for Serverless Functions
       VpcId:
         Ref: VPC
+      # TODO: Ingress Rules??
 
   pgSecurityGroup:
     Type: AWS::EC2::SecurityGroup
@@ -210,6 +219,85 @@ Resources:
         Ref: ServerlessSecurityGroup
       GroupId:
         Ref: pgSecurityGroup
+
+  ### Bastion Server
+  BastionServer:
+    Type: AWS::EC2::Instance
+    Properties:
+      Tags:
+        - Key: Name
+          Value: ${env:AWS_SERVICE_NAME}-bastion
+      # ImageId: ami-a3f35bb5
+      InstanceType: t2.micro
+      SubnetId:
+        Ref: BastionSubnet
+      AvailabilityZone: us-east-1a
+      # KeyName: secret-key-pair1
+      SecurityGroupIds:
+        - Ref: BastionSecurityGroup
+
+  BastionSubnet:
+    Type: AWS::EC2::Subnet
+    Properties:
+      AvailabilityZone: ${self:provider.region}a
+      CidrBlock: 10.0.96.0/24
+      VpcId:
+        Ref: VPC
+      Tags:
+        - Key: Name
+          Value: ${env:AWS_SERVICE_NAME}-subnet-a-bastion
+
+  # TODO: add this to pgSecurityGroup ingress rules. Please.
+  BastionSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Security Group for Bastion Server
+      SecurityGroupIngress:
+        - CidrIp: 0.0.0.0/0
+          FromPort: 22
+          IpProtocol: TCP
+          ToPort: 22
+      VpcId:
+        Ref: VPC
+
+  BastionElasticIp:
+    Type: AWS::EC2::EIP
+    # DependsOn: VPCGatewayAttachment # Required even if no Domain Prop?
+    Properties:
+      InstanceId:
+        Ref: BastionServer
+
+  BastionEIPAssociation:
+    Type: AWS::EC2::EIPAssociation
+    Properties:
+      EIP:
+        Ref: BastionElasticIp
+      InstanceId:
+        Ref: BastionServer
+
+  BastionRouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId:
+        Ref: VPC
+
+  RouteTableAssociationBastion:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId:
+        Ref: BastionRouteTable
+      SubnetId:
+        Ref: BastionSubnet
+
+  RouteTableBastionInternetRoute:
+    Type: AWS::EC2::Route
+    DependsOn: VPCGatewayAttachment
+    Properties:
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId:
+        Ref: InternetGateway
+      RouteTableId:
+        Ref: BastionRouteTable
 
   ### Database Resources
   RDSSubnetGroup:
