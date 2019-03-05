@@ -37,7 +37,7 @@ export BACKEND_PORT=5000
 # ENABLE_PUSH_NOTIFICATIONS can be defined in devDeployConfig.
 export AUSTIN_DATA_APP_TOKEN=$TRAVIS_AUSTIN_DATA_APP_TOKEN_DEV
 export GRAPHQL_API_USR=graphql@flo.ods
-export GRAPHQL_API_PW=$TRAVIS_GRAPHQL_API_PW_DEV
+export GRAPHQL_API_PW=$TRAVIS_GRAPHQL_API_PW_PROD
 export DISABLE_QUERY_LOG=false
 
 # Postgres
@@ -46,10 +46,10 @@ export DISABLE_QUERY_LOG=false
 # Those values are only applied to the database on initialization, not Stack updates.
 # To change these values after creating the database, you must change them in the database manually as well in the Travis environment variable settings.
 export PG_PORT=5432
-export PG_MASTER_USR=$TRAVIS_PG_MASTER_USR_DEV
-export PG_MASTER_PW=$TRAVIS_PG_MASTER_PW_DEV
+export PG_MASTER_USR=$TRAVIS_PG_MASTER_USR_PROD
+export PG_MASTER_PW=$TRAVIS_PG_MASTER_PW_PROD
 export PG_API_USR=floods_graphql
-export PG_API_PW=$TRAVIS_PG_API_PW_DEV
-export PG_SUPER_ADMIN_PW=$TRAVIS_PG_SUPER_ADMIN_PW_DEV # only used during initialization
+export PG_API_PW=$TRAVIS_PG_API_PW_PROD
+export PG_SUPER_ADMIN_PW=$TRAVIS_PG_SUPER_ADMIN_PW_PROD # only used during initialization
 # DB_DELETION_PROTECTION assigned in devDeployConfig
 # PG_ENDPOINT assigned in serverless.yml
