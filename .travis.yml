@@ -10,15 +10,11 @@ addons:
     - postgresql-client-10
 services:
   - postgresql
-env:
-  global:
-  - PGPORT=5433
 install:
   - yarn
   - pip install --user awscli
   - export PATH=$PATH:$HOME/.local/bin
 before_script:
-  - psql -U postgres -p 5433 -c "ALTER USER travis WITH PASSWORD 'travis';"
   - yarn init-local-db;
 script: yarn test;
 deploy:
