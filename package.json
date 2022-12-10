@@ -51,7 +51,7 @@
     "babel-jest": "^23.6.0",
     "babel-preset-env": "^1.7.0",
     "cors": "^2.8.5",
-    "express": "^4.16.3",
+    "express": "^4.17.3",
     "jest": "^23.6.0",
     "serverless-content-encoding": "^1.0.22",
     "serverless-webpack": "^5.2.0",
